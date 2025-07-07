@@ -3,7 +3,10 @@ import Link from "next/link";
 import Slider from "react-slick";
 import ClientLogoSlider from "../src/components/ClientLogoSlider";
 import FeedbackTwoSlider from "../src/components/FeedbackTwoSlider";
+<<<<<<< HEAD
 // import { HomeSlider2 } from "../src/components/HomeSlider";
+=======
+>>>>>>> d29907da673274a29c52da9de6d5f381d2fad29a
 import ExperienceTeam from "../src/components/slider/ExperienceTeam";
 import PhotoGallery from "../src/components/slider/PhotoGallery";
 import Layout from "../src/layout/Layout";
@@ -22,7 +25,10 @@ const Index2 = () => {
         style={{ background: "url(assets/images/slider/slider-two-bg.jpg)" }}
       >
         <div className="slider-two-active">
+<<<<<<< HEAD
           {/* <HomeSlider2 /> */}
+=======
+>>>>>>> d29907da673274a29c52da9de6d5f381d2fad29a
         </div>
         <div className="slide-shapes">
           <img
