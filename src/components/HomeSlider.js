@@ -370,7 +370,4 @@ export const HomeSlider1 = () => {
 //   );
 // };
 export default HomeSlider1;
-<<<<<<< HEAD
 
-=======
->>>>>>> d29907da673274a29c52da9de6d5f381d2fad29a
