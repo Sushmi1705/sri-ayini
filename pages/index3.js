@@ -3,7 +3,6 @@ import Layout from "../src/layout/Layout";
 
 import dynamic from "next/dynamic";
 import Slider from "react-slick";
-// import { HomeSlider3 } from "../src/components/HomeSlider";
 import { clientLogo } from "../src/sliderProps";
 
 const TrendyProducts = dynamic(
@@ -30,7 +29,6 @@ const Index3 = () => {
     <Layout header={3} footer={3}>
       <section className="slider-section slider-three">
         <div className="slider-three-active">
-          // <HomeSlider3 />
         </div>
       </section>
       {/* Slider Section End */}
