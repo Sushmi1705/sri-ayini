@@ -3,7 +3,6 @@ import Link from "next/link";
 import Slider from "react-slick";
 import ClientLogoSlider from "../src/components/ClientLogoSlider";
 import FeedbackTwoSlider from "../src/components/FeedbackTwoSlider";
-// import { HomeSlider2 } from "../src/components/HomeSlider";
 import ExperienceTeam from "../src/components/slider/ExperienceTeam";
 import PhotoGallery from "../src/components/slider/PhotoGallery";
 import Layout from "../src/layout/Layout";
@@ -22,7 +21,6 @@ const Index2 = () => {
         style={{ background: "url(assets/images/slider/slider-two-bg.jpg)" }}
       >
         <div className="slider-two-active">
-          // <HomeSlider2 />
         </div>
         <div className="slide-shapes">
           <img
