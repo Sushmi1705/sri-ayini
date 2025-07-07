@@ -369,3 +369,5 @@ export const HomeSlider1 = () => {
 //     </Fragment>
 //   );
 // };
+export default HomeSlider1;
+

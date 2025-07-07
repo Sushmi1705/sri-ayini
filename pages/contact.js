@@ -1,10 +1,11 @@
 import PageBanner from "../src/components/PageBanner";
-import Layout from "../src/layout/Layout";
+import  Layout  from "../src/layout/Layout";
 import { useState, useRef } from "react";
 import { contactUs } from "../services/contactusServices";
 const ContactUs = () => {
 
-  const guestId = localStorage.getItem("guestId");
+  // const guestId = localStorage.getItem("guestId");
+  const guestId = "guest_1743675916926";
   const formRef = useRef(null);
   const [formData, setFormData] = useState({
     fullName: '',
