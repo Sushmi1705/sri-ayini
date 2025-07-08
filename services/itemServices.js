@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://localhost:5000/items";
+// const API_BASE_URL = "http://localhost:5000/items";
+const API_BASE_URL = "https://ayini-backend.onrender.com/items";
+
 
 export const fetchItems = async () => {
     try {

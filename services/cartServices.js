@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:5000/cart";
+// const API_URL = "http://localhost:5000/cart";
+const API_URL = "https://ayini-backend.onrender.com/cart";
 
 export const getGuestId = () => {
     let guestId = localStorage.getItem("guestId");
