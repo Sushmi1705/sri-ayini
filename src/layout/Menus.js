@@ -68,11 +68,11 @@ export const PagesMobile = () => (
     
   </Fragment>
 );
-export const Portfolio = () => (
-  <Fragment>
+// export const Portfolio = () => (
+//   <Fragment>
     
-  </Fragment>
-);
+//   </Fragment>
+// );
 export const Blog = () => (
   <Fragment>
     <li>
