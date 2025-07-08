@@ -72,7 +72,7 @@ const DaskTopMenu = () => (
         <span className="fas fa-chevron-down" />
       </div>
     </li> */}
-    {/* <li className="dropdown">
+    <li className="dropdown">
       <a href="#">blog</a>
       <ul>
         <Blog />
@@ -80,7 +80,7 @@ const DaskTopMenu = () => (
       <div className="dropdown-btn">
         <span className="fas fa-chevron-down" />
       </div>
-    </li> */}
+    </li>
     <li className="dropdown">
       <a href="#">shop</a>
       <ul>
