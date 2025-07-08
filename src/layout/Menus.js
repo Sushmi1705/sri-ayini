@@ -65,55 +65,12 @@ export const PagesDasktop = () => (
 );
 export const PagesMobile = () => (
   <Fragment>
-    <li>
-      <Link legacyBehavior href="/about">
-        About us
-      </Link>
-    </li>
-    <li>
-      <Link legacyBehavior href="/services">
-        all services
-      </Link>
-    </li>
-    <li>
-      <Link legacyBehavior href="/service-details">
-        service details
-      </Link>
-    </li>
-    <li>
-      <Link legacyBehavior href="/faqs">
-        faqs
-      </Link>
-    </li>
-    <li>
-      <Link legacyBehavior href="/farmers">
-        Farmers
-      </Link>
-    </li>
-    <li>
-      <Link legacyBehavior href="/404">
-        404 error
-      </Link>
-    </li>
+    
   </Fragment>
 );
 export const Portfolio = () => (
   <Fragment>
-    <li>
-      <Link legacyBehavior href="/portfolio-grid">
-        Portfolio grid
-      </Link>
-    </li>
-    <li>
-      <Link legacyBehavior href="/portfolio-fluid">
-        Portfolio Fluid
-      </Link>
-    </li>
-    <li>
-      <Link legacyBehavior href="/portfolio-details">
-        Portfolio details
-      </Link>
-    </li>
+    
   </Fragment>
 );
 export const Blog = () => (
