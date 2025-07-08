@@ -63,15 +63,6 @@ const DaskTopMenu = () => (
       </div>
     </li> */}
     <PagesDasktop />
-    {/* <li className="dropdown">
-      <a href="#">portfolio</a>
-      <ul>
-        <Portfolio />
-      </ul>
-      <div className="dropdown-btn">
-        <span className="fas fa-chevron-down" />
-      </div>
-    </li> */}
     <li className="dropdown">
       <a href="#">blog</a>
       <ul>
