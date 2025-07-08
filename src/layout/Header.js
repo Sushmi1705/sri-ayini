@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Fragment, useState } from "react";
 import { sidebarToggle } from "../utils";
-import { Blog, Contact, Home, PagesDasktop, Portfolio, Shop } from "./Menus";
+import { Blog, Contact, Home, PagesDasktop,Shop } from "./Menus";
 import MobileMenu from "./MobileMenu";
 
 const Header = ({ header }) => {
