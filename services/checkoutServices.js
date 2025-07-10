@@ -1,5 +1,7 @@
 // const API_URL = "http://localhost:5000";
-const API_URL = "https://ayini-backend.onrender.com";
+// const API_URL = process.env.API_BASE_URL;
+const API_URL = 'https://ayini-backend.onrender.com';
+
 
 export const createRazorpayOrder = async (amount) => {
     const response = await fetch(`${API_URL}/payment/create-payment`, {

@@ -1,6 +1,6 @@
 // const API_URL = "http://localhost:5000/contactUs";
-const API_URL = "https://ayini-backend.onrender.com/contactUs";
-
+// const API_URL = `${process.env.API_BASE_URL}/contactUs`;
+const API_URL = 'https://ayini-backend.onrender.com/contactUs';
 
 export const contactUs = async (guestId, formData) => {
 

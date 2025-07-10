@@ -85,11 +85,11 @@ export const Blog = () => (
         blog Standard
       </Link>
     </li>
-    <li>
+    {/* <li>
       <Link legacyBehavior href="/blog-details">
         blog details
       </Link>
-    </li>
+    </li> */}
   </Fragment>
 );
 export const Shop = () => (
