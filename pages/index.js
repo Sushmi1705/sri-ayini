@@ -8,6 +8,9 @@ import CustomerReviews from "../src/components/slider/CustomerReviews";
 import PhotoGallery from "../src/components/slider/PhotoGallery";
 import Layout from "../src/layout/Layout";
 import { productActive } from "../src/sliderProps";
+import React, { useEffect, useState } from "react";
+import { fetchItems } from "../services/itemServices";
+
 const MunfimCountdown = dynamic(
   () => import("../src/components/MunfimCountdown"),
   {
@@ -15,6 +18,17 @@ const MunfimCountdown = dynamic(
   }
 );
 const Index = () => {
+
+  const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+      fetchItems()
+        .then(data => {
+          setProducts(data.items);
+        })
+        .catch((error) => console.error("Error fetching items:", error));
+    }, []);
+    
   return (
     <Layout header={1}>
       {/*End Hidden Sidebar */}
@@ -59,58 +73,58 @@ const Index = () => {
           <div className="category-wrap">
             <div className="category-item wow fadeInUp delay-0-3s">
               <div className="icon">
-                <img src="assets/images/category/icon1.png" alt="Icon" />
+                <img src="assets/images/category/Black Urud Front.png" alt="Icon" />
               </div>
-              <h5>
+              {/* <h5>
                 <Link legacyBehavior href="/services">
                   Organic Fruits
                 </Link>
-              </h5>
-              <img src="assets/images/category/arrow.png" alt="Arrow" />
+              </h5> */}
+              {/* <img src="assets/images/category/arrow.png" alt="Arrow" /> */}
             </div>
             <div className="category-item wow fadeInUp delay-0-4s">
               <div className="icon">
-                <img src="assets/images/category/icon2.png" alt="Icon" />
+                <img src="assets/images/category/Corriender front.png" alt="Icon" />
               </div>
-              <h5>
+              {/* <h5>
                 <Link legacyBehavior href="/services">
                   Vegetables
                 </Link>
-              </h5>
-              <img src="assets/images/category/arrow.png" alt="Arrow" />
+              </h5> */}
+              {/* <img src="assets/images/category/arrow.png" alt="Arrow" /> */}
             </div>
             <div className="category-item wow fadeInUp delay-0-5s">
               <div className="icon">
-                <img src="assets/images/category/icon3.png" alt="Icon" />
+                <img src="assets/images/category/Curry Leaves Front.png" alt="Icon" />
               </div>
-              <h5>
+              {/* <h5>
                 <Link legacyBehavior href="/services">
                   Sea Fish’s
                 </Link>
               </h5>
-              <img src="assets/images/category/arrow.png" alt="Arrow" />
+              <img src="assets/images/category/arrow.png" alt="Arrow" /> */}
             </div>
             <div className="category-item wow fadeInUp delay-0-6s">
               <div className="icon">
-                <img src="assets/images/category/icon4.png" alt="Icon" />
+                <img src="assets/images/category/Ellu Front.png" alt="Icon" />
               </div>
-              <h5>
+              {/* <h5>
                 <Link legacyBehavior href="/services">
                   Crisp Bakery
                 </Link>
               </h5>
-              <img src="assets/images/category/arrow.png" alt="Arrow" />
+              <img src="assets/images/category/arrow.png" alt="Arrow" /> */}
             </div>
             <div className="category-item wow fadeInUp delay-0-7s">
               <div className="icon">
-                <img src="assets/images/category/icon5.png" alt="Icon" />
+                <img src="assets/images/category/Idly Podi Front.jpg" alt="Icon" />
               </div>
-              <h5>
+              {/* <h5>
                 <Link legacyBehavior href="/services">
                   Chiken Egg
                 </Link>
               </h5>
-              <img src="assets/images/category/arrow.png" alt="Arrow" />
+              <img src="assets/images/category/arrow.png" alt="Arrow" /> */}
             </div>
           </div>
         </div>
@@ -307,86 +321,26 @@ const Index = () => {
       <h2>Authentic Homemade Spice Powders</h2>
     </div>
     <Slider {...productActive} className="product-active">
-      <div className="product-item wow fadeInUp delay-0-2s">
-        <div className="image">
-          <img src="assets/images/products/masala.jpg" alt="Product" />
-        </div>
-        <div className="content">
-          <h5>
-            <Link legacyBehavior href="/product-details">
-              Pure Turmeric Powder
-            </Link>
-          </h5>
-          <span className="price">
-            <del>250</del>
-            <span>199</span> (100g)
-          </span>
-        </div>
-      </div>
-      <div className="product-item wow fadeInUp delay-0-3s">
-        <div className="image">
-          <img src="assets/images/products/masala.jpg" alt="Product" />
-        </div>
-        <div className="content">
-          <h5>
-            <Link legacyBehavior href="/product-details">
-              Spicy Red Chili Powder
-            </Link>
-          </h5>
-          <span className="price">
-            <del>300</del>
-            <span>249</span> (100g)
-          </span>
-        </div>
-      </div>
-      <div className="product-item wow fadeInUp delay-0-4s">
-        <div className="image">
-          <img src="assets/images/products/masala.jpg" alt="Product" />
-        </div>
-        <div className="content">
-          <h5>
-            <Link legacyBehavior href="/product-details">
-              Fresh Coriander Powder
-            </Link>
-          </h5>
-          <span className="price">
-            <del>280</del>
-            <span>229</span> (100g)
-          </span>
-        </div>
-      </div>
-      <div className="product-item wow fadeInUp delay-0-5s">
-        <div className="image">
-          <img src="assets/images/products/masala.jpg" alt="Product" />
-        </div>
-        <div className="content">
-          <h5>
-            <Link legacyBehavior href="/product-details">
-              Aromatic Garam Masala
-            </Link>
-          </h5>
-          <span className="price">
-            <del>350</del>
-            <span>299</span> (100g)
-          </span>
-        </div>
-      </div>
-      <div className="product-item wow fadeInUp delay-0-6s">
-        <div className="image">
-          <img src="assets/images/products/masala.jpg" alt="Product" />
-        </div>
-        <div className="content">
-          <h5>
-            <Link legacyBehavior href="/product-details">
-              Black Pepper Powder
-            </Link>
-          </h5>
-          <span className="price">
-            <del>320</del>
-            <span>269</span> (100g)
-          </span>
-        </div>
-      </div>
+    {products.map((product, index) => (
+        // <div className="col-md-4" key={product.id || index}>
+          <div className="product-item wow fadeInUp delay-0-3s">
+            <div className="image">
+              <img src={product.image || "assets/images/products/default.jpg"} alt={product.name} />
+            </div>
+            <div className="content">
+              <h5>
+                <Link legacyBehavior href={`/product-details/${product.id}`}>
+                  {product.name}
+                </Link>
+              </h5>
+              <span className="price">
+                {product.originalPrice && <del>{product.originalPrice}</del>}
+                <span>{product.price}</span> ({product.weight || "100g"})
+              </span>
+            </div>
+          </div>
+        // </div>
+      ))}
     </Slider>
   </div>
 </section>
@@ -412,7 +366,7 @@ const Index = () => {
       </div> */}
       {/* Video Area End */}
       {/* Special Offer Start */}
-      <section className="special-offer bg-lighter pt-250 pb-80">
+      {/* <section className="special-offer bg-lighter pt-250 pb-80">
         <div className="special-offer-content text-center py-130 rpy-100 wow fadeInUp delay-0-2s">
           <div className="section-title mb-30">
             <span className="sub-title mb-20">Exclusive 35% Off on Spices!</span>
@@ -460,7 +414,7 @@ const Index = () => {
           src="assets/images/offers/offer-right.png"
           alt="Offer"
         />
-      </section>
+      </section> */}
       {/* Special Offer End */}
       {/* Call To Action Area Start */}
       <section className="cta-area">
@@ -491,12 +445,12 @@ const Index = () => {
       </section>
       {/* Call To Action Area End */}
       {/* Gallery Area Start */}
-      <section className="gallery-area pt-130 rpt-100">
+      {/* <section className="gallery-area pt-130 rpt-100">
         <PhotoGallery />
-      </section>
+      </section> */}
       {/* Gallery Area End */}
       {/* Feedback Section Start */}
-      <section className="feedback-section pt-50 rpt-20">
+      {/* <section className="feedback-section pt-50 rpt-20">
         <div className="container">
           <div className="row large-gap">
             <div className="col-lg-6">
@@ -523,7 +477,7 @@ const Index = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       {/* Feedback Section End */}
       {/* News Section Start */}
       <section className="news-section pt-130 rpt-100 pb-70 rpb-40">
@@ -536,16 +490,16 @@ const Index = () => {
             <div className="col-xl-4 col-md-6">
               <div className="news-item wow fadeInUp delay-0-2s">
                 <div className="image">
-                  <img src="assets/images/news/news1.jpg" alt="News" />
+                  <img src="assets/images/news/sambar.jpg" alt="News" />
                   <span className="date">
                     <b>25</b> July
                   </span>
                 </div>
                 <div className="content">
-                  <span className="sub-title">Vegetable</span>
+                  <span className="sub-title">Spices</span>
                   <h4>
                     <Link legacyBehavior href="/blog-details">
-                      Unicode UTF8 Character Sets They Sltimate Guide Systems
+                    Why Homemade Sambar Powder Tastes Better Than Store-Bought
                     </Link>
                   </h4>
                   <Link legacyBehavior href="/blog-details">
@@ -559,16 +513,16 @@ const Index = () => {
             <div className="col-xl-4 col-md-6">
               <div className="news-item wow fadeInUp delay-0-4s">
                 <div className="image">
-                  <img src="assets/images/news/news2.jpg" alt="News" />
+                  <img src="assets/images/news/idly podi.jpg" alt="News" />
                   <span className="date">
                     <b>25</b> July
                   </span>
                 </div>
                 <div className="content">
-                  <span className="sub-title">Farming</span>
+                  <span className="sub-title">Usage Tips</span>
                   <h4>
                     <Link legacyBehavior href="/blog-details">
-                      Quality Foods Requirments For Every Human Body’s
+                      5 Easy Ways to Use Idli Podi Beyond Idli & Dosa
                     </Link>
                   </h4>
                   <Link legacyBehavior href="/blog-details">
@@ -582,16 +536,16 @@ const Index = () => {
             <div className="col-xl-4 col-md-6">
               <div className="news-item wow fadeInUp delay-0-6s">
                 <div className="image">
-                  <img src="assets/images/news/news3.jpg" alt="News" />
+                  <img src="assets/images/news/moringa powder.jpg" alt="News" />
                   <span className="date">
                     <b>25</b> July
                   </span>
                 </div>
                 <div className="content">
-                  <span className="sub-title">Organic Fruits</span>
+                  <span className="sub-title">Health</span>
                   <h4>
                     <Link legacyBehavior href="/blog-details">
-                      Choose Awesome Vegetables For Your Daily Life Routine
+                      The Health Benefits of Moringa Powder in Tamil Cooking
                     </Link>
                   </h4>
                   <Link legacyBehavior href="/blog-details">

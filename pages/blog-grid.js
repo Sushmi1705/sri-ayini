@@ -12,7 +12,7 @@ const BlogGrid = () => {
           <div className="row justify-content-center blog-grid">
             {[
               {
-                img: "news1.jpg",
+                img: "sambar.jpg",
                 date: "10",
                 month: "Jul",
                 category: "Spices",
@@ -20,7 +20,7 @@ const BlogGrid = () => {
                 link: "/blog-details1",
               },
               {
-                img: "news2.jpg",
+                img: "idly podi.jpg",
                 date: "08",
                 month: "Jul",
                 category: "Usage Tips",
@@ -28,7 +28,7 @@ const BlogGrid = () => {
                 link: "/blog-details2",
               },
               {
-                img: "news3.jpg",
+                img: "moringa powder.jpg",
                 date: "05",
                 month: "Jul",
                 category: "Health",
@@ -36,7 +36,7 @@ const BlogGrid = () => {
                 link: "/blog-details3",
               },
               {
-                img: "news4.jpg",
+                img: "store.jpg",
                 date: "01",
                 month: "Jul",
                 category: "Kitchen Tips",

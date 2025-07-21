@@ -15,13 +15,13 @@ const BlogStandard = () => {
               {/* Blog Post 1 */}
               <div className="news-standard-item wow fadeInUp delay-0-2s">
                 <div className="image">
-                  <img src="assets/images/news/blog-standard1.jpg" alt="Sambar Powder" />
+                  <img src="assets/images/news/sambar.jpg" alt="Sambar Powder" />
                 </div>
                 <div className="content">
-                  <ul className="blog-meta">
+                  {/* <ul className="blog-meta">
                     <li><i className="far fa-calendar-alt" /> <a href="#">July 5, 2025</a></li>
                     <li><i className="far fa-comment-dots" /> <a href="#">Comments (24)</a></li>
-                  </ul>
+                  </ul> */}
                   <h4>
                     <Link legacyBehavior href="/blog-details1">
                       <a>Why Homemade Sambar Powder Tastes Better Than Store-Bought</a>
@@ -37,13 +37,13 @@ const BlogStandard = () => {
               {/* Blog Post 2 */}
               <div className="news-standard-item wow fadeInUp delay-0-2s">
                 <div className="image">
-                  <img src="assets/images/news/blog-standard2.jpg" alt="Moringa Powder" />
+                  <img src="assets/images/news/moringa powder.jpg" alt="Moringa Powder" />
                 </div>
                 <div className="content">
-                  <ul className="blog-meta">
+                  {/* <ul className="blog-meta">
                     <li><i className="far fa-calendar-alt" /> <a href="#">July 6, 2025</a></li>
                     <li><i className="far fa-comment-dots" /> <a href="#">Comments (18)</a></li>
-                  </ul>
+                  </ul> */}
                   <h4>
                     <Link legacyBehavior href="/blog-details3">
                       <a>The Health Benefits of Moringa Powder in Tamil Cooking</a>
@@ -59,13 +59,13 @@ const BlogStandard = () => {
               {/* Blog Post 3 */}
               <div className="news-standard-item wow fadeInUp delay-0-2s">
                 <div className="image">
-                  <img src="assets/images/news/blog-standard3.jpg" alt="Powder Storage" />
+                  <img src="assets/images/news/store.jpg" alt="Powder Storage" />
                 </div>
                 <div className="content">
-                  <ul className="blog-meta">
+                  {/* <ul className="blog-meta">
                     <li><i className="far fa-calendar-alt" /> <a href="#">July 7, 2025</a></li>
                     <li><i className="far fa-comment-dots" /> <a href="#">Comments (15)</a></li>
-                  </ul>
+                  </ul> */}
                   <h4>
                     <Link legacyBehavior href="/blog-details4">
                       <a>How to Store Homemade Powders to Keep Them Fresh for Months</a>
@@ -121,7 +121,7 @@ const BlogStandard = () => {
                   <h4 className="widget-title"><i className="flaticon-leaf-1" /> Recent Posts</h4>
                   <ul>
                     <li>
-                      <div className="image"><img src="assets/images/news/news-widget1.jpg" alt="News" /></div>
+                      <div className="image"><img src="assets/images/news/sambar.jpg" alt="News" /></div>
                       <div className="content">
                         <h6>
                           <Link legacyBehavior href="/blog-details1">
@@ -132,7 +132,7 @@ const BlogStandard = () => {
                       </div>
                     </li>
                     <li>
-                      <div className="image"><img src="assets/images/news/news-widget2.jpg" alt="News" /></div>
+                      <div className="image"><img src="assets/images/news/moringa powder.jpg" alt="News" /></div>
                       <div className="content">
                         <h6>
                           <Link legacyBehavior href="/blog-details3">
@@ -143,7 +143,7 @@ const BlogStandard = () => {
                       </div>
                     </li>
                     <li>
-                      <div className="image"><img src="assets/images/news/news-widget3.jpg" alt="News" /></div>
+                      <div className="image"><img src="assets/images/news/store.jpg" alt="News" /></div>
                       <div className="content">
                         <h6>
                           <Link legacyBehavior href="/blog-details4">

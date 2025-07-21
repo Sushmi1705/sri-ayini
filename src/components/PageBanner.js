@@ -3,7 +3,7 @@ const PageBanner = ({ pageName, pageTitle }) => {
   return (
     <section
       className="page-banner text-white py-165 rpy-130"
-      style={{ backgroundImage: "url(assets/images/banner/banner.jpg)" }}
+      style={{ backgroundImage: "url(assets/images/banner/banner.png)" }}
     >
       <div className="container">
         <div className="banner-inner">

@@ -27,7 +27,7 @@ const CartPage = () => {
 
     const shipping = parseFloat(calculateShipping(cartData));
     setSubTotal(subTotal_());
-    console.log('tax');
+    console.log('tax', tax);
     setVat(Number((subTotal_() * tax) / 100).toFixed(2));
     setTotalPrice(
       (Number(subTotal_()) + Number(vat) + Number(shipping)).toFixed(2)
@@ -42,7 +42,7 @@ const CartPage = () => {
   });
 
   useEffect(() => {
-
+    console.log('45------');
     const storedGuestId = localStorage.getItem("guestId");
     setGuestId(storedGuestId);
   
@@ -52,14 +52,15 @@ const CartPage = () => {
     }
   
     setLoading(true); // Start loading
+
     getTax()
     .then((items) => {
+      console.log('57---------', items);
       setTax(items.value)
     })
     .catch((error) => {
       console.error("Error", error);
     });
-
     fetchCartItems(storedGuestId)
       .then((items) => {
         setCartData(items);
@@ -149,7 +150,7 @@ const CartPage = () => {
     setCartData(updatedCartData);
 
   };
-
+  console.log("cartData----", tax);
   return (
     <Layout>
       <PageBanner pageName={"Cart Page"} />
@@ -169,7 +170,7 @@ const CartPage = () => {
             </div>
           ) :
           (
-            <div className="container">
+            <div className="container cartList">
               <div className="cart-item-wrap mb-35 wow fadeInUp delay-0-2s">
                 {cartData.map((cart, i) => (
                   <div className="cart-single-item" key={i}>
@@ -183,7 +184,7 @@ const CartPage = () => {
                       <span aria-hidden="true">×</span>
                     </button>
                     <div className="cart-img">
-                      <img src="assets/images/products/masala.jpg" alt="Product Image" />
+                      <img src={cart.productDetails.image} alt="Product Image" />
                     </div>
                     <h5 className="product-name">{cart.productDetails.name}</h5>
                     <span className="product-price">{cart.productDetails.price}</span>
@@ -222,10 +223,10 @@ const CartPage = () => {
                       action="#"
                       className="d-sm-flex justify-content-center justify-content-lg-start"
                     >
-                      <input type="text" placeholder="Coupon Code" required="" />
+                      {/* <input type="text" placeholder="Coupon Code" required="" />
                       <button className="theme-btn flex-none" type="submit">
                         apply Coupon <i className="fas fa-angle-double-right" />
-                      </button>
+                      </button> */}
                     </form>
                   </div>
                 </div>

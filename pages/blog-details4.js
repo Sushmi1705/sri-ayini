@@ -27,7 +27,7 @@ const BlogDetails4 = () => {
                   How to Store Homemade Powders to Keep Them Fresh for Months
                 </h3>
                 <div className="image my-35">
-                  <img src="/assets/images/news/blog-details.jpg" alt="Blog" />
+                  <img src="/assets/images/news/store.jpg" alt="Blog" />
                 </div>
                 <p>
                   Homemade powders like <strong>sambar podi</strong>, <strong>idli podi</strong>, and <strong>rasam podi</strong> are kitchen treasures that add rich flavor to South Indian dishes. To enjoy their aroma and taste for months, proper storage is crucial.

@@ -27,7 +27,7 @@ const BlogDetails2 = () => {
                   5 Easy Ways to Use Idli Podi Beyond Idli & Dosa
                 </h3>
                 <div className="image my-35">
-                  <img src="/assets/images/news/blog-details.jpg" alt="Blog" />
+                  <img src="/assets/images/news/idly podi.jpg" alt="Blog" />
                 </div>
                 <p>
                   Idli podi, also known as gunpowder or chutney powder, is a beloved South Indian condiment. While it’s commonly paired with idli and dosa, this flavor-packed powder has so much more potential! Here are 5 creative and easy ways to use idli podi beyond the usual.

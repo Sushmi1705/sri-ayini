@@ -43,7 +43,7 @@ export const HomeSlider1 = () => {
               <div className="slider-images">
                 <img
                   className="image"
-                  src="assets/images/slider/slider-image1.png"
+                  src="assets/images/slider/banner.png"
                   alt="Slider"
                 />
                 <img
@@ -94,7 +94,7 @@ export const HomeSlider1 = () => {
               <div className="slider-images">
                 <img
                   className="image"
-                  src="assets/images/slider/slider-image2.png"
+                  src="assets/images/slider/banner.png"
                   alt="Slider"
                 />
                 <img

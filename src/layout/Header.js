@@ -134,7 +134,7 @@ const DefaultHeader = () => (
                 <ul>
                   <li>
                     <i className="far fa-envelope" /> <b>Email Us :</b>{" "}
-                    <a href="mailto:support@gmail.com">support@gmail.com</a>
+                    <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
                   </li>
                   <li>
                     <i className="far fa-clock" /> <b>Working Hours :</b> Monday
@@ -148,7 +148,7 @@ const DefaultHeader = () => (
                 <ul>
                   <li>
                     <i className="far fa-phone" /> <b>Call :</b>{" "}
-                    <a href="callto:+012(345)67899">+012 (345) 678 99</a>
+                    <a href="callto:+012(345)67899">+91 7683459088</a>
                   </li>
                   <li>
                     <div className="social-style-one">
@@ -201,12 +201,12 @@ const DefaultHeader = () => (
             <div className="nav-search py-15">
               <SearchBtn />
             </div>
-            <Link legacyBehavior href="/cart">
+            {/* <Link legacyBehavior href="/cart">
               <button className="cart">
                 <i className="far fa-shopping-basket" />
                 <span>5</span>
               </button>
-            </Link>
+            </Link> */}
 
             <button className="user">
               <i className="far fa-user-circle" />
@@ -242,7 +242,7 @@ const Header1 = () => (
                 <ul>
                   <li>
                     <i className="far fa-envelope" /> <b>Email Us :</b>{" "}
-                    <a href="mailto:support@gmail.com">support@gmail.com</a>
+                    <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
                   </li>
                   <li>
                     <i className="far fa-clock" /> <b>Working Hours :</b> Monday
@@ -256,7 +256,7 @@ const Header1 = () => (
                 <ul>
                   <li>
                     <i className="far fa-phone" /> <b>Call :</b>{" "}
-                    <a href="callto:+012(345)67899">+012 (345) 678 99</a>
+                    <a href="callto:+012(345)67899">+91 7683459088</a>
                   </li>
                   <li>
                     <div className="social-style-one">
@@ -347,7 +347,7 @@ const Header2 = () => (
                 <ul>
                   <li>
                     <i className="far fa-envelope" /> <b>Email Us :</b>{" "}
-                    <a href="mailto:support@gmail.com">support@gmail.com</a>
+                    <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
                   </li>
                 </ul>
               </div>
@@ -357,7 +357,7 @@ const Header2 = () => (
                 <ul>
                   <li>
                     <i className="far fa-phone" /> <b>Call :</b>{" "}
-                    <a href="callto:+012(345)67899">+012 (345) 678 99</a>
+                    <a href="callto:+012(345)67899">+91 7683459088</a>
                   </li>
                   <li>
                     <div className="social-style-one">

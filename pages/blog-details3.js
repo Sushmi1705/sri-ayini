@@ -27,7 +27,7 @@ const BlogDetails3 = () => {
                   The Health Benefits of Moringa Powder in Tamil Cooking
                 </h3>
                 <div className="image my-35">
-                  <img src="/assets/images/news/blog-details.jpg" alt="Blog" />
+                  <img src="/assets/images/news/moringa powder.jpg" alt="Blog" />
                 </div>
                 <p>
                   Moringa powder, known locally as <strong>Murungai Keerai Podi</strong>, is a powerhouse of nutrition deeply rooted in Tamil households. More than just a health supplement, it has been used traditionally in everyday dishes — blending wellness with taste.

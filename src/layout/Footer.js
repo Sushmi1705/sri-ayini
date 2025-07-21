@@ -32,8 +32,20 @@ const ScrollTopBtn = () => {
 
 const DefaultFooter = () => (
   <footer className="main-footer bg-green text-white">
+    <div className="map-container" style={{ marginTop: '20px' }}>
+      <iframe
+        title="Google Map"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3038.7715386653026!2d-73.9871556848742!3d40.74881707932798!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259af1e96b54f%3A0xa20b41d91d56d204!2sEmpire%20State%20Building!5e0!3m2!1sen!2sin!4v1617128924239!5m2!1sen!2sin"
+        width="100%"
+        height="200"
+        style={{ border: 0, borderRadius: "8px" }}
+        allowFullScreen=""
+        loading="lazy"
+      ></iframe>
+    </div>
     <div className="container">
-      <div className="footer-top-newsletter py-80 mb-75">
+      {/* <div className="footer-top-newsletter py-80 mb-75"> */}
+
         {/* <div className="section-title">
           <h2>Newsletter Subscribe</h2>
         </div> */}
@@ -43,7 +55,7 @@ const DefaultFooter = () => (
             subscribe now <i className="fas fa-angle-double-right" />
           </button>
         </form> */}
-      </div>
+      {/* </div> */}
       <div className="row justify-content-center">
         <div className="col-lg-4 col-md-6 order-md-2">
           <div className="footer-widget about-widget text-center">
@@ -162,12 +174,12 @@ const DefaultFooter = () => (
                 53 Main Street, 2nd Mountain 3rd Floor, New York
               </li>
               <li>
-                <i className="far fa-envelope" />
-                <a href="calto:+012(345)67899">+012 (345) 678 99</a>
+                <i className="far fa-phone" />
+                <a href="calto:+012(345)67899">+91 7683459088</a>
               </li>
               <li>
-                <i className="far fa-phone" />
-                <a href="mailto:support@gmail.com">support@gmail.com</a>
+                <i className="far fa-envelope" />
+                <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
               </li>
             </ul>
           </div>
@@ -382,12 +394,12 @@ const Footer3 = () => (
                     53 Main Street, 2nd Mountain 3rd Floor, New York
                   </li>
                   <li>
-                    <i className="far fa-phone" />
-                    <a href="mailto:support@gmail.com">support@gmail.com</a>
+                    <i className="far fa-envelope" />
+                    <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
                   </li>
                   <li>
-                    <i className="far fa-envelope" />
-                    <a href="calto:+012(345)67899">+012 (345) 678 99</a>
+                    <i className="far fa-phone" />
+                    <a href="calto:+012(345)67899">+91 7683459088</a>
                   </li>
                 </ul>
               </div>

@@ -10,7 +10,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo1.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -20,7 +20,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo2.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -30,7 +30,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo3.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -40,7 +40,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo4.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -50,7 +50,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo5.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -60,7 +60,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo6.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -70,7 +70,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo1.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -80,7 +80,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo2.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -90,7 +90,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo3.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -100,7 +100,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo4.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -110,7 +110,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo5.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>
@@ -120,7 +120,7 @@ const ClientLogoSlider = () => {
           <Link legacyBehavior href="/contact">
             <a>
               <img
-                src="assets/images/client-logo/client-logo6.png"
+                src="assets/images/logos/logo.png"
                 alt="Client Logo"
               />
             </a>

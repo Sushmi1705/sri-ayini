@@ -27,7 +27,7 @@ const BlogDetails = () => {
                   Why Homemade Sambar Powder Tastes Better Than Store-Bought
                 </h3>
                 <div className="image my-35">
-                  <img src="/assets/images/news/blog-details.jpg" alt="Blog" />
+                  <img src="/assets/images/news/sambar.jpg" alt="Blog" />
                 </div>
                 <p>
                   Sambar is a staple in South Indian homes — a comforting dish that brings warmth to every meal. At the heart of this beloved dish lies the <strong>sambar powder</strong>, a fragrant mix of roasted spices. While store-bought powders offer convenience, there’s something special — almost magical — about a homemade version.

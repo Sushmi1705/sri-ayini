@@ -1,11 +1,11 @@
-// const API_BASE_URL = "http://localhost:5000/items";
-const API_BASE_URL = 'https://ayini-backend.onrender.com/items';
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/items`;
+// const API_BASE_URL = 'https://ayini-backend.onrender.com/items';
 
 
 export const fetchItems = async () => {
     try {
-      console.log('7---------', 'https://ayini-backend.onrender.com/items');
-      const response = await fetch(API_BASE_URL);
+      console.log('url-----', API_URL);
+      const response = await fetch(API_URL);
       if (!response.ok) {
         throw new Error("Failed to fetch items");
       }
@@ -14,4 +14,11 @@ export const fetchItems = async () => {
       console.error("Error fetching items:", error);
       return [];
     }
+  };
+
+  export const fetchItemById = async (id) => {
+    const response = await fetch(`${API_URL}/${id}`);
+    if (!response.ok) throw new Error("Failed to fetch item");
+    const data = await response.json();
+    return data.item;
   };

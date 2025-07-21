@@ -1,6 +1,5 @@
-// const API_URL = "http://localhost:5000/cart";
-// const API_URL = `${process.env.API_BASE_URL}/cart`;
-const API_URL = 'https://ayini-backend.onrender.com/cart';
+const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/cart`;
+// const API_URL = 'https://ayini-backend.onrender.com/cart';
 
 
 export const getGuestId = () => {
@@ -13,6 +12,7 @@ export const getGuestId = () => {
 };
 
 export const fetchCartItems = async (guestId) => {
+    console.log('url-----', API_URL);
     const response = await fetch(`${API_URL}/${guestId}`);
     const data = await response.json();
     return data.items;

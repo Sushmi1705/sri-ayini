@@ -1,15 +1,16 @@
 import Link from "next/link";
-import { Nav, Tab } from "react-bootstrap";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layout/Layout";
 import { fetchItems } from "../services/itemServices";
 import React, { useEffect, useState } from "react";
 import { addToCart } from "../services/cartServices";
 
-const ProductDetails = () => {
+const ProductList = () => {
   const [items, setProducts] = useState([]);
   const [guestId, setGuestId] = useState("");
   const [quantities, setQuantities] = useState({});
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     fetchItems()
@@ -30,81 +31,118 @@ const ProductDetails = () => {
 
   const handleAddToCart = async (item, quantity) => {
     const productId = item.id;
-    await addToCart(guestId, productId, quantity);
-    alert("Item added to cart!");
-    // window.location.href = '/cart';
+    try {
+      setLoading(true); // show loader
+      await addToCart(guestId, productId, quantity);
+      alert("Item added to cart!");
+    } catch (error) {
+      console.error("Add to cart failed", error);
+      alert("Something went wrong.");
+    } finally {
+      setLoading(false); // hide loader
+    }
   };
 
   return (
     <Layout>
-      <PageBanner pageName={"Product Details"} />
-      <section className="product-details-area pt-130 rpt-100">
-        <div className="container">
-          {items.length > 0 ? (
-            items.map((item) => (
-              <div className="row align-items-center justify-content-between mb-5" key={item.id}>
-                {/* Left: Image */}
-                <div className="col-lg-6">
-                  <div className="product-preview-images rmb-55">
-                    <a href={item.image || "assets/images/products/masala.jpg"}>
-                      <img
-                        src={item.image || "assets/images/products/masala.jpg"}
-                        alt={item.name}
-                      />
-                    </a>
-                  </div>
-                </div>
+      {loading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0, left: 0,
+            width: "100vw",
+            height: "100vh",
+            backdropFilter: "blur(3px)",
+            backgroundColor: "rgba(255, 255, 255, 0.5)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999
+          }}
+        >
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      )}
 
-                {/* Right: Details */}
-                <div className="col-xl-5 col-lg-6">
-                  <div className="product-details-content mb-30">
-                    <div className="section-title mb-20">
-                      <h2>{item.name}</h2>
+      <PageBanner pageName={"Products"} />
+      <section className="product-list-area pt-100 pb-100">
+        <div className="container">
+          <div className="row">
+            {items.length > 0 ? (
+              items.map((item) => (
+                <div className="col-xl-3 col-lg-4 col-md-6 mb-4" key={item.id}>
+                  <div className="card h-100 shadow-sm border-0">
+                    {/* Image clickable */}
+                    <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
+                      <a>
+                        <img
+                          src={item.image || "assets/images/products/masala.jpg"}
+                          className="card-img-top p-3"
+                          alt={item.name}
+                          style={{ height: "200px", objectFit: "contain" }}
+                        />
+                      </a>
+                    </Link>
+
+                    <div className="card-body">
+                      {/* Title clickable */}
+                      <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
+                        <a style={{ textDecoration: "none", color: "inherit" }}>
+                          <h5 className="card-title mb-1">{item.name}</h5>
+                        </a>
+                      </Link>
+
+                      <p className="text-muted small mb-2">{item.category}</p>
+                      <p className="card-text text-danger fw-bold">₹{item.price}</p>
+
+                      {/* Optional static rating */}
+                      {/* <p className="mb-2">
+                        <span className="text-warning">★ ★ ★ ★ ☆</span>{" "}
+                        <span className="text-muted">({item.reviews || "1,000+"})</span>
+                      </p> */}
+
+                      {/* Quantity & Add to Cart */}
+                      <div className="d-flex align-items-center gap-2">
+                        <input
+                          type="number"
+                          min="1"
+                          max="20"
+                          value={quantities[item.id] !== undefined ? quantities[item.id] : 1}
+                          onChange={(e) => {
+                            const parsed = parseInt(e.target.value);
+                            setQuantities((prev) => ({
+                              ...prev,
+                              [item.id]: isNaN(parsed) || parsed < 1 ? 1 : parsed,
+                            }));
+                          }}
+                          // className="form-control form-control-sm"
+                          style={{ width: "auto", height: "20px", marginRight: "10px" }}
+                        />
+
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() => handleAddToCart(item, quantities[item.id] || 1)}
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
                     </div>
-                    <p>{item.description}</p>
-                    <span className="price mb-20">₹{item.price}</span>
-                    <hr />
-                    <form onSubmit={(e) => e.preventDefault()} className="add-to-cart mt-40 mb-40">
-                      <input
-                        type="number"
-                        value={quantities[item.id] || 1}
-                        min={1}
-                        max={20}
-                        onChange={(e) =>
-                          setQuantities({
-                            ...quantities,
-                            [item.id]: Number(e.target.value),
-                          })
-                        }
-                      />
-                      <button
-                        type="submit"
-                        className="theme-btn"
-                        onClick={() => handleAddToCart(item, quantities[item.id] || 1)}
-                      >
-                        Add to Cart <i className="fas fa-angle-double-right" />
-                      </button>
-                    </form>
-                    <hr />
-                    <ul className="category-tags pt-10">
-                      <li>
-                        <b>Category</b> <span>:</span>{" "}
-                        <a href="#">{item.category}</a>
-                      </li>
-                    </ul>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-12">
+                <p>Loading...</p>
               </div>
-            ))
-          ) : (
-            <div className="col-12">
-              <p>Loading...</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </section>
     </Layout>
   );
 };
 
-export default ProductDetails;
+export default ProductList;

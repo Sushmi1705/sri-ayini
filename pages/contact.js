@@ -59,7 +59,7 @@ const ContactUs = () => {
             <div className="col-xl-4 col-md-6">
               <div className="contact-info-item wow fadeInUp delay-0-4s">
                 <div className="icon">
-                  <img src="assets/images/contact/icon1.png" alt="Icon" />
+                  <img src="assets/images/contact/contact.png" alt="Icon" />
                 </div>
                 <div className="content">
                   <h4>Location</h4>
@@ -188,7 +188,7 @@ const ContactUs = () => {
             <div className="col-lg-6">
               <div className="contact-right-image wow fadeInRight delay-0-4s">
                 <img
-                  src="assets/images/contact/contact-right.png"
+                  src="assets/images/contact/contact.jpg"
                   alt="Contact From"
                 />
                 <img

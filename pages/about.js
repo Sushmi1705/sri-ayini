@@ -79,15 +79,15 @@ const About = () => {
               <div className="about-video wow fadeInRight delay-0-2s">
                 <img
                   className="image"
-                  src="assets/images/about/about-page.jpg"
+                  src="assets/images/about/masala powder.jpg"
                   alt="About"
                 />
-                <a
+                {/* <a
                   href="https://www.youtube.com/watch?v=9Y7ma241N8k"
                   className="mfp-iframe video-play"
                 >
                   <i className="fas fa-play" />
-                </a>
+                </a> */}
                 <img
                   className="bg-shape"
                   src="assets/images/about/about-bg-shape.png"
@@ -235,7 +235,7 @@ const About = () => {
               <div className="about-video wow fadeInRight delay-0-2s">
                 <img
                   className="image"
-                  src="assets/images/about/about-page.jpg"
+                  src="assets/images/about/masala powder2.jpg"
                   alt="About"
                 />
                 {/* <a
@@ -268,7 +268,7 @@ const About = () => {
               <div className="about-two-image not-rounded wow fadeInUp delay-0-2s">
                 <img
                   className="image"
-                  src="assets/images/about/about-page-left.jpg"
+                  src="assets/images/about/masala powder3.jpg"
                   alt="About"
                 />
                 <img
@@ -359,7 +359,7 @@ const About = () => {
       </section>
       {/* About Section End */}
       {/* Feedback Section Start */}
-      <section className="feedback-section pt-100 rpt-70 pb-130 rpb-100">
+      {/* <section className="feedback-section pt-100 rpt-70 pb-130 rpb-100">
         <div className="container">
           <div className="section-title text-center mb-60">
             <span className="sub-title mb-20">Customer Reviews</span>
@@ -367,7 +367,7 @@ const About = () => {
           </div>
         </div>
         <FeedbackTwoSlider />
-      </section>
+      </section> */}
       {/* Feedback Section End */}
       {/* Client Logo Section Start */}
       <div className="client-logo-section text-center bg-light-green py-60">
