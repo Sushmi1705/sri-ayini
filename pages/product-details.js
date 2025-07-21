@@ -108,7 +108,7 @@ const ProductList = () => {
                       <div className="d-flex align-items-center gap-2">
                         <input
                           type="number"
-                          min="0"
+                          min="1"
                           max="20"
                           value={quantities[item.id] !== undefined ? quantities[item.id] : 0}
                           onChange={(e) => {
