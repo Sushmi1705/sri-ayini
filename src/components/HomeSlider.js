@@ -26,7 +26,7 @@ export const HomeSlider1 = () => {
                 <h6>Pure & Authentic Homemade Spices</h6>
                 <h6>Crafted with Love, Inspired by Tradition</h6>
                 <div className="slider-btns mt-30">
-                  <Link legacyBehavior href="/shop-grid">
+                  <Link legacyBehavior href="/product-details">
                     <a className="theme-btn style-two">
                       Shop Now <i className="fas fa-angle-double-right" />
                     </a>
@@ -111,7 +111,7 @@ export const HomeSlider1 = () => {
                 <h6>Pure & Authentic Homemade Spices</h6>
                 <h6>Crafted with Love, Inspired by Tradition</h6>
                 <div className="slider-btns mt-30">
-                  <Link legacyBehavior href="/shop-grid">
+                  <Link legacyBehavior href="/product-details">
                     <a className="theme-btn style-two">
                       Shop Now <i className="fas fa-angle-double-right" />
                     </a>

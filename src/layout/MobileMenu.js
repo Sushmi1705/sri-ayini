@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Blog, Contact, Home, PagesMobile, Portfolio, Shop } from "./Menus";
+import { Blog, Contact, Home, PagesMobile, Portfolio, Shop, PagesDasktop } from "./Menus";
 const MobileMenu = () => {
   const [activeMenu, setActiveMenu] = useState("");
   const activeMenuSet = (value) =>
@@ -8,7 +8,7 @@ const MobileMenu = () => {
       value === activeMenu ? { display: "block" } : { display: "none" };
   return (
     <ul className="navigation clearfix d-block d-lg-none mobile-header">
-      <li className="dropdown">
+      {/* <li className="dropdown">
         <a href="#">Home</a>
         <ul style={activeLi("home")}>
           <Home />
@@ -16,7 +16,9 @@ const MobileMenu = () => {
         <div className="dropdown-btn" onClick={() => activeMenuSet("home")}>
           <span className="fas fa-chevron-down" />
         </div>
-      </li>
+      </li> */}
+      <Home />
+      <PagesDasktop />
       {/* <li className="dropdown">
         <a href="#">pages</a>
         <ul style={activeLi("pages")}>

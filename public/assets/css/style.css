@@ -7346,7 +7346,7 @@ blockquote {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap; }
   .menu-widget.two-column ul li {
-    width: 50%; }
+    width: 100%; }
 
 .footer-logo a {
   background: white;

@@ -59,11 +59,11 @@ const ContactUs = () => {
             <div className="col-xl-4 col-md-6">
               <div className="contact-info-item wow fadeInUp delay-0-4s">
                 <div className="icon">
-                  <img src="assets/images/contact/contact.png" alt="Icon" />
+                  <img src="assets/images/contact/icon1.png" alt="Icon" />
                 </div>
                 <div className="content">
                   <h4>Location</h4>
-                  <span>57 Main Street, 2nd Block 3rd Floor, New York</span>
+                  <span> No.44, 3rd street vetrinagar, Avadi - 600054</span>
                 </div>
               </div>
             </div>
@@ -74,9 +74,10 @@ const ContactUs = () => {
                 </div>
                 <div className="content">
                   <h4>Email Us</h4>
-                  <a href="mailto:organicfarm@mail.net">organicfarm@mail.net</a>
+                  {/* <a href="mailto:organicfarm@mail.net">organicfarm@mail.net</a> */}
+                  <a href="mailto:sriayini@gmail.com">sriayini@gmail.com</a>
                   <br />
-                  <a href="mailto:support@info.com">support@info.com</a>
+                  <br />
                   <br />
                 </div>
               </div>
@@ -88,9 +89,11 @@ const ContactUs = () => {
                 </div>
                 <div className="content">
                   <h4>Phone Us</h4>
-                  <a href="callto:+000(111)345678">+000 (111) 345 678</a>
+                  <a href="callto:+000(111)345678">+91 9363489242</a>
                   <br />
-                  <a href="callto:+012(345)67899">+012 (345) 678 99</a>
+                  <br />
+                  <br />
+                  {/* <a href="callto:+012(345)67899">+012 (345) 678 99</a> */}
                 </div>
               </div>
             </div>

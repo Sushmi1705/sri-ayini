@@ -498,11 +498,11 @@ const Index = () => {
                 <div className="content">
                   <span className="sub-title">Spices</span>
                   <h4>
-                    <Link legacyBehavior href="/blog-details">
+                    <Link legacyBehavior href="/blog-details1">
                     Why Homemade Sambar Powder Tastes Better Than Store-Bought
                     </Link>
                   </h4>
-                  <Link legacyBehavior href="/blog-details">
+                  <Link legacyBehavior href="/blog-details1">
                     <a className="read-more">
                       Read More <i className="fas fa-angle-double-right" />
                     </a>
@@ -521,11 +521,11 @@ const Index = () => {
                 <div className="content">
                   <span className="sub-title">Usage Tips</span>
                   <h4>
-                    <Link legacyBehavior href="/blog-details">
+                    <Link legacyBehavior href="/blog-details2">
                       5 Easy Ways to Use Idli Podi Beyond Idli & Dosa
                     </Link>
                   </h4>
-                  <Link legacyBehavior href="/blog-details">
+                  <Link legacyBehavior href="/blog-details2">
                     <a className="read-more">
                       Read More <i className="fas fa-angle-double-right" />
                     </a>
@@ -544,11 +544,11 @@ const Index = () => {
                 <div className="content">
                   <span className="sub-title">Health</span>
                   <h4>
-                    <Link legacyBehavior href="/blog-details">
+                    <Link legacyBehavior href="/blog-details3">
                       The Health Benefits of Moringa Powder in Tamil Cooking
                     </Link>
                   </h4>
-                  <Link legacyBehavior href="/blog-details">
+                  <Link legacyBehavior href="/blog-details3">
                     <a className="read-more">
                       Read More <i className="fas fa-angle-double-right" />
                     </a>

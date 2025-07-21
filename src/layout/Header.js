@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Fragment, useState } from "react";
 import { sidebarToggle } from "../utils";
-import { Blog, Contact, Home, PagesDasktop,Shop } from "./Menus";
+import { Blog, Contact, Home, PagesDasktop,Shop} from "./Menus";
 import MobileMenu from "./MobileMenu";
 
 const Header = ({ header }) => {
@@ -24,7 +24,7 @@ const SearchBtn = () => {
 
   return (
     <Fragment>
-      <button className="far fa-search" onClick={() => setToggle(!toggle)} />
+      {/* <button className="far fa-search" onClick={() => setToggle(!toggle)} /> */}
       <form
         onSubmit={(e) => e.preventDefault()}
         action="#"
@@ -134,7 +134,7 @@ const DefaultHeader = () => (
                 <ul>
                   <li>
                     <i className="far fa-envelope" /> <b>Email Us :</b>{" "}
-                    <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
+                    <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
                   </li>
                   <li>
                     <i className="far fa-clock" /> <b>Working Hours :</b> Monday
@@ -148,7 +148,8 @@ const DefaultHeader = () => (
                 <ul>
                   <li>
                     <i className="far fa-phone" /> <b>Call :</b>{" "}
-                    <a href="callto:+012(345)67899">+91 7683459088</a>
+                    <a href="callto:+012(345)67899">+91 9363489242
+                    </a>
                   </li>
                   <li>
                     <div className="social-style-one">
@@ -208,9 +209,9 @@ const DefaultHeader = () => (
               </button>
             </Link> */}
 
-            <button className="user">
+            {/* <button className="user">
               <i className="far fa-user-circle" />
-            </button>
+            </button> */}
             <Link legacyBehavior href="/contact">
               <a className="theme-btn">
                 Consultations <i className="fas fa-angle-double-right" />
@@ -242,7 +243,7 @@ const Header1 = () => (
                 <ul>
                   <li>
                     <i className="far fa-envelope" /> <b>Email Us :</b>{" "}
-                    <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
+                    <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
                   </li>
                   <li>
                     <i className="far fa-clock" /> <b>Working Hours :</b> Monday
@@ -256,7 +257,8 @@ const Header1 = () => (
                 <ul>
                   <li>
                     <i className="far fa-phone" /> <b>Call :</b>{" "}
-                    <a href="callto:+012(345)67899">+91 7683459088</a>
+                    <a href="callto:+012(345)67899">+91 9363489242
+                    </a>
                   </li>
                   <li>
                     <div className="social-style-one">
@@ -309,13 +311,13 @@ const Header1 = () => (
             <div className="nav-search py-15">
               <SearchBtn />
             </div>
-            <button className="cart">
+            {/* <button className="cart">
               <i className="far fa-shopping-basket" />
               <span>5</span>
-            </button>
-            <button className="user">
+            </button> */}
+            {/* <button className="user">
               <i className="far fa-user-circle" />
-            </button>
+            </button> */}
             <Link legacyBehavior href="/contact">
               <a className="theme-btn">
                 Consultations <i className="fas fa-angle-double-right" />
@@ -347,7 +349,7 @@ const Header2 = () => (
                 <ul>
                   <li>
                     <i className="far fa-envelope" /> <b>Email Us :</b>{" "}
-                    <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
+                    <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
                   </li>
                 </ul>
               </div>
@@ -357,7 +359,8 @@ const Header2 = () => (
                 <ul>
                   <li>
                     <i className="far fa-phone" /> <b>Call :</b>{" "}
-                    <a href="callto:+012(345)67899">+91 7683459088</a>
+                    <a href="callto:+012(345)67899">+91 9363489242
+                    </a>
                   </li>
                   <li>
                     <div className="social-style-one">
@@ -515,9 +518,9 @@ const Header3 = () => (
               <i className="far fa-shopping-basket" />
               <span>5</span>
             </button>
-            <button className="user">
+            {/* <button className="user">
               <i className="far fa-user-circle" />
-            </button>
+            </button> */}
             <button className="heart">
               <i className="far fa-heart" />
             </button>

@@ -35,21 +35,22 @@ const DefaultFooter = () => (
     <div className="map-container" style={{ marginTop: '20px' }}>
       <iframe
         title="Google Map"
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3038.7715386653026!2d-73.9871556848742!3d40.74881707932798!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259af1e96b54f%3A0xa20b41d91d56d204!2sEmpire%20State%20Building!5e0!3m2!1sen!2sin!4v1617128924239!5m2!1sen!2sin"
+        src="https://www.google.com/maps?q=No.44,+3rd+street,+vetrinagar,+avadi,+dr-600054&output=embed"
         width="100%"
         height="200"
         style={{ border: 0, borderRadius: "8px" }}
         allowFullScreen=""
         loading="lazy"
       ></iframe>
+
     </div>
     <div className="container">
       {/* <div className="footer-top-newsletter py-80 mb-75"> */}
 
-        {/* <div className="section-title">
+      {/* <div className="section-title">
           <h2>Newsletter Subscribe</h2>
         </div> */}
-        {/* <form onSubmit={(e) => e.preventDefault()} action="#">
+      {/* <form onSubmit={(e) => e.preventDefault()} action="#">
           <input type="email" placeholder="Email Address" required="" />
           <button className="theme-btn">
             subscribe now <i className="fas fa-angle-double-right" />
@@ -67,9 +68,7 @@ const DefaultFooter = () => (
               </Link>
             </div>
             <p>
-              Sit amet consectetur adipiscing elit sed eiusmod tempor incididunt
-              ut labore et dolore magna aliqua. quis ipsum suspendisse ultrices
-              gravida.
+              Handcrafted with love, our spice blends bring generations of flavor to your kitchen. Taste the purity. Feel the tradition. Live the Ayini way.
             </p>
             <div className="social-style-two pt-10">
               <Link legacyBehavior href="/contact">
@@ -104,41 +103,41 @@ const DefaultFooter = () => (
                   <a>About Us</a>
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link legacyBehavior href="/contact">
                   Documentation
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link legacyBehavior href="/services">
                   <a>Services</a>
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link legacyBehavior href="/services">
                   Elements
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link legacyBehavior href="/portfolio-grid">
                   <a>Our Projects</a>
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link legacyBehavior href="/shop-grid">
                   <a>Best Products</a>
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link legacyBehavior href="/farmers">
                   <a>Meet Farmers</a>
                 </Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link legacyBehavior href="/service-details">
                   <a>Technology</a>
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link legacyBehavior href="/blog-grid">
                   <a>Latest News</a>
@@ -149,11 +148,11 @@ const DefaultFooter = () => (
                   Contact Us
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link legacyBehavior href="/service-details">
                   <a>Vegetables</a>
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link legacyBehavior href="/contact">
                   Setting &amp; Privacy
@@ -166,20 +165,20 @@ const DefaultFooter = () => (
           <div className="footer-widget contact-widget">
             <h4 className="footer-title">Contact Us</h4>
             <p>
-              Quis autem vel eum reprehenderit voluptate velit esse quamnue{" "}
+              The taste you remember, the purity you trust - only at Sri Ayini.
             </p>
             <ul>
               <li>
                 <i className="fal fa-map-marker-alt" />
-                53 Main Street, 2nd Mountain 3rd Floor, New York
+                Sri ayini foods, No.44, 3rd street vetrinagar, Avadi - 600054
               </li>
               <li>
                 <i className="far fa-phone" />
-                <a href="calto:+012(345)67899">+91 7683459088</a>
+                <a href="calto:+012(345)67899">+91 9363489242</a>
               </li>
               <li>
                 <i className="far fa-envelope" />
-                <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
+                <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
               </li>
             </ul>
           </div>
@@ -395,11 +394,12 @@ const Footer3 = () => (
                   </li>
                   <li>
                     <i className="far fa-envelope" />
-                    <a href="mailto:support@gmail.com">support@ayinifoods.com</a>
+                    <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
                   </li>
                   <li>
                     <i className="far fa-phone" />
-                    <a href="calto:+012(345)67899">+91 7683459088</a>
+                    <a href="calto:+012(345)67899">+91 9363489242
+                    </a>
                   </li>
                 </ul>
               </div>

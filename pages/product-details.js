@@ -108,14 +108,14 @@ const ProductList = () => {
                       <div className="d-flex align-items-center gap-2">
                         <input
                           type="number"
-                          min="1"
+                          min="0"
                           max="20"
-                          value={quantities[item.id] !== undefined ? quantities[item.id] : 1}
+                          value={quantities[item.id] !== undefined ? quantities[item.id] : 0}
                           onChange={(e) => {
                             const parsed = parseInt(e.target.value);
                             setQuantities((prev) => ({
                               ...prev,
-                              [item.id]: isNaN(parsed) || parsed < 1 ? 1 : parsed,
+                              [item.id]: isNaN(parsed) || parsed < 0 ? 0 : parsed,
                             }));
                           }}
                           // className="form-control form-control-sm"
