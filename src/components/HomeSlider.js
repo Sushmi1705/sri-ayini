@@ -94,7 +94,7 @@ export const HomeSlider1 = () => {
               <div className="slider-images">
                 <img
                   className="image"
-                  src="assets/images/slider/banner.png"
+                  src="assets/images/slider/banner2.png"
                   alt="Slider"
                 />
                 <img

@@ -125,7 +125,7 @@ const PortfolioDetails = () => {
       {/* Client Logo Section Start */}
       <div className="client-logo-section text-center bg-light-green py-60">
         <div className="container">
-          <ClientLogoSlider />
+          {/* <ClientLogoSlider /> */}
         </div>
         <div className="client-logo-shapes">
           <img

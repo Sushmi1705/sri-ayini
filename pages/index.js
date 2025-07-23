@@ -73,7 +73,7 @@ const Index = () => {
           <div className="category-wrap">
             <div className="category-item wow fadeInUp delay-0-3s">
               <div className="icon">
-                <img src="assets/images/category/Black Urud Front.png" alt="Icon" />
+                <img src="assets/images/category/mappilai samba mix.png" alt="Icon" />
               </div>
               {/* <h5>
                 <Link legacyBehavior href="/services">
@@ -84,7 +84,7 @@ const Index = () => {
             </div>
             <div className="category-item wow fadeInUp delay-0-4s">
               <div className="icon">
-                <img src="assets/images/category/Corriender front.png" alt="Icon" />
+                <img src="assets/images/category/paruppu podi.png" alt="Icon" />
               </div>
               {/* <h5>
                 <Link legacyBehavior href="/services">
@@ -95,7 +95,7 @@ const Index = () => {
             </div>
             <div className="category-item wow fadeInUp delay-0-5s">
               <div className="icon">
-                <img src="assets/images/category/Curry Leaves Front.png" alt="Icon" />
+                <img src="assets/images/category/fish fry masala.png" alt="Icon" />
               </div>
               {/* <h5>
                 <Link legacyBehavior href="/services">
@@ -106,7 +106,7 @@ const Index = () => {
             </div>
             <div className="category-item wow fadeInUp delay-0-6s">
               <div className="icon">
-                <img src="assets/images/category/Ellu Front.png" alt="Icon" />
+                <img src="assets/images/category/ragi podi.png" alt="Icon" />
               </div>
               {/* <h5>
                 <Link legacyBehavior href="/services">
@@ -117,7 +117,7 @@ const Index = () => {
             </div>
             <div className="category-item wow fadeInUp delay-0-7s">
               <div className="icon">
-                <img src="assets/images/category/Idly Podi Front.jpg" alt="Icon" />
+                <img src="assets/images/category/turmaric podi.png" alt="Icon" />
               </div>
               {/* <h5>
                 <Link legacyBehavior href="/services">
@@ -316,9 +316,9 @@ const Index = () => {
   <div className="container-fluid">
     <div className="section-title text-center mb-60">
       <span className="sub-title mb-20">
-        Our Signature Spice Collection
+        Our Signature Product Collection
       </span>
-      <h2>Authentic Homemade Spice Powders</h2>
+      <h2>Authentic Homemade Products</h2>
     </div>
     <Slider {...productActive} className="product-active">
     {products.map((product, index) => (
@@ -588,7 +588,7 @@ const Index = () => {
       </section>
       {/* News Section End */}
       {/* Client Logo Section Start */}
-      <div className="client-logo-section text-center bg-light-green py-60">
+      {/* <div className="client-logo-section text-center bg-light-green py-60">
         <div className="container">
           <ClientLogoSlider />
         </div>
@@ -624,7 +624,7 @@ const Index = () => {
             alt="Shape"
           />
         </div>
-      </div>
+      </div> */}
     </Layout>
   );
 };

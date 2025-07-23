@@ -74,16 +74,18 @@ const ProductList = () => {
             {items.length > 0 ? (
               items.map((item) => (
                 <div className="col-xl-3 col-lg-4 col-md-6 mb-4" key={item.id}>
-                  <div className="card h-100 shadow-sm border-0">
+                  <div className="card h-100 shadow-sm border-0 product-card">
                     {/* Image clickable */}
                     <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
                       <a>
-                        <img
-                          src={item.image || "assets/images/products/masala.jpg"}
-                          className="card-img-top p-3"
-                          alt={item.name}
-                          style={{ height: "200px", objectFit: "contain" }}
-                        />
+                        <div className="image-container">
+                          <img
+                            src={item.image || "assets/images/products/masala.jpg"}
+                            className="card-img-top p-3 card-img-top product-image"
+                            alt={item.name}
+                            style={{ height: "200px", objectFit: "contain" }}
+                          />
+                        </div>
                       </a>
                     </Link>
 
@@ -105,7 +107,7 @@ const ProductList = () => {
                       </p> */}
 
                       {/* Quantity & Add to Cart */}
-                      <div className="d-flex align-items-center gap-2">
+                      <div className="d-flex align-items-center gap-2 quantity-cart-section">
                         <input
                           type="number"
                           min="1"
@@ -123,7 +125,7 @@ const ProductList = () => {
                         />
 
                         <button
-                          className="btn btn-primary btn-sm"
+                          className="btn btn-primary btn-sm btn-add-to-cart"
                           onClick={() => handleAddToCart(item, quantities[item.id] || 1)}
                         >
                           Add to Cart

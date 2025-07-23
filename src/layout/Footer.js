@@ -1,15 +1,31 @@
 import Link from "next/link";
 import Counter from "../components/Counter";
+import WhatsAppChatButton from "../components/WhatsAppChatButton";
 
 const Footer = ({ footer }) => {
   switch (footer) {
     case 1:
-      return <DefaultFooter />;
+      return (
+        <>
+          <DefaultFooter />
+          <WhatsAppChatButton />
+        </>
+      );
     case 3:
-      return <Footer3 />;
+      return (
+        <>
+          <Footer3 />
+          <WhatsAppChatButton />
+        </>
+      );
 
     default:
-      return <DefaultFooter />;
+      return (
+        <>
+          <DefaultFooter />
+          <WhatsAppChatButton />
+        </>
+      );
   }
 };
 export default Footer;
@@ -185,7 +201,7 @@ const DefaultFooter = () => (
         </div>
       </div>
       <div className="copyright-area pt-25 pb-10">
-        {/* <p>Copyright © 2022 MunFirm. All Rights Reserved.</p> */}
+        <p><strong>Fssai no : </strong> 22425474000281</p>
         {/* <ul className="footer-menu">
           <li>
             <Link legacyBehavior href="/contact">

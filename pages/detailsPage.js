@@ -54,6 +54,16 @@ const DetailsPage = () => {
               <h2>{product.name}</h2>
               <p className="category">Category: {product.category}</p>
               <div className="price">₹{product.price}</div>
+              <div className="action-row">
+                <input
+                  type="number"
+                  value={quantity}
+                  min={1}
+                  max={20}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                />
+                <button onClick={handleAddToCart}>Add to Cart</button>
+              </div>
               <p>Quantity: {product.quantity} pcs</p>
               <p>Shipping Fee: ₹{product.shippingFee}</p>
 
@@ -111,17 +121,6 @@ const DetailsPage = () => {
               {product.nutritionNote && (
                 <p><strong>Nutrition Note:</strong> {product.nutritionNote}</p>
               )}
-
-              <div className="action-row">
-                <input
-                  type="number"
-                  value={quantity}
-                  min={1}
-                  max={20}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
-                />
-                <button onClick={handleAddToCart}>Add to Cart</button>
-              </div>
 
               {product.customerSupport && (
                 <div className="support-section">
