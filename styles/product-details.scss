@@ -1200,4 +1200,335 @@ $shadow-heavy: rgba(45, 80, 22, 0.25);
   background: linear-gradient(135deg, $secondary-green, $primary-green);
 }
 
-  
+ // ISOLATED Shop Highlight SCSS - Sriayini Brand
+// Only affects Shop menu, preserves all existing styles
+
+// Brand Colors & Gradients
+$primary-green: #2d5016;
+$secondary-green: #4a7c59;
+$accent-green: #6b8e23;
+$light-green: #f0f8e8;
+$gold: #d4af37;
+$rose-gold: #e8b4a0;
+$white: #ffffff;
+$dark-gray: #343a40;
+
+// Advanced Gradients
+$gradient-shop-permanent: linear-gradient(135deg, #d4af37 0%, #f4d03f 30%, #d4af37 60%, #e8b4a0 100%);
+$gradient-gold: linear-gradient(135deg, #d4af37 0%, #e8b4a0 100%);
+
+// ISOLATED SHOP HIGHLIGHT - ONLY AFFECTS SHOP MENU
+// Target ONLY the Shop component's specific link
+li:has(a[href="/product-details"]) {
+  position: relative !important;
+  z-index: 10 !important;
+  transform: scale(1.12) !important; // Permanently larger
+
+  // Permanent glowing border - ONLY for Shop
+  &::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    // background: $gradient-gold;
+    border-radius: 18px;
+    opacity: 0.85;
+    animation: shopOnlyGlow 3s ease-in-out infinite;
+    z-index: -1;
+    filter: blur(2px);
+    pointer-events: none;
+  }
+
+  // Permanent sparkle indicator - ONLY for Shop
+  &::after {
+    content: '✨';
+    position: absolute;
+    top: 5px;
+    right: -1px;
+    font-size: 1.1rem;
+    animation: shopOnlySparkle 2.5s ease-in-out infinite;
+    z-index: 15;
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.9);
+    pointer-events: none;
+  }
+
+  // Target ONLY the Shop link specifically
+  a[href="/product-details"] {
+    background: $gradient-shop-permanent !important;
+    color: $white !important;
+    font-weight: 800 !important;
+    font-size: 1.1rem !important;
+    // padding: 1.3rem 2.2rem !important;
+    border-radius: 15px !important;
+    box-shadow: 
+      0 10px 30px rgba(212, 175, 55, 0.5),
+      0 0 20px rgba(212, 175, 55, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    animation: shopOnlyPulse 4s ease-in-out infinite !important;
+    letter-spacing: 1.2px !important;
+    text-transform: uppercase !important;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+
+    // Enhanced hover - ONLY for Shop
+    &:hover {
+      // background: linear-gradient(135deg, #f4d03f 0%, #d4af37 30%, #b8860b 60%, #d4af37 100%) !important;
+      transform: translateY(-3px) scale(1.05) !important;
+      box-shadow: 
+        0 15px 40px rgba(212, 175, 55, 0.7),
+        0 0 30px rgba(212, 175, 55, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+      color: $white !important;
+      text-decoration: none !important;
+
+      &::after {
+        transform: translateY(-50%) scale(1.2) rotate(15deg) !important;
+      }
+    }
+
+    &:active {
+      transform: translateY(-1px) scale(1.02) !important;
+    }
+
+    &:focus {
+      outline: none !important;
+      box-shadow: 
+        0 15px 40px rgba(212, 175, 55, 0.7),
+        0 0 30px rgba(212, 175, 55, 0.5),
+        0 0 0 3px rgba(212, 175, 55, 0.3) !important;
+    }
+  }
+}
+
+// Alternative class-based approach for manual control
+.shop-highlight-only {
+  position: relative !important;
+  z-index: 10 !important;
+  transform: scale(1.12) !important;
+
+  &::after {
+    content: '✨';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 1.1rem;
+    animation: shopOnlySparkle 2.5s ease-in-out infinite;
+    z-index: 15;
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.9);
+    pointer-events: none;
+  }
+
+  a {
+    background: $gradient-shop-permanent !important;
+    color: $white !important;
+    font-weight: 800 !important;
+    font-size: 1.1rem !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 15px !important;
+    box-shadow: 
+      0 10px 30px rgba(212, 175, 55, 0.5),
+      0 0 20px rgba(212, 175, 55, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    animation: shopOnlyPulse 4s ease-in-out infinite !important;
+    letter-spacing: 1.2px !important;
+    text-transform: uppercase !important;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+
+    // &::before {
+    //   content: '';
+    //   position: absolute;
+    //   top: 0;
+    //   left: -100%;
+    //   width: 100%;
+    //   height: 100%;
+    //   background: linear-gradient(90deg, 
+    //     transparent 0%, 
+    //     rgba(255, 255, 255, 0.5) 50%, 
+    //     transparent 100%) !important;
+    //   animation: shopOnlyShimmer 3s ease-in-out infinite;
+    //   z-index: 1;
+    //   pointer-events: none;
+    // }
+
+    // &::after {
+    //   content: '🛍️';
+    //   position: absolute;
+    //   right: 18px;
+    //   top: 50%;
+    //   transform: translateY(-50%);
+    //   font-size: 1.2rem;
+    //   animation: shopOnlyBounce 2s ease-in-out infinite;
+    //   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    //   z-index: 2;
+    //   pointer-events: none;
+    // }
+
+    &:hover {
+      // background: linear-gradient(135deg, #f4d03f 0%, #d4af37 30%, #b8860b 60%, #d4af37 100%) !important;
+      transform: translateY(-3px) scale(1.05) !important;
+      box-shadow: 
+        0 15px 40px rgba(212, 175, 55, 0.7),
+        0 0 30px rgba(212, 175, 55, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+      color: $white !important;
+      text-decoration: none !important;
+
+      &::after {
+        transform: translateY(-50%) scale(1.2) rotate(15deg) !important;
+      }
+    }
+
+    &:active {
+      transform: translateY(-1px) scale(1.02) !important;
+    }
+
+    &:focus {
+      outline: none !important;
+      box-shadow: 
+        0 15px 40px rgba(212, 175, 55, 0.7),
+        0 0 30px rgba(212, 175, 55, 0.5),
+        0 0 0 3px rgba(212, 175, 55, 0.3) !important;
+    }
+  }
+}
+
+// Responsive Design - ONLY affects Shop
+@media (max-width: 1199px) {
+  li:has(a[href="/product-details"]),
+  .shop-highlight-only {
+    transform: scale(1.08) !important;
+
+    a,
+    a[href="/product-details"] {
+      padding: 1.1rem 1.8rem !important;
+      font-size: 1rem !important;
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  li:has(a[href="/product-details"]),
+  .shop-highlight-only {
+    transform: scale(1.05) !important;
+
+    a,
+    a[href="/product-details"] {
+      padding: 1rem 1.5rem !important;
+      font-size: 0.95rem !important;
+    }
+  }
+}
+
+// ISOLATED Animations - Only for Shop
+@keyframes shopOnlyGlow {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+    filter: blur(2px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+    filter: blur(1px);
+  }
+}
+
+@keyframes shopOnlySparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.9);
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(1.3) rotate(90deg);
+    text-shadow: 0 0 18px rgba(212, 175, 55, 1.1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(0.9) rotate(180deg);
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.7);
+  }
+  75% {
+    opacity: 0.9;
+    transform: scale(1.2) rotate(270deg);
+    text-shadow: 0 0 14px rgba(212, 175, 55, 1);
+  }
+}
+
+@keyframes shopOnlyPulse {
+  0%, 100% {
+    box-shadow: 
+      0 10px 30px rgba(212, 175, 55, 0.5),
+      0 0 20px rgba(212, 175, 55, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 
+      0 15px 40px rgba(212, 175, 55, 0.7),
+      0 0 30px rgba(212, 175, 55, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+}
+
+@keyframes shopOnlyShimmer {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes shopOnlyBounce {
+  0%, 100% {
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.1);
+  }
+}
+
+// Optional badge for extra attention - ONLY for Shop
+.shop-only-badge {
+  position: absolute !important;
+  top: -8px !important;
+  left: -8px !important;
+  background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%) !important;
+  color: $white !important;
+  font-size: 0.65rem !important;
+  padding: 3px 8px !important;
+  border-radius: 10px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  animation: shopOnlyBadgePulse 2s ease-in-out infinite !important;
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4) !important;
+  z-index: 20 !important;
+  transform: rotate(-12deg) !important;
+  pointer-events: none !important;
+}
+
+@keyframes shopOnlyBadgePulse {
+  0%, 100% {
+    transform: rotate(-12deg) scale(1);
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+  }
+  50% {
+    transform: rotate(-12deg) scale(1.1);
+    box-shadow: 0 6px 18px rgba(255, 71, 87, 0.6);
+  }
+}
+ 

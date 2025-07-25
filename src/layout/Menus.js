@@ -109,7 +109,7 @@ export const Shop = () => (
         shop right sidebar
       </Link>
     </li> */}
-    <li>
+    <li className="shop-highlight-only">
       <Link legacyBehavior href="/product-details">
         Shop
       </Link>
