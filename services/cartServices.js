@@ -58,3 +58,11 @@ export const checkout = async (guestId, userInfo, cartItems) => {
     return res.json();
 };
 
+export const getCartItemCount = async (guestId) => {
+    const response = await fetch(`${API_URL}/count/${guestId}`); // <--- THIS is your backend API call
+    const data = await response.json();
+    return data.count;
+  };
+  
+  
+

@@ -46,7 +46,7 @@ const Index3 = () => {
                     Free Shipping
                   </Link>
                 </h4>
-                <p>Over $90 For Free Shipping</p>
+                <p>Over ₹90 For Free Shipping</p>
               </div>
             </div>
             <div className="feature-two-item wow fadeInDown delay-0-4s">

@@ -272,7 +272,7 @@ const CartPage = () => {
                           </tr>
                           <tr>
                             <td>Vat</td>
-                            <td>${vat}</td>
+                            <td>₹{vat}</td>
                           </tr>
                           <tr>
                             <td>

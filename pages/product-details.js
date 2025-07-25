@@ -35,6 +35,7 @@ const ProductList = () => {
       setLoading(true); // show loader
       await addToCart(guestId, productId, quantity);
       alert("Item added to cart!");
+      window.dispatchEvent(new Event("cartUpdated"));
     } catch (error) {
       console.error("Add to cart failed", error);
       alert("Something went wrong.");
@@ -112,7 +113,7 @@ const ProductList = () => {
                           type="number"
                           min="1"
                           max="20"
-                          value={quantities[item.id] !== undefined ? quantities[item.id] : 0}
+                          value={quantities[item.id] !== undefined ? quantities[item.id] : 1}
                           onChange={(e) => {
                             const parsed = parseInt(e.target.value);
                             setQuantities((prev) => ({

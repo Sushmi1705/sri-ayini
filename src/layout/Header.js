@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Fragment, useState } from "react";
 import { sidebarToggle } from "../utils";
-import { Blog, Contact, Home, PagesDasktop,Shop} from "./Menus";
+import { Blog, Contact, Home, PagesDasktop, Shop } from "./Menus";
 import MobileMenu from "./MobileMenu";
+import CartButton from "./CartButton"; // Add this import at the top
 
 const Header = ({ header }) => {
   switch (header) {
@@ -63,7 +64,9 @@ const DaskTopMenu = () => (
       </div>
     </li> */}
     <PagesDasktop />
-    <li className="dropdown">
+    <Blog />
+    <Shop />
+    {/* <li className="dropdown">
       <a href="#">blog</a>
       <ul>
         <Blog />
@@ -71,8 +74,8 @@ const DaskTopMenu = () => (
       <div className="dropdown-btn">
         <span className="fas fa-chevron-down" />
       </div>
-    </li>
-    <li className="dropdown">
+    </li> */}
+    {/* <li className="dropdown">
       <a href="#">shop</a>
       <ul>
         <Shop />
@@ -80,7 +83,7 @@ const DaskTopMenu = () => (
       <div className="dropdown-btn">
         <span className="fas fa-chevron-down" />
       </div>
-    </li>
+    </li> */}
     <Contact />
   </ul>
 );
@@ -137,8 +140,7 @@ const DefaultHeader = () => (
                     <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
                   </li>
                   <li>
-                    <i className="far fa-clock" /> <b>Working Hours :</b> Monday
-                    - Friday, 08 am - 05 pm
+                    <i className="far fa-clock" /> <b>Fssai No :</b> 22425474000281
                   </li>
                 </ul>
               </div>
@@ -202,19 +204,14 @@ const DefaultHeader = () => (
             <div className="nav-search py-15">
               <SearchBtn />
             </div>
-            {/* <Link legacyBehavior href="/cart">
-              <button className="cart">
-                <i className="far fa-shopping-basket" />
-                <span>5</span>
-              </button>
-            </Link> */}
+            <CartButton />
 
             {/* <button className="user">
               <i className="far fa-user-circle" />
             </button> */}
             <Link legacyBehavior href="/contact">
               <a className="theme-btn">
-                Consultations <i className="fas fa-angle-double-right" />
+                Feedback <i className="fas fa-angle-double-right" />
               </a>
             </Link>
             {/* menu sidbar */}
@@ -246,8 +243,7 @@ const Header1 = () => (
                     <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
                   </li>
                   <li>
-                    <i className="far fa-clock" /> <b>Working Hours :</b> Monday
-                    - Friday, 08 am - 05 pm
+                    <i className="far fa-clock" /> <b>Fssai No :</b> 22425474000281
                   </li>
                 </ul>
               </div>
@@ -320,7 +316,7 @@ const Header1 = () => (
             </button> */}
             <Link legacyBehavior href="/contact">
               <a className="theme-btn">
-                Consultations <i className="fas fa-angle-double-right" />
+                Feedback <i className="fas fa-angle-double-right" />
               </a>
             </Link>
             {/* menu sidbar */}

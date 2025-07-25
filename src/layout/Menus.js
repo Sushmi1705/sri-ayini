@@ -77,14 +77,14 @@ export const Blog = () => (
   <Fragment>
     <li>
       <Link legacyBehavior href="/blog-grid">
-        blog Grid
+        blog
       </Link>
     </li>
-    <li>
+    {/* <li>
       <Link legacyBehavior href="/blog-standard">
         blog Standard
       </Link>
-    </li>
+    </li> */}
     {/* <li>
       <Link legacyBehavior href="/blog-details">
         blog details
@@ -111,10 +111,10 @@ export const Shop = () => (
     </li> */}
     <li>
       <Link legacyBehavior href="/product-details">
-        Product details
+        Shop
       </Link>
     </li>
-    <li>
+    {/* <li>
       <Link legacyBehavior href="/cart">
         cart page
       </Link>
@@ -123,7 +123,7 @@ export const Shop = () => (
       <Link legacyBehavior href="/checkout">
         checkout
       </Link>
-    </li>
+    </li> */}
     {/* <li>
       <Link legacyBehavior href="/wishlist">
         wishlist

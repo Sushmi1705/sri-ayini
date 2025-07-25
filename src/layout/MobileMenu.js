@@ -19,6 +19,8 @@ const MobileMenu = () => {
       </li> */}
       <Home />
       <PagesDasktop />
+      <Blog />
+      <Shop />
       {/* <li className="dropdown">
         <a href="#">pages</a>
         <ul style={activeLi("pages")}>
@@ -40,7 +42,7 @@ const MobileMenu = () => {
           <span className="fas fa-chevron-down" />
         </div>
       </li> */}
-      <li className="dropdown">
+      {/* <li className="dropdown">
         <a href="#">blog</a>
         <ul style={activeLi("blog")}>
           <Blog />
@@ -48,8 +50,8 @@ const MobileMenu = () => {
         <div className="dropdown-btn" onClick={() => activeMenuSet("blog")}>
           <span className="fas fa-chevron-down" />
         </div>
-      </li>
-      <li className="dropdown">
+      </li> */}
+      {/* <li className="dropdown">
         <a href="#">shop</a>
         <ul style={activeLi("shop")}>
           <Shop />
@@ -57,7 +59,7 @@ const MobileMenu = () => {
         <div className="dropdown-btn" onClick={() => activeMenuSet("shop")}>
           <span className="fas fa-chevron-down" />
         </div>
-      </li>
+      </li> */}
       <Contact />
     </ul>
   );

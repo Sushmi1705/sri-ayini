@@ -21,14 +21,14 @@ const Index = () => {
 
   const [products, setProducts] = useState([]);
 
-    useEffect(() => {
-      fetchItems()
-        .then(data => {
-          setProducts(data.items);
-        })
-        .catch((error) => console.error("Error fetching items:", error));
-    }, []);
-    
+  useEffect(() => {
+    fetchItems()
+      .then(data => {
+        setProducts(data.items);
+      })
+      .catch((error) => console.error("Error fetching items:", error));
+  }, []);
+
   return (
     <Layout header={1}>
       {/*End Hidden Sidebar */}
@@ -50,6 +50,38 @@ const Index = () => {
       </section>
       {/* Slider Section End */}
       {/* Category Section Start */}
+      <section className="product-section pt-100 rpt-70 pb-130 rpb-100">
+        <div className="container-fluid">
+          <div className="section-title text-center mb-60">
+            <span className="sub-title mb-20">
+              Our Signature Product Collection
+            </span>
+            <h2>Authentic Homemade Products</h2>
+          </div>
+
+          <Slider {...productActive} className="product-active">
+            {products.map((product, index) => (
+              <div className="product-item wow fadeInUp delay-0-3s" key={product.id || index}>
+                <Link href="/product-details">
+                  <div className="image">
+                    <img
+                      src={product.image || "assets/images/products/default.jpg"}
+                      alt={product.name}
+                    />
+                  </div>
+                  <div className="content">
+                    <span className="price">
+                      {product.originalPrice && <del>{product.originalPrice}</del>}
+                      <span>{product.price}</span> ({product.weight || "100g"})
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </Slider>
+
+        </div>
+      </section>
       <section className="category-section pt-130 rpt-100">
         <div className="container">
           <div className="row align-items-end pb-35">
@@ -64,8 +96,8 @@ const Index = () => {
             <div className="col-lg-5 wow fadeInUp delay-0-4s">
               <div className="text mb-20">
                 <p>
-                At Sri Ayini, we bring you traditional, handcrafted spice powders that enhance the flavor of your dishes. Our carefully selected ingredients and time-tested recipes ensure purity, taste, and health benefits.<br></br>
-                🌿 100% Homemade & Natural <br></br> 🌶️ Rich Aroma & Flavor <br></br> 🏡 Traditional Recipes
+                  At Sri Ayini, we bring you traditional, handcrafted spice powders that enhance the flavor of your dishes. Our carefully selected ingredients and time-tested recipes ensure purity, taste, and health benefits.<br></br>
+                  🌿 100% Homemade & Natural <br></br> 🌶️ Rich Aroma & Flavor <br></br> 🏡 Traditional Recipes
                 </p>
               </div>
             </div>
@@ -167,7 +199,7 @@ const Index = () => {
                       >
                         <i className="flaticon-spa" />
                         <h4>
-                        Our Promise
+                          Our Promise
                         </h4>
                       </Nav.Link>
                     </li>
@@ -175,10 +207,10 @@ const Index = () => {
                   <Tab.Content className="tab-content pt-25">
                     <Tab.Pane className="tab-pane fade" eventKey="agriculture">
                       <p>
-                      At Sri Ayini, we are passionate about bringing authentic, homemade spice powders to your kitchen. Using time-honored recipes and handpicked ingredients, we ensure that every spice blend is pure, fresh, and full of rich flavors.
-                      <br></br>
-                      We believe in quality, tradition, and authenticity, making sure that every pinch of our spice powders enhances the taste of your favorite dishes.
-                      <br></br>
+                        At Sri Ayini, we are passionate about bringing authentic, homemade spice powders to your kitchen. Using time-honored recipes and handpicked ingredients, we ensure that every spice blend is pure, fresh, and full of rich flavors.
+                        <br></br>
+                        We believe in quality, tradition, and authenticity, making sure that every pinch of our spice powders enhances the taste of your favorite dishes.
+                        <br></br>
                         ✅ 100% Homemade & Natural<br></br>
                         ✅ No Artificial Preservatives<br></br>
                         ✅ Perfect for Everyday Cooking
@@ -312,38 +344,6 @@ const Index = () => {
       </section> */}
       {/* Offer Banners End */}
       {/* Product Section Start */}
-      <section className="product-section pt-100 rpt-70 pb-130 rpb-100">
-  <div className="container-fluid">
-    <div className="section-title text-center mb-60">
-      <span className="sub-title mb-20">
-        Our Signature Product Collection
-      </span>
-      <h2>Authentic Homemade Products</h2>
-    </div>
-    <Slider {...productActive} className="product-active">
-    {products.map((product, index) => (
-        // <div className="col-md-4" key={product.id || index}>
-          <div className="product-item wow fadeInUp delay-0-3s">
-            <div className="image">
-              <img src={product.image || "assets/images/products/default.jpg"} alt={product.name} />
-            </div>
-            <div className="content">
-              <h5>
-                <Link legacyBehavior href={`/product-details/${product.id}`}>
-                  {product.name}
-                </Link>
-              </h5>
-              <span className="price">
-                {product.originalPrice && <del>{product.originalPrice}</del>}
-                <span>{product.price}</span> ({product.weight || "100g"})
-              </span>
-            </div>
-          </div>
-        // </div>
-      ))}
-    </Slider>
-  </div>
-</section>
 
       {/* Product Section End */}
       {/* Video Area Start */}
@@ -499,7 +499,7 @@ const Index = () => {
                   <span className="sub-title">Spices</span>
                   <h4>
                     <Link legacyBehavior href="/blog-details1">
-                    Why Homemade Sambar Powder Tastes Better Than Store-Bought
+                      Why Homemade Sambar Powder Tastes Better Than Store-Bought
                     </Link>
                   </h4>
                   <Link legacyBehavior href="/blog-details1">

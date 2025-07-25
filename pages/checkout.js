@@ -128,8 +128,8 @@ const Checkout = () => {
         createdAt: new Date().toISOString(),
         paymentMethod,
         paymentGateway: paymentMethod === "BankTransfer" ? "Bank Transfer" : "Cash",
-        email: "customer@example.com",
-        mobile: "9999999999",
+        email: billingDetails.email,
+        mobile: billingDetails.phone,
         currency: "INR",
         razorpaySignature: null,
       };
@@ -138,6 +138,7 @@ const Checkout = () => {
       // console.log('vat----', vat);
       savePaymentDetails(manualPayment, totalPrice, shipping, vat, billingDetails);
       alert("Order placed successfully using " + paymentMethod);
+      window.dispatchEvent(new Event("cartUpdated"));
       setCartData([]);
     }
   }
@@ -174,24 +175,7 @@ const Checkout = () => {
 
           await savePaymentDetails(paymentData);
           alert("Payment successful! Order placed.");
-        },
-        config: {
-          display: {
-            blocks: {
-              upi: {
-                name: "Pay using UPI",
-                instruments: [
-                  {
-                    method: "upi"
-                  }
-                ]
-              }
-            },
-            sequence: ["upi"],
-            preferences: {
-              show_default_blocks: false
-            }
-          }
+          window.dispatchEvent(new Event("cartUpdated"));
         },
         prefill: {
           name: "Customer Name",
@@ -612,17 +596,17 @@ const Checkout = () => {
                                 <td>
                                   {card.productDetails.name} <strong>× {card.quantity}</strong>
                                 </td>
-                                <td>${(card.quantity * card.productDetails.price).toFixed(2)}</td>
+                                <td>₹{(card.quantity * card.productDetails.price).toFixed(2)}</td>
                               </tr>
                             ))}
 
                             <tr>
                               <td>Shipping Fee</td>
-                              <td>${shipping.toFixed(2)}</td>
+                              <td>₹{shipping.toFixed(2)}</td>
                             </tr>
                             <tr>
                               <td>Vat</td>
-                              <td>${Number(vat).toFixed(2)}</td>
+                              <td>₹{Number(vat).toFixed(2)}</td>
                             </tr>
                             <tr>
                               <td>
@@ -630,7 +614,7 @@ const Checkout = () => {
                               </td>
                               <td>
                                 <strong>
-                                  ${Number(totalPrice).toFixed(2)}
+                                ₹{Number(totalPrice).toFixed(2)}
                                 </strong>
                               </td>
                             </tr>

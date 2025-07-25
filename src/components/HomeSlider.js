@@ -31,11 +31,11 @@ export const HomeSlider1 = () => {
                       Shop Now <i className="fas fa-angle-double-right" />
                     </a>
                   </Link>
-                  <Link legacyBehavior href="/about">
+                  {/* <Link legacyBehavior href="/about">
                     <a className="theme-btn style-two">
                       Learn More <i className="fas fa-angle-double-right" />
                     </a>
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </div>
@@ -116,11 +116,11 @@ export const HomeSlider1 = () => {
                       Shop Now <i className="fas fa-angle-double-right" />
                     </a>
                   </Link>
-                  <Link legacyBehavior href="/about">
+                  {/* <Link legacyBehavior href="/about">
                     <a className="theme-btn style-two">
                       Learn More <i className="fas fa-angle-double-right" />
                     </a>
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </div>
