@@ -1,24 +1,50 @@
 import Link from "next/link";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layout/Layout";
-import { fetchItems } from "../services/itemServices";
+import { fetchItems, fetchCategory } from "../services/itemServices";
 import React, { useEffect, useState } from "react";
 import { addToCart } from "../services/cartServices";
+import { useRouter } from "next/router";
 
 const ProductList = () => {
+
+  const router = useRouter();
+  const { category } = router.query;
+
   const [items, setProducts] = useState([]);
   const [guestId, setGuestId] = useState("");
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
 
 
   useEffect(() => {
     fetchItems()
       .then(data => {
-        setProducts(data.items);
+        if (category) {
+          const filteredItems = data.items.filter(
+            item => item.category === decodeURIComponent(category)
+          );
+          setProducts(filteredItems);
+        } else {
+          setProducts(data.items);
+        }
+      })
+      .catch((error) => console.error("Error fetching items:", error));
+  }, [category]); // <- run this effect whenever category changes
+
+  useEffect(() => {
+    fetchCategory()
+      .then(data => {
+        // Remove duplicates by category name
+        const uniqueCategories = Array.from(
+          new Map(data.map(cat => [cat.category, cat])).values()
+        );
+        setCategories(uniqueCategories);
       })
       .catch((error) => console.error("Error fetching items:", error));
   }, []);
+
 
   useEffect(() => {
     let storedGuestId = localStorage.getItem("guestId");
@@ -70,6 +96,29 @@ const ProductList = () => {
 
       <PageBanner pageName={"Products"} />
       <section className="product-list-area pt-100 pb-100">
+
+        <div className="mb-4 text-center">
+          <select
+            style={{ marginLeft: '1000px' }}
+            className="form-select w-auto d-inline-block"
+            value={category || ""}
+            onChange={(e) => {
+              const selected = e.target.value;
+              router.push({
+                pathname: "/product-details",
+                query: selected ? { category: selected } : {},
+              });
+            }}
+          >
+            <option value="">All Categories</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.category}>
+                {cat.category}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="container">
           <div className="row">
             {items.length > 0 ? (

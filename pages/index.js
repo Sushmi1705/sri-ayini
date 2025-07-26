@@ -9,7 +9,7 @@ import PhotoGallery from "../src/components/slider/PhotoGallery";
 import Layout from "../src/layout/Layout";
 import { productActive } from "../src/sliderProps";
 import React, { useEffect, useState } from "react";
-import { fetchItems } from "../services/itemServices";
+import { fetchItems, fetchCategory } from "../services/itemServices";
 
 const MunfimCountdown = dynamic(
   () => import("../src/components/MunfimCountdown"),
@@ -20,6 +20,7 @@ const MunfimCountdown = dynamic(
 const Index = () => {
 
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     fetchItems()
@@ -28,6 +29,17 @@ const Index = () => {
       })
       .catch((error) => console.error("Error fetching items:", error));
   }, []);
+
+
+  useEffect(() => {
+    fetchCategory()
+      .then(data => {
+        setCategories(data);
+        console.log('40---------', data);
+      })
+      .catch((error) => console.error("Error fetching items:", error));
+  }, []);
+
 
   return (
     <Layout header={1}>
@@ -50,17 +62,17 @@ const Index = () => {
       </section>
       {/* Slider Section End */}
       {/* Category Section Start */}
-      <section className="product-section pt-100 rpt-70 pb-130 rpb-100">
+      <section className="product-section pt-100 rpt-70 rpb-100">
         <div className="container-fluid">
           <div className="section-title text-center mb-60">
-            <span className="sub-title mb-20">
+            {/* <span className="sub-title mb-20">
               Our Signature Product Collection
-            </span>
-            <h2>Authentic Homemade Products</h2>
+            </span> */}
+            <h2>Bestsellers</h2>
           </div>
 
           <Slider {...productActive} className="product-active">
-            {products.map((product, index) => (
+            {products.slice(0, 5).map((product, index) => (
               <div className="product-item wow fadeInUp delay-0-3s" key={product.id || index}>
                 <Link href="/product-details">
                   <div className="image">
@@ -70,18 +82,60 @@ const Index = () => {
                     />
                   </div>
                   <div className="content">
+                    <h3 className="product-name">{product.name}</h3>
+                    <p className="product-category">{product.category || "Uncategorized"}</p>
                     <span className="price">
                       {product.originalPrice && <del>{product.originalPrice}</del>}
                       <span>{product.price}</span> ({product.weight || "100g"})
                     </span>
                   </div>
                 </Link>
+                {/* <button
+                  className="btn btn-primary btn-sm btn-add-to-cart"
+                  onClick={() => handleAddToCart(product)}
+                  type="button"
+                >
+                  Add to Cart
+                </button> */}
               </div>
             ))}
           </Slider>
 
         </div>
       </section>
+
+      {/* New Category Grid Section */}
+      <section className="category-section pb-100">
+        <div className="container-fluid">
+          <div className="section-title text-center mb-60">
+            <h2>Shop by Category</h2>
+          </div>
+
+          <div className="category-grid">
+            {categories.map((category, index) => (
+              <Link
+                key={category.id || index}
+                href={{
+                  pathname: '/product-details',
+                  query: { category: category.category }
+                }}
+                passHref
+              >
+                <div className="category-item" role="button" tabIndex={0}>
+                  <img
+                    src={category.image || "assets/images/slider/banner2.png"}
+                    alt={category.categoryName || category.category}
+                    className="category-image"
+                  />
+                  <h4 className="category-name">{category.categoryName || category.category}</h4>
+                </div>
+              </Link>
+            ))}
+
+          </div>
+        </div>
+      </section>
+
       <section className="category-section pt-130 rpt-100">
         <div className="container">
           <div className="row align-items-end pb-35">

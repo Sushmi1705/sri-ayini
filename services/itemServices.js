@@ -22,3 +22,16 @@ export const fetchItems = async () => {
     const data = await response.json();
     return data.item;
   };
+
+  export const fetchCategory = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/category`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch items");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching items:", error);
+      return [];
+    }
+  };
