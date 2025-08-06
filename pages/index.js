@@ -25,7 +25,8 @@ const Index = () => {
   useEffect(() => {
     fetchItems()
       .then(data => {
-        setProducts(data.items);
+        // console.log('28-----', data);
+        setProducts(data);
       })
       .catch((error) => console.error("Error fetching items:", error));
   }, []);
@@ -35,12 +36,11 @@ const Index = () => {
     fetchCategory()
       .then(data => {
         setCategories(data);
-        console.log('40---------', data);
       })
       .catch((error) => console.error("Error fetching items:", error));
   }, []);
 
-
+// console.log('42--------',products);
   return (
     <Layout header={1}>
       {/*End Hidden Sidebar */}

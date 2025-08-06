@@ -21,8 +21,9 @@ export const HomeSlider1 = () => {
           <div className="row align-items-center">
             <div className="col-lg-6">
               <div className="slider-content">
-                <div className="sub-title mb-20">Welcome to Sri Ayini</div>
-                <h1>The Taste of Tradition</h1>
+                {/* <div className="sub-title mb-20">Welcome to Sri Ayini</div> */}
+                <h2 className="sub-title">Welcome to Sri Ayini</h2>
+                <h3>The Taste of Tradition</h3>
                 <h6>Pure & Authentic Homemade Spices</h6>
                 <h6>Crafted with Love, Inspired by Tradition</h6>
                 <div className="slider-btns mt-30">
@@ -106,8 +107,9 @@ export const HomeSlider1 = () => {
             </div>
             <div className="col-lg-6">
               <div className="slider-content">
-                <div className="sub-title mb-20">Welcome to Sri Ayini</div>
-                <h1>The Taste of Tradition</h1>
+                {/* <div className="sub-title mb-20">Welcome to Sri Ayini</div> */}
+                <h2 className="sub-title">Welcome to Sri Ayini</h2>
+                <h3>The Taste of Tradition</h3>
                 <h6>Pure & Authentic Homemade Spices</h6>
                 <h6>Crafted with Love, Inspired by Tradition</h6>
                 <div className="slider-btns mt-30">

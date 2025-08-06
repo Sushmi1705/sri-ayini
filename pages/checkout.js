@@ -5,6 +5,7 @@ import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layout/Layout";
 import { checkout } from "../services/cartServices";
 import { fetchCartItems } from "../services/cartServices";
+import { fetchItemById } from "../services/itemServices";
 import { createRazorpayOrder, savePaymentDetails } from "../services/checkoutServices";
 const Checkout = () => {
   const [guestId, setGuestId] = useState(null);
@@ -63,16 +64,40 @@ const Checkout = () => {
       setVat(localStorageData.vat);
     }
 
-    fetchCartItems(storedGuestId)
-      .then((items) => {
-        setCartData(items);
-      })
-      .catch((err) => {
-        console.error("Fetch cart failed:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const buyNowProduct = JSON.parse(localStorage.getItem("buyNowProduct"));
+
+    if (buyNowProduct) {
+      // 👇 You can fetch the product details by ID if needed
+      fetchItemById(buyNowProduct.id)
+        .then((product) => {
+          setCartData([
+            {
+              ...product,
+              quantity: buyNowProduct.quantity,
+            },
+          ]);
+          localStorage.removeItem("buyNowProduct");
+        })
+        .catch((err) => {
+          console.error("Buy Now product fetch failed:", err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      // Load full cart
+      fetchCartItems(storedGuestId)
+        .then((items) => {
+          setCartData(items);
+        })
+        .catch((err) => {
+          console.error("Fetch cart failed:", err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+
   }, []);
 
   const handleChange = (e) => {
@@ -83,24 +108,24 @@ const Checkout = () => {
   const placeOrder = () => {
     const form = formRef.current;
 
-      // Extract form values
-  const formData = new FormData(form);
-  // console.log('88----------', formData);
-  const billingDetails = {
-    firstName: formData.get("firstName"),
-    lastName: formData.get("lastName"),
-    country: formData.get("country"),
-    city: formData.get("city"),
-    state: formData.get("state"),
-    streetName: formData.get("streetName"),
-    apartmentName: formData.get("apartmentName"),
-    orderNote: formData.get("orderNote"),
-    zip: formData.get("zip"),
-    phone: formData.get("phone"),
-    email: formData.get("email")
-    // Add other fields as needed
-  };
-  // console.log('103-----', billingDetails);
+    // Extract form values
+    const formData = new FormData(form);
+    // console.log('88----------', formData);
+    const billingDetails = {
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      country: formData.get("country"),
+      city: formData.get("city"),
+      state: formData.get("state"),
+      streetName: formData.get("streetName"),
+      apartmentName: formData.get("apartmentName"),
+      orderNote: formData.get("orderNote"),
+      zip: formData.get("zip"),
+      phone: formData.get("phone"),
+      email: formData.get("email")
+      // Add other fields as needed
+    };
+    // console.log('103-----', billingDetails);
 
     // Native HTML5 validation
     if (!form.checkValidity()) {
@@ -194,6 +219,16 @@ const Checkout = () => {
       alert("Payment failed. Please try again.");
     }
   };
+
+  console.log('222====', cartData);
+
+  // At the top of your component (or just before return):
+  const itemTotal = cartData.reduce((acc, card) => {
+    const price = card.productDetails?.price || card.price || 0;
+    return acc + price * card.quantity;
+  }, 0);
+
+  const orderTotal = itemTotal + Number(shipping) + Number(vat);
 
 
   return (
@@ -594,9 +629,9 @@ const Checkout = () => {
                             {cartData.map((card) => (
                               <tr key={card.id}>
                                 <td>
-                                  {card.productDetails.name} <strong>× {card.quantity}</strong>
+                                  {card.productDetails?.name || card.name} <strong>× {card.quantity}</strong>
                                 </td>
-                                <td>₹{(card.quantity * card.productDetails.price).toFixed(2)}</td>
+                                <td>₹{(card.quantity * (card.productDetails?.price || card.price)).toFixed(2)}</td>
                               </tr>
                             ))}
 
@@ -614,7 +649,7 @@ const Checkout = () => {
                               </td>
                               <td>
                                 <strong>
-                                ₹{Number(totalPrice).toFixed(2)}
+                                  ₹{orderTotal.toFixed(2)}
                                 </strong>
                               </td>
                             </tr>

@@ -25,6 +25,7 @@ export const fetchItems = async () => {
 
   export const fetchCategory = async () => {
     try {
+      console.log('url-----', API_URL);
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/category`);
       if (!response.ok) {
         throw new Error("Failed to fetch items");
@@ -35,3 +36,15 @@ export const fetchItems = async () => {
       return [];
     }
   };
+
+  export const searchItems = async (query) => {
+    try {
+      const res = await fetch(`${API_URL}?search=${encodeURIComponent(query)}`);
+      if (!res.ok) throw new Error("Failed to fetch search results");
+      return await res.json();
+    } catch (error) {
+      console.error("Search error:", error);
+      return [];
+    }
+  };
+

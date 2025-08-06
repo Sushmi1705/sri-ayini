@@ -293,10 +293,10 @@ input[type=checkbox], input[type=radio] {
 
 /** Section Title style **/
 .sub-title {
-  font-size: 30px;
+  /* font-size: 30px; */
   display: inline-block;
   color: #ff7800;
-  font-family: "Shadows Into Light", cursive;
+  /* font-family: "Shadows Into Light", cursive; */
   text-transform: capitalize; }
   @media only screen and (max-width: 575px) {
     .sub-title {
@@ -304,7 +304,7 @@ input[type=checkbox], input[type=radio] {
 
 @media only screen and (max-width: 1199px) {
   .section-title h2 {
-    font-size: 40px; } }
+     } }
 
 @media only screen and (max-width: 575px) {
   .section-title h2 {
