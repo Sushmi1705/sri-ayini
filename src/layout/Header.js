@@ -294,9 +294,9 @@ const DefaultHeader = () => {
                 <i className="far fa-user-circle" style={{ opacity: 0.5 }} />
               )}
 
-              <Link legacyBehavior href="/contact">
+              <Link legacyBehavior href="/Login">
                 <a className="theme-btn">
-                  Feedback <i className="fas fa-angle-double-right" />
+                  Login <i className="fas fa-angle-double-right" />
                 </a>
               </Link>
               {/* menu sidbar */}
@@ -449,9 +449,9 @@ const Header1 = () => {
               <Link legacyBehavior href="/Login">
                 <i className="far fa-user-circle" />
               </Link >
-              <Link legacyBehavior href="/contact">
+              <Link legacyBehavior href="/Login">
                 <a className="theme-btn">
-                  Feedback <i className="fas fa-angle-double-right" />
+                  Login <i className="fas fa-angle-double-right" />
                 </a>
               </Link>
               {/* menu sidbar */}
