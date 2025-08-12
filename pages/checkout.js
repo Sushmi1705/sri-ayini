@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { Accordion } from "react-bootstrap";
+import { auth } from '../firebase'; // your firebase config
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layout/Layout";
 import { checkout } from "../services/cartServices";
