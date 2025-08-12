@@ -247,10 +247,10 @@ const ProductList = () => {
                       <p className="card-text text-danger fw-bold">₹{item.price}</p>
 
                       {/* Optional static rating */}
-                      {/* <p className="mb-2">
+                      <p className="mb-2">
                         <span className="text-warning">★ ★ ★ ★ ☆</span>{" "}
                         <span className="text-muted">({item.reviews || "1,000+"})</span>
-                      </p> */}
+                      </p>
 
                       {/* Quantity & Add to Cart */}
                       <div className="d-flex align-items-center gap-2 quantity-cart-section">

@@ -18,6 +18,8 @@ const Checkout = () => {
   const [vat, setVat] = useState(0);
   const [shipping, setShipping] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState("BankTransfer");
   const [formData, setFormData] = useState({
@@ -36,6 +38,21 @@ const Checkout = () => {
     orderNote: "",
     paymentMethod: "Direct Bank Transfer", // default selected
   });
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is logged in
+        setUser(user);
+        setUserId(user.uid);
+      } else {
+        // User is logged out
+        setUser(null);
+        // Optionally redirect to login page
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Add this in useEffect or at app level
   useEffect(() => {

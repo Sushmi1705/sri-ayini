@@ -48,3 +48,52 @@ export const fetchItems = async () => {
     }
   };
 
+  export const getProductReviews = async (productId) => {
+    try {
+      const response = await fetch(`${API_URL}/reviews/${productId}`);
+      if (!response.ok) throw new Error('Failed to fetch reviews');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      throw error;
+    }
+  };
+
+// services/itemServices.js
+export async function getProductReviewsPaged(productId, { limit = 10, cursor = null, sortBy = 'newest' } = {}) {
+  const params = new URLSearchParams({ limit, sortBy });
+  if (cursor) params.append('cursor', cursor); // plain id now
+  const res = await fetch(`${API_URL}/reviews/${productId}?${params.toString()}`);
+  if (!res.ok) throw new Error('Failed to fetch paged reviews');
+  return res.json(); // { items, nextCursor }
+} 
+  
+  export const addReview = async (reviewData) => {
+    try {
+      const response = await fetch(`${API_URL}/reviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reviewData),
+      });
+      if (!response.ok) throw new Error('Failed to add review');
+      return await response.json();
+    } catch (error) {
+      console.error('Error adding review:', error);
+      throw error;
+    }
+  };
+  
+  export const getAverageRating = async (productId) => {
+    try {
+      const response = await fetch(`${API_URL}/reviews/${productId}/average`);
+      if (!response.ok) throw new Error('Failed to fetch average rating');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching average rating:', error);
+      throw error;
+    }
+  };
+
+
