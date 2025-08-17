@@ -8,6 +8,8 @@ import { checkout } from "../services/cartServices";
 import { fetchCartItems } from "../services/cartServices";
 import { fetchItemById } from "../services/itemServices";
 import { createRazorpayOrder, savePaymentDetails } from "../services/checkoutServices";
+import { fetchAddresses } from "../services/loginServices";
+
 const Checkout = () => {
   const [guestId, setGuestId] = useState(null);
   const formRef = useRef(null);
@@ -22,6 +24,8 @@ const Checkout = () => {
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [addresses, setAddresses] = useState([]);
+  const [defaultAddress, setDefaultAddress] = useState(null);
   const [selectedMethod, setSelectedMethod] = useState("BankTransfer");
   const [formData, setFormData] = useState({
     firstName: "",
@@ -40,21 +44,6 @@ const Checkout = () => {
     paymentMethod: "Direct Bank Transfer", // default selected
   });
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        // User is logged in
-        setUser(user);
-        setUserId(user.uid);
-      } else {
-        // User is logged out
-        setUser(null);
-        // Optionally redirect to login page
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
   // Add this in useEffect or at app level
   useEffect(() => {
     const razorpayKey = process.env.REACT_APP_RAZORPAY_KEY_ID;
@@ -65,10 +54,12 @@ const Checkout = () => {
   }, []);
 
   useEffect(() => {
+    const userId = localStorage.getItem('uid');
+    setUserId(userId);
     const storedGuestId = localStorage.getItem("guestId");
     setGuestId(storedGuestId);
 
-    if (!storedGuestId) {
+    if (!userId) {
       setLoading(false); // No guest ID, stop loading
       return;
     }
@@ -104,7 +95,7 @@ const Checkout = () => {
         });
     } else {
       // Load full cart
-      fetchCartItems(storedGuestId)
+      fetchCartItems(userId)
         .then((items) => {
           setCartData(items);
         })
@@ -115,8 +106,30 @@ const Checkout = () => {
           setLoading(false);
         });
     }
-
   }, []);
+
+  // Fetch addresses
+  useEffect(() => {
+    const loadAddresses = async () => {
+      try {
+        const res = await fetchAddresses(userId); // API call
+        if (res?.addresses?.length > 0) {
+          setAddresses(res.addresses);
+
+          // Pick default if exists, else first one
+          const def = res.addresses.find(a => a.isDefault) || res.addresses[0];
+          setDefaultAddress(def);
+          setFormData(prev => ({ ...prev, ...def }));
+        }
+      } catch (err) {
+        console.error("Failed to load addresses:", err);
+      }
+    };
+
+    if (userId) loadAddresses();
+  }, [userId]);
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -128,7 +141,7 @@ const Checkout = () => {
 
     // Extract form values
     const formData = new FormData(form);
-    // console.log('88----------', formData);
+    console.log('88----------', formData);
     const billingDetails = {
       firstName: formData.get("firstName"),
       lastName: formData.get("lastName"),
@@ -164,7 +177,7 @@ const Checkout = () => {
     } else {
       const manualPayment = {
         orderId: cartData[0].id, // You should generate/get this from backend
-        userId: guestId,
+        userId: userId,
         amount: totalPrice,
         status: "Pending",
         transactionId: `manual_${Date.now()}`,
@@ -203,7 +216,7 @@ const Checkout = () => {
 
           const paymentData = {
             orderId: order.id,
-            userId: guestId, // or actual user ID if logged in
+            userId: userId, // or actual user ID if logged in
             amount: order.amount, // from Razorpay order
             status: "Completed",
             transactionId: response.razorpay_payment_id,
@@ -375,15 +388,64 @@ const Checkout = () => {
                 <form ref={formRef}>
                   <div className="row">
                     <div className="col-lg-12">
+                      {/* 🏠 Saved Addresses Dropdown */}
+                      {addresses.length > 0 && (
+                        <div className="col-lg-12 mb-3">
+                          <label className="form-label d-block mb-2">Choose Saved Address</label>
+                          <div className="address-cards">
+                            {addresses.map((addr) => (
+                              <div
+                                key={addr.id}
+                                className={`address-card ${defaultAddress?.id === addr.id ? "selected" : ""}`}
+                                onClick={() => {
+                                  setDefaultAddress(addr);
+
+                                  setFormData((prev) => {
+                                    const updated = {
+                                      ...prev,
+                                      ...addr,
+                                    };
+
+                                    // Clear fields if not present
+                                    if (!addr.email) updated.email = "";
+                                    if (!addr.city) updated.city = "";
+                                    if (!addr.postalCode) updated.postalCode = "";
+                                    if (!addr.address) updated.address = "";
+                                    if (!addr.firstName) updated.firstName = "";
+                                    if (!addr.lastName) updated.lastName = "";
+                                    if (!addr.state) updated.state = "";
+                                    if (!addr.country) updated.country = "";
+
+                                    return updated;
+                                  });
+                                }}
+                              >
+                                <div className="address-header">
+                                  <strong>{addr.firstName} {addr.lastName}</strong>
+                                  {addr.defaultAddress && <span className="badge">Default</span>}
+                                </div>
+                                <p>{addr.address}, {addr.city}, {addr.state} - {addr.postalCode}</p>
+                                {/* <p>{addr.country}</p> */}
+                                {/* {addr.email && <small>Email: {addr.email}</small>} */}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+
+
                       <h6>Personal Information</h6>
                     </div>
+
+                    {/* First & Last Name */}
                     <div className="col-md-6">
                       <div className="form-group">
                         <input
                           type="text"
                           name="firstName"
                           className="form-control"
-                          value={formData.firstName}
+                          value={formData.firstName || ''}
                           onChange={handleChange}
                           placeholder="First Name"
                           required
@@ -396,20 +458,22 @@ const Checkout = () => {
                           type="text"
                           name="lastName"
                           className="form-control"
-                          value={formData.lastName}
+                          value={formData.lastName || ''}
                           onChange={handleChange}
                           placeholder="Last Name"
                           required
                         />
                       </div>
                     </div>
+
+                    {/* Phone & Email */}
                     <div className="col-md-6">
                       <div className="form-group">
                         <input
                           type="text"
                           name="phone"
                           className="form-control"
-                          value={formData.phone}
+                          value={formData.phone || ''}
                           onChange={handleChange}
                           placeholder="Phone Number"
                           required
@@ -422,7 +486,7 @@ const Checkout = () => {
                           type="email"
                           name="email"
                           className="form-control"
-                          value={formData.email}
+                          value={formData?.email || ''}
                           onChange={handleChange}
                           placeholder="Email Address"
                           required
@@ -433,11 +497,13 @@ const Checkout = () => {
                     <div className="col-lg-12">
                       <h6>Your Address</h6>
                     </div>
+
+                    {/* Country */}
                     <div className="col-md-6 mb-30">
                       <div className="form-group">
                         <select
                           name="country"
-                          value={formData.country}
+                          value={formData.country || ''}
                           onChange={handleChange}
                           className="form-control"
                         >
@@ -449,13 +515,15 @@ const Checkout = () => {
                         </select>
                       </div>
                     </div>
+
+                    {/* City & State */}
                     <div className="col-md-6">
                       <div className="form-group">
                         <input
                           type="text"
                           name="city"
                           className="form-control"
-                          value={formData.city}
+                          value={formData.city || ''}
                           onChange={handleChange}
                           placeholder="City"
                           required
@@ -468,35 +536,24 @@ const Checkout = () => {
                           type="text"
                           name="state"
                           className="form-control"
-                          value={formData.state}
+                          value={formData.state || ''}
                           onChange={handleChange}
                           placeholder="State"
                           required
                         />
                       </div>
                     </div>
+
+                    {/* Zip & Street */}
                     <div className="col-md-6">
                       <div className="form-group">
                         <input
                           type="text"
                           name="zip"
                           className="form-control"
-                          value={formData.zip}
+                          value={formData.postalCode || formData.zip} // handle both cases
                           onChange={handleChange}
                           placeholder="Zip"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          name="streetName"
-                          className="form-control"
-                          value={formData.streetName}
-                          onChange={handleChange}
-                          placeholder="House, street name"
                           required
                         />
                       </div>
@@ -505,14 +562,31 @@ const Checkout = () => {
                       <div className="form-group">
                         <input
                           type="text"
-                          name="apartmentName"
+                          name="address"
                           className="form-control"
-                          value={formData.apartmentName}
+                          value={formData.address || ''}
+                          onChange={handleChange}
+                          placeholder="House, street name"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Apartment */}
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          name="apartment"
+                          className="form-control"
+                          value={formData.apartment || ''}
                           onChange={handleChange}
                           placeholder="Apartment, suite, unit etc. (optional)"
                         />
                       </div>
                     </div>
+
+                    {/* Notes */}
                     <div className="col-lg-12">
                       <h6>Order Notes (optional)</h6>
                     </div>
@@ -521,7 +595,7 @@ const Checkout = () => {
                         <textarea
                           name="orderNote"
                           placeholder="Order Notes"
-                          value={formData.orderNote}
+                          value={formData.orderNote || ''}
                           onChange={handleChange}
                           className="form-control"
                           rows={4}
@@ -530,6 +604,7 @@ const Checkout = () => {
                     </div>
                   </div>
                 </form>
+
                 <div className="payment-cart-total pt-25">
                   <div className="row justify-content-between">
                     <div className="col-lg-6">

@@ -1,17 +1,25 @@
 import PageBanner from "../src/components/PageBanner";
-import  Layout  from "../src/layout/Layout";
+import Layout from "../src/layout/Layout";
 import { useState, useRef } from "react";
 import { contactUs } from "../services/contactusServices";
+import { useEffect } from "react";
+
 const ContactUs = () => {
 
   // const guestId = localStorage.getItem("guestId");
-  const guestId = "guest_1743675916926";
+  // const guestId = "guest_1743675916926";
   const formRef = useRef(null);
+
+  const [userId, setUserId] = useState(null);
   const [formData, setFormData] = useState({
     fullName: '',
     phoneNumber: '',
     emailAddress: '',
     message: ''
+  });
+
+  useEffect(() => {
+    setUserId(localStorage.getItem('uid'));
   });
 
   const handleChange = (event) => {
@@ -23,29 +31,41 @@ const ContactUs = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // ✅ stop form from submitting
+
+    if (!userId) {
+      alert("Please log in first!");
+      return;
+    }
+
     const form = formRef.current;
 
     if (!form.checkValidity()) {
-      form.reportValidity(); // shows browser messages
+      form.reportValidity(); // ✅ show browser's validation messages
       return;
     }
-    try {
-      contactUs(guestId, formData);
 
-      alert('Message sent successfully!');
-          // Reset the formData state
-    setFormData({
-      fullName: '',
-      phoneNumber: '',
-      emailAddress: '',
-      message: '',
-    });
+    try {
+      await contactUs(userId, formData);
+
+      alert("Message sent successfully!");
+
+      // ✅ Reset the form
+      setFormData({
+        fullName: "",
+        phoneNumber: "",
+        emailAddress: "",
+        message: "",
+      });
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while sending the message.');
+      console.error("Error:", error);
+      alert("An error occurred while sending the message.");
     }
   };
+
+
+  console.log('userId----', userId);
+
   return (
     <Layout>
       <PageBanner pageName={"Contact Us"} />{" "}
@@ -118,7 +138,7 @@ const ContactUs = () => {
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-6">
-              <form ref={formRef} onSubmit={handleSubmit}>
+              <form ref={formRef} onSubmit={(e) => handleSubmit(e)}>
                 <div className="section-title contact-title mb-55">
                   <span className="sub-title mb-15">Contact With Us</span>
                   <h3>Send Us Message</h3>

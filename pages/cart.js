@@ -17,14 +17,12 @@ const CartPage = () => {
   const [guestId, setGuestId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [shipping, setShipping] = useState(0);
+  const [userId, setUserId] = useState(null);
 
 
   // let shipping = 10;
 
-
-
   useEffect(() => {
-
     const shipping = parseFloat(calculateShipping(cartData));
     setSubTotal(subTotal_());
     console.log('tax', tax);
@@ -42,11 +40,12 @@ const CartPage = () => {
   });
 
   useEffect(() => {
+    const userId = localStorage.getItem('uid');
+    setUserId(userId);
+
     console.log('45------');
-    const storedGuestId = localStorage.getItem("guestId");
-    setGuestId(storedGuestId);
   
-    if (!storedGuestId) {
+    if (!userId) {
       setLoading(false); // No guest ID, stop loading
       return;
     }
@@ -61,7 +60,7 @@ const CartPage = () => {
     .catch((error) => {
       console.error("Error", error);
     });
-    fetchCartItems(storedGuestId)
+    fetchCartItems(userId)
       .then((items) => {
         setCartData(items);
       })
@@ -125,7 +124,7 @@ const CartPage = () => {
     setLoading(true);
     try {
       for (const item of cartData) {
-        await updateCartItems(guestId, item.productId, item.quantity);
+        await updateCartItems(userId, item.productId, item.quantity);
       }
       setLoading(false);
       alert("Cart updated successfully!");

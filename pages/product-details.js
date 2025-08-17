@@ -1,7 +1,7 @@
 import Link from "next/link";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layout/Layout";
-import { fetchItems, fetchCategory } from "../services/itemServices";
+import { fetchItems, fetchCategory, getAverageRating } from "../services/itemServices";
 import React, { useEffect, useState } from "react";
 import { addToCart } from "../services/cartServices";
 import { useRouter } from "next/router";
@@ -22,6 +22,7 @@ const ProductList = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
 
   useEffect(() => {
@@ -33,8 +34,10 @@ const ProductList = () => {
       } else {
         // User is logged out
         setUser(null);
+        setUserId(null);
         // Optionally redirect to login page
       }
+      setAuthLoading(false); // ✅ finished checking auth
     });
     return () => unsubscribe();
   }, []);
@@ -76,20 +79,30 @@ const ProductList = () => {
     setGuestId(storedGuestId);
   }, []);
 
-  const handleAddToCart = async (item, quantity) => {
+  const handleAddToCart = async (item, quantity, e) => {
+    if (e) e.preventDefault(); // prevent Link/button default
+    console.log('userId---------', userId);
+
+    if (!userId) {
+      console.log('Redirecting to login...');
+      await router.push("/login"); // push works better than replace for login
+      return;
+    }
+
     const productId = item.id;
     try {
-      setLoading(true); // show loader
-      await addToCart(guestId, productId, quantity);
+      setLoading(true);
+      await addToCart(userId, productId, quantity);
       alert("Item added to cart!");
       window.dispatchEvent(new Event("cartUpdated"));
     } catch (error) {
       console.error("Add to cart failed", error);
       alert("Something went wrong.");
     } finally {
-      setLoading(false); // hide loader
+      setLoading(false);
     }
   };
+
 
   // Load wishlist once when userId is available
   useEffect(() => {
@@ -121,6 +134,41 @@ const ProductList = () => {
       console.error('Wishlist operation failed', err);
     }
   };
+
+  // StarRating component used for read-only and interactive ratings
+  function StarRating({ value = 0, onChange, size = 22, readOnly = false }) {
+    const [hover, setHover] = React.useState(0);
+    const display = hover || value;
+
+    return (
+      <div className="star-rating" role={readOnly ? undefined : "radiogroup"} aria-label="Rating">
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isActive = display >= star;
+          return (
+            <button
+              key={star}
+              type="button"
+              className={`star-btn ${isActive ? 'active' : ''} ${readOnly ? 'read-only' : ''}`}
+              aria-label={`${star} star${star > 1 ? 's' : ''}`}
+              aria-pressed={!readOnly && value === star}
+              onMouseEnter={readOnly ? undefined : () => setHover(star)}
+              onMouseLeave={readOnly ? undefined : () => setHover(0)}
+              onFocus={readOnly ? undefined : () => setHover(star)}
+              onBlur={readOnly ? undefined : () => setHover(0)}
+              onClick={readOnly ? undefined : () => onChange?.(star)}
+              style={{
+                fontSize: `${size}px}`,
+                color: isActive ? '#ffc107' : '#ddd',
+                transition: 'color 0.15s ease-in-out, transform 0.1s ease-in-out',
+              }}
+            >
+              ★
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
 
   console.log('125--------', categories);
   return (
@@ -219,19 +267,32 @@ const ProductList = () => {
                       </Link>
 
                       {/* Move Wishlist button outside the <a> */}
-                      <button
-                        className="btn-wishlist"
-                        title="Add to Wishlist"
-                        aria-label="Add to Wishlist"
-                        onClick={(e) => {
-                          e.preventDefault(); // Prevent default just in case
-                          e.stopPropagation(); // Stop event from reaching Link
-                          handleAddToWishlist(item.id);
-                        }}
-                        style={{ position: "absolute", top: 10, right: 10 }}
-                      >
-                        <i className={`fas fa-heart ${isInWishlist(item.id) ? 'active' : ''}`} />
-                      </button>
+                      {userId ? (
+                        <button
+                          className="btn-wishlist"
+                          title="Add to Wishlist"
+                          aria-label="Add to Wishlist"
+                          onClick={(e) => {
+                            e.preventDefault(); // Prevent default just in case
+                            e.stopPropagation(); // Stop event from reaching Link
+                            handleAddToWishlist(item.id);
+                          }}
+                          style={{ position: "absolute", top: 10, right: 10 }}
+                        >
+                          <i className={`fas fa-heart ${isInWishlist(item.id) ? 'active' : ''}`} />
+                        </button>
+                      ) : (
+                        <Link legacyBehavior href="/Login">
+                          <button
+                            className="btn-wishlist"
+                            title="Add to Wishlist"
+                            aria-label="Add to Wishlist"
+                            style={{ position: "absolute", top: 10, right: 10 }}
+                          >
+                            <i className={`fas fa-heart ${isInWishlist(item.id) ? 'active' : ''}`} />
+                          </button>
+                        </Link>
+                      )}
                     </div>
 
 
@@ -247,10 +308,21 @@ const ProductList = () => {
                       <p className="card-text text-danger fw-bold">₹{item.price}</p>
 
                       {/* Optional static rating */}
-                      <p className="mb-2">
-                        <span className="text-warning">★ ★ ★ ★ ☆</span>{" "}
-                        <span className="text-muted">({item.reviews || "1,000+"})</span>
+                      <p className="mb-2 flex items-center gap-2">
+                        {/* Stars */}
+                        {[...Array(5)].map((_, index) => (
+                          <span
+                            key={index}
+                            className={index < item.rating ? "text-warning" : "text-muted"}
+                          >
+                            ★
+                          </span>
+                        ))}
+
+                        {/* Reviews Count */}
+                        <span className="text-muted">({item.reviewsCount || "0"})</span>
                       </p>
+
 
                       {/* Quantity & Add to Cart */}
                       <div className="d-flex align-items-center gap-2 quantity-cart-section">
@@ -270,12 +342,23 @@ const ProductList = () => {
                           style={{ width: "auto", height: "20px", marginRight: "10px" }}
                         />
 
-                        <button
-                          className="btn btn-primary btn-sm btn-add-to-cart"
-                          onClick={() => handleAddToCart(item, quantities[item.id] || 1)}
-                        >
-                          Add to Cart
-                        </button>
+                        {userId ? (
+                          <button
+                            className="btn btn-primary btn-sm btn-add-to-cart"
+                            onClick={(e) => handleAddToCart(item, quantities[item.id] || 1)}
+                          >
+                            Add to Cart
+                          </button>
+                        ) : (
+                          <Link legacyBehavior href="/Login">
+                            <button
+                              className="btn btn-primary btn-sm btn-add-to-cart"
+                            >
+                              Add to Cart
+                            </button>
+                          </Link>
+                        )}
+
                       </div>
                     </div>
                   </div>

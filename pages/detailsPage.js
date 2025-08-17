@@ -14,7 +14,7 @@ const DetailsPage = () => {
   const [guestId, setGuestId] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [price, setPrice] = useState(0);
-
+  const [userId, setUserId] = useState(null);
   // Review states
   const [reviews, setReviews] = useState([]);
   const [nextCursor, setNextCursor] = useState(null); // <- Add this line
@@ -67,6 +67,8 @@ const DetailsPage = () => {
 
   // Set guestId once
   useEffect(() => {
+    setUserId(localStorage.getItem('uid'));
+
     let storedGuestId = localStorage.getItem("guestId");
     if (!storedGuestId) {
       storedGuestId = `guest_${Date.now()}`;
@@ -160,16 +162,16 @@ const DetailsPage = () => {
   };
 
   const handleAddToCart = async () => {
-    await addToCart(guestId, product.id, quantity);
+    await addToCart(userId, product.id, quantity);
     alert("Item added to cart!");
   };
 
   const buyNow = async () => {
-    await addToCart(guestId, product.id, quantity);
+    await addToCart(userId, product.id, quantity);
     const buyNowProduct = {
       id: product.id,
       quantity: quantity,
-      guestId: guestId,
+      guestId: userId,
       size: selectedSize,
       price: price,
     };
@@ -183,7 +185,7 @@ const DetailsPage = () => {
       const reviewData = {
         ...newReview,
         productId: id,
-        guestId: guestId
+        guestId: userId
       };
 
       await addReview(reviewData);

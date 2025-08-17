@@ -12,9 +12,10 @@ export const getGuestId = () => {
 };
 
 export const fetchCartItems = async (guestId) => {
-    console.log('url-----', API_URL);
+    console.log('guestId-----', guestId);
     const response = await fetch(`${API_URL}/${guestId}`);
     const data = await response.json();
+    console.log('data-------', data);
     return data.items;
 };
 

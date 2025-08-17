@@ -6,6 +6,8 @@ import MobileMenu from "./MobileMenu";
 import CartButton from "./CartButton"; // Add this import at the top
 import { auth } from '../../firebase';
 import { searchItems } from '../../services/itemServices';
+import { signOut } from 'firebase/auth';
+
 // import { useNavigate } from 'react-router-dom';
 // const navigate = useNavigate();
 
@@ -136,8 +138,10 @@ const DefaultHeader = () => {
   const [authChecked, setAuthChecked] = useState(false); // new
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
+    setUserId(localStorage.getItem('uid'));
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
       setUser(firebaseUser);
       setAuthChecked(true); // mark auth check complete
@@ -158,6 +162,19 @@ const DefaultHeader = () => {
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
+    const handleLogout = async () => {
+      try {
+        await signOut(auth);
+        alert('Logged out!');
+        window.location.href = '/';
+        // Optionally, redirect to login page or reset state
+        // e.g., window.location.href = '/login';
+      } catch (error) {
+        console.error('Logout failed:', error);
+        alert('Failed to logout');
+      }
+    };
+    console.log('174-----', userId);
   // const navigate = useNavigate();
   return (
     <header className="main-header">
@@ -235,7 +252,7 @@ const DefaultHeader = () => {
             <div className="menu-icons">
               {/* Nav Search */}
               <div className="nav-search py-15">
-              <div className="header-search">
+                <div className="header-search">
                   <input
                     type="text"
                     placeholder="Search items..."
@@ -294,11 +311,20 @@ const DefaultHeader = () => {
                 <i className="far fa-user-circle" style={{ opacity: 0.5 }} />
               )}
 
-              <Link legacyBehavior href="/Login">
-                <a className="theme-btn">
-                  Login <i className="fas fa-angle-double-right" />
-                </a>
-              </Link>
+              {!userId ? (
+                <Link legacyBehavior href="/Login">
+                  <a className="theme-btn">
+                    Login <i className="fas fa-angle-double-right" />
+                  </a>
+                </Link>
+              ) : (
+                // <Link legacyBehavior href="/Login">
+                  <a className="theme-btn"  onClick={handleLogout}>
+                    Logout <i className="fas fa-angle-double-right" />
+                  </a>
+                // </Link>
+              )}
+
               {/* menu sidbar */}
               <div className="menu-sidebar" onClick={() => sidebarToggle()}>
                 <button>

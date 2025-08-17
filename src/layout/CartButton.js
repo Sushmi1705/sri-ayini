@@ -5,18 +5,21 @@ import { getCartItemCount, getGuestId } from "../../services/cartServices";
 
 const CartButton = () => {
   const [cartCount, setCartCount] = useState(0);
+  const [userId, setUserId] = useState(null);
 
-  const fetchCartCount = async () => {
-    const guestId = getGuestId();
+  const fetchCartCount = async (userId) => {
+    const guestId = userId;
     const count = await getCartItemCount(guestId); // ✅ await here
     setCartCount(count);
   };
 
   useEffect(() => {
-    fetchCartCount();
+    const userId = localStorage.getItem('uid');
+    setUserId(userId);
+    fetchCartCount(userId);
 
     const handleCartUpdated = () => {
-      fetchCartCount();
+      fetchCartCount(userId);
     };
 
     window.addEventListener("cartUpdated", handleCartUpdated);

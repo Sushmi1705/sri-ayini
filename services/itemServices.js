@@ -96,4 +96,17 @@ export async function getProductReviewsPaged(productId, { limit = 10, cursor = n
     }
   };
 
+  export const getOrdersByUserId = async (userId) => {
+    try {
+      const response = await fetch(`${API_URL}/user/${userId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch orders");
+      }
+      return await response.json(); // expected array of orders
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      return [];
+    }
+  };
+
 
