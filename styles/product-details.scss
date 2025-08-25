@@ -3957,3 +3957,120 @@ $font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
 //price quantity
 
+/* ===== Product card – sizes (chips) and price line ===== */
+
+/* Tokens */
+$ink: #0f172a;
+$muted: #667085;
+$brand: #1d4ed8;      // primary blue
+$brand-2: #2563eb;    // darker blue
+$chip-br: #e6ecf5;
+$chip-bg: #ffffff;
+$chip-bg-hover: #f6f9ff;
+$chip-br-hover: #c8daff;
+$chip-active-bg: #eef5ff;
+$chip-active-br: $brand-2;
+$qty-bg: #f8faff;
+$qty-br: #e6ecf5;
+
+/* Active price line above chips (your <p class="card-text fw-bold"> block) */
+.card-text.fw-bold,
+.price-line {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin: .25rem 0 .65rem;
+
+  .price-now {
+    font-weight: 900;
+    color: #111827;
+    font-size: 1.06rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .size-pill,
+  .qty-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    border-radius: 999px;
+    padding: .18rem .55rem;
+    font-weight: 700;
+    line-height: 1;
+    border: 1px solid lighten($brand-2, 35%);
+    background: $chip-active-bg;
+    color: $brand;
+    white-space: nowrap;
+  }
+
+  .qty-pill {
+    color: #475569;
+    background: $qty-bg;
+    border-color: $qty-br;
+  }
+}
+
+/* Variant chips (replaces btn-outline look) */
+.variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem .55rem;
+
+  .variant {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .3rem .65rem;
+    border-radius: 999px;
+    border: 1px solid $chip-br;
+    background: $chip-bg;
+    color: #334155;
+    font-weight: 600;
+    font-size: .86rem;
+    line-height: 1;
+    box-shadow: 0 2px 6px rgba(16, 24, 40, 0.04);
+    transition: all .15s ease;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $chip-br-hover;
+      background: $chip-bg-hover;
+    }
+
+    &.active {
+      border-color: $chip-active-br;
+      background: $chip-active-bg;
+      color: darken($brand, 10%);
+      box-shadow: 0 3px 10px rgba(29, 78, 216, 0.15);
+    }
+
+    .variant-price { font-variant-numeric: tabular-nums; }
+    .variant-dot { opacity: .55; }
+    .variant-qty { color: #64748b; font-weight: 600; }
+  }
+}
+
+/* Optional: card subtle polish to match the bright look (keep if you want) */
+.product-card {
+  border: 1px solid #e6ecf5;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.06);
+  transition: transform .2s ease, box-shadow .2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px rgba(16, 24, 40, 0.10);
+  }
+
+  .card-title { color: $ink; font-weight: 800; }
+  .text-muted.small { color: $muted !important; }
+}
+
+/* Mobile refinements */
+@media (max-width: 575.98px) {
+  .variants .variant {
+    padding: .26rem .5rem;
+    font-size: .82rem;
+  }
+}

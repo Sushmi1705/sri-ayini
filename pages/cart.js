@@ -23,43 +23,63 @@ const CartPage = () => {
   // let shipping = 10;
 
   useEffect(() => {
-    const shipping = parseFloat(calculateShipping(cartData));
-    setSubTotal(subTotal_());
-    console.log('tax', tax);
-    setVat(Number((subTotal_() * tax) / 100).toFixed(2));
-    setTotalPrice(
-      (Number(subTotal_()) + Number(vat) + Number(shipping)).toFixed(2)
-    );
+  const shippingVal = parseFloat(calculateShipping(cartData));
+  const sub = parseFloat(subTotal_());
+  const vatVal = Number(((sub * Number(tax || 0)) / 100).toFixed(2));
+  const total = Number((sub + vatVal + shippingVal).toFixed(2));
 
-    console.log("hii");
-    setShipping(shipping);
-    localStorage.setItem(
-      "munfirm",
-      JSON.stringify({ subTotal, totalPrice, shipping, vat, cartData })
-    );
-  });
+  setShipping(shippingVal);
+  setSubTotal(sub.toFixed(2));
+  setVat(vatVal);
+  setTotalPrice(total);
+
+  localStorage.setItem("munfirm", JSON.stringify({
+    subTotal: sub.toFixed(2),
+    totalPrice: total,
+    shipping: shippingVal,
+    vat: vatVal,
+    cartData
+  }));
+}, [cartData, tax]);
+
+  // useEffect(() => {
+  //   const shipping = parseFloat(calculateShipping(cartData));
+  //   setSubTotal(subTotal_());
+  //   console.log('tax', tax);
+  //   setVat(Number((subTotal_() * tax) / 100).toFixed(2));
+  //   setTotalPrice(
+  //     (Number(subTotal_()) + Number(vat) + Number(shipping)).toFixed(2)
+  //   );
+
+  //   console.log("hii");
+  //   setShipping(shipping);
+  //   localStorage.setItem(
+  //     "munfirm",
+  //     JSON.stringify({ subTotal, totalPrice, shipping, vat, cartData })
+  //   );
+  // });
 
   useEffect(() => {
     const userId = localStorage.getItem('uid');
     setUserId(userId);
 
     console.log('45------');
-  
+
     if (!userId) {
       setLoading(false); // No guest ID, stop loading
       return;
     }
-  
+
     setLoading(true); // Start loading
 
     getTax()
-    .then((items) => {
-      console.log('57---------', items);
-      setTax(items.value)
-    })
-    .catch((error) => {
-      console.error("Error", error);
-    });
+      .then((items) => {
+        console.log('57---------', items);
+        setTax(items.value)
+      })
+      .catch((error) => {
+        console.error("Error", error);
+      });
     fetchCartItems(userId)
       .then((items) => {
         setCartData(items);
@@ -73,81 +93,123 @@ const CartPage = () => {
 
   }, []);
 
+  // const calculateShipping = (cartItems, shippingSettings) => {
+  //   const subTotal = cartItems.reduce(
+  //     (sum, item) => sum + item.productDetails.price * item.quantity,
+  //     0
+  //   );
+
+  //   // Single product (only one type)
+  //   if (cartItems.length === 1) {
+  //     const shipping = cartItems[0].productDetails.shippingFee || 0;
+  //     return shipping; // charged once
+  //   }
+
+  //   // Multiple products
+  //   if (!shippingSettings?.enableOrderShipping) {
+  //     // fallback: sum each product's shippingFee once
+  //     const total = cartItems.reduce((sum, item) => {
+  //       const shipping = parseFloat(item.productDetails.shippingFee || "0");
+  //       return sum + shipping;
+  //     }, 0);
+  //     return total.toFixed(2);
+  //   }
+
+  //   const freeLimit = parseFloat(shippingSettings.freeShippingAbove || "0");
+  //   const shippingCap = parseFloat(shippingSettings.shippingCap || "999");
+
+  //   if (subTotal >= freeLimit) {
+  //     return (0).toFixed(2);
+  //   }
+
+  //   // Sum each product’s shippingFee once
+  //   const totalShipping = cartItems.reduce((sum, item) => {
+  //     return sum + (item.productDetails.shippingFee || 0);
+  //   }, 0);
+
+  //   const cappedShipping = Math.min(totalShipping, shippingCap);
+  //   return cappedShipping.toFixed(2);
+  // };
+
   const calculateShipping = (cartItems, shippingSettings) => {
     const subTotal = cartItems.reduce(
-      (sum, item) => sum + item.productDetails.price * item.quantity,
+      (sum, item) => sum + Number(item.unitPrice || 0) * Number(item.cartQty || 0),
       0
     );
-  
-    // Single product (only one type)
+
     if (cartItems.length === 1) {
-      const shipping = cartItems[0].productDetails.shippingFee || 0;
+      const shipping = parseFloat(cartItems[0].shippingFee || 0);
       return shipping; // charged once
     }
-  
-    // Multiple products
+
     if (!shippingSettings?.enableOrderShipping) {
-      // fallback: sum each product's shippingFee once
       const total = cartItems.reduce((sum, item) => {
-        const shipping = parseFloat(item.productDetails.shippingFee || "0");
-        return sum + shipping;
+        const fee = parseFloat(item.shippingFee || "0");
+        return sum + fee;
       }, 0);
       return total.toFixed(2);
     }
-  
+
     const freeLimit = parseFloat(shippingSettings.freeShippingAbove || "0");
     const shippingCap = parseFloat(shippingSettings.shippingCap || "999");
-  
-    if (subTotal >= freeLimit) {
-      return (0).toFixed(2);
-    }
-  
-    // Sum each product’s shippingFee once
+
+    if (subTotal >= freeLimit) return (0).toFixed(2);
+
     const totalShipping = cartItems.reduce((sum, item) => {
-      return sum + (item.productDetails.shippingFee || 0);
+      return sum + parseFloat(item.shippingFee || 0);
     }, 0);
-  
-    const cappedShipping = Math.min(totalShipping, shippingCap);
-    return cappedShipping.toFixed(2);
+
+    const capped = Math.min(totalShipping, shippingCap);
+    return capped.toFixed(2);
   };
-  
-  
 
   const subTotal_ = () => {
     return cartData
-      .map((item) => item.productDetails.price * item.quantity)
-      .reduce((prev, next) => prev + next, 0)
+      .reduce((sum, item) => sum + Number(item.unitPrice || 0) * Number(item.cartQty || 0), 0)
       .toFixed(2);
   };
 
-  const updateAllQuantities = async () => {
-    setLoading(true);
-    try {
-      for (const item of cartData) {
-        await updateCartItems(userId, item.productId, item.quantity);
-      }
-      setLoading(false);
-      alert("Cart updated successfully!");
-
-    } catch (error) {
-      console.error("Error updating all quantities:", error);
-    }
-  };
-
+ const updateAllQuantities = async () => {
+  setLoading(true);
+  try {
+    await Promise.all(
+      cartData.map(item =>
+        // include sizeId (and maybe cart line id if you have it)
+        updateCartItems(userId, {
+          productId: item.productId,
+          sizeId: item.sizeId,
+          cartQty: Number(item.cartQty || 1),
+        })
+      )
+    );
+    alert("Cart updated successfully!");
+  } catch (error) {
+    console.error("Error updating all quantities:", error);
+    alert("Failed to update cart.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const updateQuantity = async (index, type) => {
-    let updatedCartData = [...cartData];
-    let cartItem = updatedCartData[index];
+    setCartData(prev => {
+      const next = prev.map((item, i) => {
+        if (i !== index) return item;
 
-    if (!cartItem) return; // Ensure item exists
+        const current = Number(item.cartQty || 1);
+        const newQty = type === "-" ? Math.max(1, current - 1) : current + 1;
 
-    // Update quantity in frontend state
-    cartItem.quantity = type === "-"
-      ? Math.max(1, cartItem.quantity - 1)
-      : cartItem.quantity + 1;
+        // Recompute line total if you store it
+        const unitPrice = Number(item.unitPrice || 0);
 
-    setCartData(updatedCartData);
-
+        return {
+          ...item,
+          cartQty: newQty,
+          lineTotal: unitPrice * newQty,
+        };
+      });
+      return next;
+    });
   };
   console.log("cartData----", tax);
   return (
@@ -183,10 +245,10 @@ const CartPage = () => {
                       <span aria-hidden="true">×</span>
                     </button>
                     <div className="cart-img">
-                      <img src={cart.productDetails.image} alt="Product Image" />
+                      <img src={cart.image} alt="Product Image" />
                     </div>
-                    <h5 className="product-name">{cart.productDetails.name}</h5>
-                    <span className="product-price">{cart.productDetails.price}</span>
+                    <h5 className="product-name">{cart.name}</h5>
+                    <span className="product-price">{cart.unitPrice}</span>
                     <div className="quantity-input">
                       <button
                         className="quantity-down"
@@ -197,8 +259,8 @@ const CartPage = () => {
                       <input
                         className="quantity"
                         type="text"
-                        defaultValue={cart.quantity}
-                        value={cart.quantity}
+                        defaultValue={cart.cartQty}
+                        value={cart.cartQty}
                         name="quantity"
                       />
                       <button
@@ -209,7 +271,7 @@ const CartPage = () => {
                       </button>
                     </div>
                     <span className="product-total-price">
-                      {cart.quantity * cart.productDetails.price}
+                      {cart.cartQty * cart.unitPrice}
                     </span>
                   </div>
                 ))}

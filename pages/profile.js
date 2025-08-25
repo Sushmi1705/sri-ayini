@@ -329,14 +329,14 @@ function AccountPage() {
 
                       <div className="container cartList">
                         <div className="cart-item-wrap mb-35">
-                          {selectedOrder.items?.map((item, i) => {
+                          {selectedOrder.cart?.map((item, i) => {
                             // Find matching cart entry for this item
                             const cartItem = selectedOrder.cart?.find(
                               (c) => c.productId === item.productId
                             );
 
-                            const quantity = cartItem?.quantity || 0;
-                            const price = Number(item.price) || 0;
+                            const quantity = cartItem?.cartQty || 0;
+                            const price = item.unitPrice || 0;
                             const total = quantity * price;
 
                             return (
@@ -417,11 +417,11 @@ function AccountPage() {
                                 </table>
 
                                 {/* optional repeat order button */}
-                                <Link legacyBehavior href="/shop-grid">
+                                {/* <Link legacyBehavior href="/shop-grid">
                                   <a className="theme-btn style-two mt-25 w-100">
                                     Reorder <i className="fas fa-angle-double-right" />
                                   </a>
-                                </Link>
+                                </Link> */}
                               </div>
                             </div>
                           </div>

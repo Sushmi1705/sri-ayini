@@ -25,6 +25,8 @@ const Checkout = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [addresses, setAddresses] = useState([]);
+  const [tax, setTax] = useState();
+  const [subTotal, setSubTotal] = useState(0);
   const [defaultAddress, setDefaultAddress] = useState(null);
   const [selectedMethod, setSelectedMethod] = useState("BankTransfer");
   const [formData, setFormData] = useState({
@@ -54,6 +56,17 @@ const Checkout = () => {
   }, []);
 
   useEffect(() => {
+
+    const shippingVal = parseFloat(calculateShipping(cartData));
+    const sub = parseFloat(subTotal_());
+    const vatVal = Number(((sub * Number(tax || 0)) / 100).toFixed(2));
+    const total = Number((sub + vatVal + shippingVal).toFixed(2));
+
+    setShipping(shippingVal);
+    setSubTotal(sub.toFixed(2));
+    setVat(vatVal);
+    setTotalPrice(total);
+
     const userId = localStorage.getItem('uid');
     setUserId(userId);
     const storedGuestId = localStorage.getItem("guestId");
@@ -69,7 +82,7 @@ const Checkout = () => {
     console.log(localStorageData);
     if (localStorageData) {
       setTotalPrice(localStorageData.totalPrice);
-      setShipping(localStorageData.shipping);
+      // setShipping(localStorageData.shipping);
       setVat(localStorageData.vat);
     }
 
@@ -129,7 +142,43 @@ const Checkout = () => {
     if (userId) loadAddresses();
   }, [userId]);
 
+  const subTotal_ = () => {
+    return cartData
+      .reduce((sum, item) => sum + Number(item.unitPrice || 0) * Number(item.cartQty || 0), 0)
+      .toFixed(2);
+  };
 
+  const calculateShipping = (cartItems, shippingSettings) => {
+    const subTotal = cartItems.reduce(
+      (sum, item) => sum + Number(item.unitPrice || 0) * Number(item.cartQty || 0),
+      0
+    );
+
+    if (cartItems.length === 1) {
+      const shipping = parseFloat(cartItems[0].shippingFee || 0);
+      return shipping; // charged once
+    }
+
+    if (!shippingSettings?.enableOrderShipping) {
+      const total = cartItems.reduce((sum, item) => {
+        const fee = parseFloat(item.shippingFee || "0");
+        return sum + fee;
+      }, 0);
+      return total.toFixed(2);
+    }
+
+    const freeLimit = parseFloat(shippingSettings.freeShippingAbove || "0");
+    const shippingCap = parseFloat(shippingSettings.shippingCap || "999");
+
+    if (subTotal >= freeLimit) return (0).toFixed(2);
+
+    const totalShipping = cartItems.reduce((sum, item) => {
+      return sum + parseFloat(item.shippingFee || 0);
+    }, 0);
+
+    const capped = Math.min(totalShipping, shippingCap);
+    return capped.toFixed(2);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -253,14 +302,26 @@ const Checkout = () => {
 
   console.log('222====', cartData);
 
+  const toNumber = (val) => {
+  if (val == null) return 0;
+  if (typeof val === 'number') return val;
+  if (typeof val === 'string') {
+    // remove currency symbols, commas, spaces
+    const cleaned = val.replace(/[^\d.-]/g, '');
+    const n = parseFloat(cleaned);
+    return Number.isFinite(n) ? n : 0;
+  }
+  return 0;
+};
+
   // At the top of your component (or just before return):
   const itemTotal = cartData.reduce((acc, card) => {
-    const price = card.productDetails?.price || card.price || 0;
-    return acc + price * card.quantity;
+    console.log('307----', toNumber(card.unitPrice));
+    const price = toNumber(card.unitPrice) || 0;
+    return acc + price * toNumber(card.cartQty);
   }, 0);
 
-  const orderTotal = itemTotal + Number(shipping) + Number(vat);
-
+  const orderTotal = itemTotal + toNumber(shipping) + toNumber(vat);
 
   return (
     <Layout>
@@ -722,9 +783,9 @@ const Checkout = () => {
                             {cartData.map((card) => (
                               <tr key={card.id}>
                                 <td>
-                                  {card.productDetails?.name || card.name} <strong>× {card.quantity}</strong>
+                                  {card.name} <strong>× {card.cartQty}</strong>
                                 </td>
-                                <td>₹{(card.quantity * (card.productDetails?.price || card.price)).toFixed(2)}</td>
+                                <td>₹{(card.cartQty * (card.unitPrice)).toFixed(2)}</td>
                               </tr>
                             ))}
 

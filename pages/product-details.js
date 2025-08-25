@@ -24,15 +24,33 @@ const ProductList = () => {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
+  function Sizes({ sizes = [], onSelect }) {
+    // Ensure exactly one active at render time too
+    const hasOne = sizes.filter(s => s.isActive).length === 1;
+    const safe = hasOne
+      ? sizes
+      : sizes.map((s, i) => ({ ...s, isActive: i === 0 }));
 
-  function FirstSize({ sizes = [] }) {
-    if (!sizes.length) return null;
-    const first = sizes[0];
-    const price = Number(first.price || 0).toLocaleString('en-IN');
     return (
-      <span>
-        ₹{price} <br></br> {first.sizeLabel} (Qty: {first.quantity})
-      </span>
+      <div className="variants d-flex flex-wrap gap-2">
+        {safe.map((s) => {
+          const price = Number(s.price || 0).toLocaleString('en-IN');
+          return (
+            <button
+              key={s.id}
+              type="button"
+              className={`variant ${s.isActive ? 'active' : ''}`}
+              onClick={() => onSelect?.(s)}
+              title={`₹${price} — ${s.sizeLabel}${s.quantity ? ` (Qty: ${s.quantity})` : ''}`}
+            >
+              <span className="variant-price">₹{price}</span>
+              <span className="variant-dot">•</span>
+              <span className="variant-size">{s.sizeLabel}</span>
+              {s.quantity ? <span className="variant-qty">Qty {s.quantity}</span> : null}
+            </button>
+          );
+        })}
+      </div>
     );
   }
 
@@ -53,20 +71,47 @@ const ProductList = () => {
     return () => unsubscribe();
   }, []);
 
+  // useEffect(() => {
+  //   fetchItems()
+  //     .then(data => {
+  //       if (category) {
+  //         const filteredItems = data.filter(
+  //           item => item.category === decodeURIComponent(category)
+  //         );
+  //         setProducts(filteredItems);
+  //       } else {
+  //         setProducts(data);
+  //       }
+  //     })
+  //     .catch((error) => console.error("Error fetching items:", error));
+  // }, [category]);
+
   useEffect(() => {
     fetchItems()
       .then(data => {
-        if (category) {
-          const filteredItems = data.filter(
-            item => item.category === decodeURIComponent(category)
-          );
-          setProducts(filteredItems);
-        } else {
-          setProducts(data);
-        }
+        const filtered = category
+          ? data.filter(it => it.category === decodeURIComponent(category))
+          : data;
+
+        const normalized = filtered.map(p => {
+          const sizes = Array.isArray(p.sizes) ? p.sizes : [];
+          const hasSingleActive = sizes.filter(s => s.isActive).length === 1;
+
+          // If multiple (or none) are active, make only the first active
+          const fixed = sizes.map((s, idx) => ({
+            ...s,
+            isActive: hasSingleActive
+              ? !!s.isActive
+              : idx === 0, // first one active
+          }));
+
+          return { ...p, sizes: fixed };
+        });
+
+        setProducts(normalized);
       })
-      .catch((error) => console.error("Error fetching items:", error));
-  }, [category]); // <- run this effect whenever category changes
+      .catch(err => console.error('Error fetching items:', err));
+  }, [category]);
 
   useEffect(() => {
     fetchCategory()
@@ -90,20 +135,72 @@ const ProductList = () => {
     setGuestId(storedGuestId);
   }, []);
 
-  const handleAddToCart = async (item, quantity, e) => {
-    if (e) e.preventDefault(); // prevent Link/button default
-    console.log('userId---------', userId);
+  // const handleAddToCart = async (item, quantity, e) => {
+  //   if (e) e.preventDefault(); // prevent Link/button default
+  //   console.log('item---------', item);
+
+  //   if (!userId) {
+  //     console.log('Redirecting to login...');
+  //     await router.push("/login"); // push works better than replace for login
+  //     return;
+  //   }
+
+  //   const productId = item.id;
+  //   try {
+  //     setLoading(true);
+  //     await addToCart(userId, productId, quantity);
+  //     alert("Item added to cart!");
+  //     window.dispatchEvent(new Event("cartUpdated"));
+  //   } catch (error) {
+  //     console.error("Add to cart failed", error);
+  //     alert("Something went wrong.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+  // Load wishlist once when userId is available
+
+  const handleAddToCart = async (item, qtyToAdd, e) => {
+    if (e) e.preventDefault();
 
     if (!userId) {
-      console.log('Redirecting to login...');
-      await router.push("/login"); // push works better than replace for login
+      await router.push("/login");
       return;
     }
 
-    const productId = item.id;
+    // 1) Find the currently selected size on the product
+    const size = getActiveSize(item);
+    if (!size) {
+      alert("Please select a size.");
+      return;
+    }
+
+    // 2) Build a clear payload
+    const payload = {
+      productId: item.id,
+      name: item.name,
+      image: item.image || "",
+      category: item.category,
+
+      // chosen size details
+      sizeId: size.id,
+      sizeLabel: size.sizeLabel,    // e.g., "500g"
+      unitQuantity: size.quantity,  // your per-pack quantity, if you use it
+      unitPrice: Number(size.price),// price for that size
+
+      // how many packs the user wants to add
+      cartQty: Number(qtyToAdd || 1),
+
+      // convenience
+      lineTotal: Number(size.price) * Number(qtyToAdd || 1),
+    };
+
     try {
       setLoading(true);
-      await addToCart(userId, productId, quantity);
+      // 3) Make your service accept the payload
+      await addToCart(userId, payload);
       alert("Item added to cart!");
       window.dispatchEvent(new Event("cartUpdated"));
     } catch (error) {
@@ -114,8 +211,6 @@ const ProductList = () => {
     }
   };
 
-
-  // Load wishlist once when userId is available
   useEffect(() => {
     if (userId) {
       getWishlist(userId).then(setWishlistItems).catch(console.error);
@@ -180,6 +275,9 @@ const ProductList = () => {
       </div>
     );
   }
+
+  const getActiveSize = (item) =>
+    (item?.sizes || []).find(s => s.isActive) || item?.sizes?.[0] || null;
 
   console.log('125--------', categories);
   return (
@@ -315,9 +413,26 @@ const ProductList = () => {
                         </a>
                       </Link>
 
-                      <p className="card-text fw-bold">
-                        <FirstSize sizes={item.sizes} />
-                      </p>
+                      <p className="text-muted small mb-2">{item.category}</p>
+                      {/* <p className="card-text text-danger fw-bold">₹{item.sizes}</p> */}
+                      <Sizes
+                        sizes={item.sizes || []}
+                        onSelect={(selected) => {
+                          setProducts(prev =>
+                            prev.map(p =>
+                              p.id === item.id
+                                ? {
+                                  ...p,
+                                  sizes: (p.sizes || []).map(s => ({
+                                    ...s,
+                                    isActive: s.id === selected.id, // single active
+                                  })),
+                                }
+                                : p
+                            )
+                          );
+                        }}
+                      />
 
                       {/* Optional static rating */}
                       <p className="mb-2 flex items-center gap-2">
@@ -355,12 +470,20 @@ const ProductList = () => {
                         />
 
                         {userId ? (
+                          // <button
+                          //   className="btn btn-primary btn-sm btn-add-to-cart"
+                          //   onClick={(e) => handleAddToCart(item, quantities[item.id] || 1)}
+                          // >
+                          //   Add to Cart
+                          // </button>
+
                           <button
                             className="btn btn-primary btn-sm btn-add-to-cart"
                             onClick={(e) => handleAddToCart(item, quantities[item.id] || 1)}
                           >
                             Add to Cart
                           </button>
+
                         ) : (
                           <Link legacyBehavior href="/Login">
                             <button

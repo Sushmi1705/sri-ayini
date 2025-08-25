@@ -40,7 +40,11 @@ const Index = () => {
       .catch((error) => console.error("Error fetching items:", error));
   }, []);
 
-// console.log('42--------',products);
+  const getFirstSize = (p) => {
+    const sizes = Array.isArray(p?.sizes) ? p.sizes : [];
+    return sizes.length ? sizes[0] : null;
+  };
+  // console.log('42--------',products);
   return (
     <Layout header={1}>
       {/*End Hidden Sidebar */}
@@ -68,7 +72,7 @@ const Index = () => {
             {/* <span className="sub-title mb-20">
               Our Signature Product Collection
             </span> */}
-            <h2>Bestsellers</h2>
+            <h2>Best Sellers</h2>
           </div>
 
           <Slider {...productActive} className="product-active">
@@ -84,10 +88,19 @@ const Index = () => {
                   <div className="content">
                     <h3 className="product-name">{product.name}</h3>
                     <p className="product-category">{product.category || "Uncategorized"}</p>
-                    <span className="price">
-                      {product.originalPrice && <del>{product.originalPrice}</del>}
-                      <span>{product.price}</span> ({product.weight || "100g"})
-                    </span>
+                    {(() => {
+                      const first = getFirstSize(product);
+                      const priceNow = first ? Number(first.price || 0) : Number(product.price || 0);
+                      const sizeLabel = first?.sizeLabel || first?.weight || product.weight || "100g";
+                      const original = (first && first.originalPrice != null) ? first.originalPrice : product.originalPrice;
+
+                      return (
+                        <span className="price">
+                          {original != null ? <del>₹{Number(original).toLocaleString('en-IN')}</del> : null}
+                          <span>{Number(priceNow).toLocaleString('en-IN')}</span> ({sizeLabel})
+                        </span>
+                      );
+                    })()}
                   </div>
                 </Link>
                 {/* <button

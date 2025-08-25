@@ -19,15 +19,22 @@ export const fetchCartItems = async (guestId) => {
     return data.items;
 };
 
-export const updateCartItems = async (guestId, productId, quantity) => {
-    await fetch(`${API_URL}/update/${guestId}/${productId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity }),
-    });
-}
+// services/cartServices.js
+// services/cartServices.js
+export const updateCartItems = async (userId, { productId, sizeId, cartQty}) => {
+  const res = await fetch(`${API_URL}/update`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      userId,
+      productId,
+      sizeId,
+      cartQty
+    }),
+  });
+};
 
-export const addToCart = async (guestId, productId, quantity) => {
+export const addToCart = async (guestId, payload) => {
 
     // Use a local variable instead of reassigning guestId
     const finalGuestId = guestId || getGuestId();
@@ -35,7 +42,7 @@ export const addToCart = async (guestId, productId, quantity) => {
     await fetch(`${API_URL}/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ finalGuestId, productId, quantity }),
+        body: JSON.stringify({ finalGuestId, ...payload }),
     });
 };
 
@@ -63,7 +70,7 @@ export const getCartItemCount = async (guestId) => {
     const response = await fetch(`${API_URL}/count/${guestId}`); // <--- THIS is your backend API call
     const data = await response.json();
     return data.count;
-  };
-  
-  
+};
+
+
 
