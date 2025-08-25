@@ -25,6 +25,17 @@ const ProductList = () => {
   const [authLoading, setAuthLoading] = useState(true);
 
 
+  function FirstSize({ sizes = [] }) {
+    if (!sizes.length) return null;
+    const first = sizes[0];
+    const price = Number(first.price || 0).toLocaleString('en-IN');
+    return (
+      <span>
+        ₹{price} <br></br> {first.sizeLabel} (Qty: {first.quantity})
+      </span>
+    );
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
@@ -304,8 +315,9 @@ const ProductList = () => {
                         </a>
                       </Link>
 
-                      <p className="text-muted small mb-2">{item.category}</p>
-                      <p className="card-text text-danger fw-bold">₹{item.price}</p>
+                      <p className="card-text fw-bold">
+                        <FirstSize sizes={item.sizes} />
+                      </p>
 
                       {/* Optional static rating */}
                       <p className="mb-2 flex items-center gap-2">
