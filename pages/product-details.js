@@ -2,17 +2,19 @@ import Link from "next/link";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layout/Layout";
 import { fetchItems, fetchCategory, getAverageRating } from "../services/itemServices";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { addToCart } from "../services/cartServices";
 import { useRouter } from "next/router";
 import { addToWishlist, getWishlist, removeFromWishlist } from '../services/wishlistService';
-import { auth } from '../firebase'; // your firebase config
-
+import { auth } from '../firebase';
 
 const ProductList = () => {
-
   const router = useRouter();
   const { category } = router.query;
+
+  // Refs to prevent multiple API calls
+  const itemsFetchedRef = useRef(false);
+  const categoriesFetchedRef = useRef(false);
 
   const [items, setProducts] = useState([]);
   const [guestId, setGuestId] = useState("");
@@ -25,7 +27,6 @@ const ProductList = () => {
   const [authLoading, setAuthLoading] = useState(true);
 
   function Sizes({ sizes = [], onSelect }) {
-    // Ensure exactly one active at render time too
     const hasOne = sizes.filter(s => s.isActive).length === 1;
     const safe = hasOne
       ? sizes
@@ -54,41 +55,38 @@ const ProductList = () => {
     );
   }
 
+  // Auth effect with cleanup
   useEffect(() => {
+    let isMounted = true;
+    
     const unsubscribe = auth.onAuthStateChanged(user => {
+      if (!isMounted) return;
+      
       if (user) {
-        // User is logged in
         setUser(user);
         setUserId(user.uid);
       } else {
-        // User is logged out
         setUser(null);
         setUserId(null);
-        // Optionally redirect to login page
       }
-      setAuthLoading(false); // ✅ finished checking auth
+      setAuthLoading(false);
     });
-    return () => unsubscribe();
+    
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
 
-  // useEffect(() => {
-  //   fetchItems()
-  //     .then(data => {
-  //       if (category) {
-  //         const filteredItems = data.filter(
-  //           item => item.category === decodeURIComponent(category)
-  //         );
-  //         setProducts(filteredItems);
-  //       } else {
-  //         setProducts(data);
-  //       }
-  //     })
-  //     .catch((error) => console.error("Error fetching items:", error));
-  // }, [category]);
-
+  // Fetch items with proper cleanup and loading state
   useEffect(() => {
-    fetchItems()
-      .then(data => {
+    let isMounted = true;
+    
+    const fetchData = async () => {
+      try {
+        const data = await fetchItems();
+        if (!isMounted) return;
+
         const filtered = category
           ? data.filter(it => it.category === decodeURIComponent(category))
           : data;
@@ -97,35 +95,62 @@ const ProductList = () => {
           const sizes = Array.isArray(p.sizes) ? p.sizes : [];
           const hasSingleActive = sizes.filter(s => s.isActive).length === 1;
 
-          // If multiple (or none) are active, make only the first active
           const fixed = sizes.map((s, idx) => ({
             ...s,
-            isActive: hasSingleActive
-              ? !!s.isActive
-              : idx === 0, // first one active
+            isActive: hasSingleActive ? !!s.isActive : idx === 0,
           }));
 
           return { ...p, sizes: fixed };
         });
 
         setProducts(normalized);
-      })
-      .catch(err => console.error('Error fetching items:', err));
+      } catch (err) {
+        if (isMounted) {
+          console.error('Error fetching items:', err);
+        }
+      }
+    };
+
+    fetchData();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [category]);
 
+  // Fetch categories only once
   useEffect(() => {
-    fetchCategory()
-      .then(data => {
-        // Remove duplicates by category name
+    if (categoriesFetchedRef.current) return;
+    
+    let isMounted = true;
+    categoriesFetchedRef.current = true;
+
+    const fetchCategoriesData = async () => {
+      try {
+        const data = await fetchCategory();
+        console.log('130------',data);
+        // if (!isMounted) return;
+
         const uniqueCategories = Array.from(
           new Map(data.map(cat => [cat.category, cat])).values()
         );
+        console.log('136---------', uniqueCategories);
         setCategories(uniqueCategories);
-      })
-      .catch((error) => console.error("Error fetching items:", error));
+      } catch (error) {
+        if (isMounted) {
+          console.error("Error fetching categories:", error);
+        }
+      }
+    };
+
+    fetchCategoriesData();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-
+  // Guest ID setup
   useEffect(() => {
     let storedGuestId = localStorage.getItem("guestId");
     if (!storedGuestId) {
@@ -135,32 +160,44 @@ const ProductList = () => {
     setGuestId(storedGuestId);
   }, []);
 
-  // const handleAddToCart = async (item, quantity, e) => {
-  //   if (e) e.preventDefault(); // prevent Link/button default
-  //   console.log('item---------', item);
+  // Wishlist effect
+  useEffect(() => {
+    if (!userId) return;
+    
+    let isMounted = true;
+    
+    getWishlist(userId)
+      .then(data => {
+        if (isMounted) {
+          setWishlistItems(data);
+        }
+      })
+      .catch(err => {
+        if (isMounted) {
+          console.error('Error fetching wishlist:', err);
+        }
+      });
+      
+    return () => {
+      isMounted = false;
+    };
+  }, [userId]);
 
-  //   if (!userId) {
-  //     console.log('Redirecting to login...');
-  //     await router.push("/login"); // push works better than replace for login
-  //     return;
-  //   }
+  // Debug effect for categories (only logs when categories actually change)
+  useEffect(() => {
+    if (categories.length > 0) {
+      console.log('Categories updated:', categories.length, 'items');
+    }
+  }, [categories]);
 
-  //   const productId = item.id;
-  //   try {
-  //     setLoading(true);
-  //     await addToCart(userId, productId, quantity);
-  //     alert("Item added to cart!");
-  //     window.dispatchEvent(new Event("cartUpdated"));
-  //   } catch (error) {
-  //     console.error("Add to cart failed", error);
-  //     alert("Something went wrong.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  // Memoized functions
+  const isInWishlist = useCallback((productId) => {
+    return wishlistItems.some((item) => item.id === productId);
+  }, [wishlistItems]);
 
-
-  // Load wishlist once when userId is available
+  const getActiveSize = useCallback((item) => {
+    return (item?.sizes || []).find(s => s.isActive) || item?.sizes?.[0] || null;
+  }, []);
 
   const handleAddToCart = async (item, qtyToAdd, e) => {
     if (e) e.preventDefault();
@@ -170,36 +207,27 @@ const ProductList = () => {
       return;
     }
 
-    // 1) Find the currently selected size on the product
     const size = getActiveSize(item);
     if (!size) {
       alert("Please select a size.");
       return;
     }
 
-    // 2) Build a clear payload
     const payload = {
       productId: item.id,
       name: item.name,
       image: item.image || "",
       category: item.category,
-
-      // chosen size details
       sizeId: size.id,
-      sizeLabel: size.sizeLabel,    // e.g., "500g"
-      unitQuantity: size.quantity,  // your per-pack quantity, if you use it
-      unitPrice: Number(size.price),// price for that size
-
-      // how many packs the user wants to add
+      sizeLabel: size.sizeLabel,
+      unitQuantity: size.quantity,
+      unitPrice: Number(size.price),
       cartQty: Number(qtyToAdd || 1),
-
-      // convenience
       lineTotal: Number(size.price) * Number(qtyToAdd || 1),
     };
 
     try {
       setLoading(true);
-      // 3) Make your service accept the payload
       await addToCart(userId, payload);
       alert("Item added to cart!");
       window.dispatchEvent(new Event("cartUpdated"));
@@ -209,18 +237,6 @@ const ProductList = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    if (userId) {
-      getWishlist(userId).then(setWishlistItems).catch(console.error);
-    }
-  }, [userId]);
-
-  // Check if product is already in wishlist
-  const isInWishlist = (productId) => {
-    console.log('103-------', wishlistItems);
-    return wishlistItems.some((item) => item.id === productId);
   };
 
   const handleAddToWishlist = async (productId) => {
@@ -235,13 +251,11 @@ const ProductList = () => {
 
       const updated = await getWishlist(userId);
       setWishlistItems(updated);
-
     } catch (err) {
       console.error('Wishlist operation failed', err);
     }
   };
 
-  // StarRating component used for read-only and interactive ratings
   function StarRating({ value = 0, onChange, size = 22, readOnly = false }) {
     const [hover, setHover] = React.useState(0);
     const display = hover || value;
@@ -263,7 +277,7 @@ const ProductList = () => {
               onBlur={readOnly ? undefined : () => setHover(0)}
               onClick={readOnly ? undefined : () => onChange?.(star)}
               style={{
-                fontSize: `${size}px}`,
+                fontSize: `${size}px`,
                 color: isActive ? '#ffc107' : '#ddd',
                 transition: 'color 0.15s ease-in-out, transform 0.1s ease-in-out',
               }}
@@ -276,10 +290,6 @@ const ProductList = () => {
     );
   }
 
-  const getActiveSize = (item) =>
-    (item?.sizes || []).find(s => s.isActive) || item?.sizes?.[0] || null;
-
-  console.log('125--------', categories);
   return (
     <Layout>
       {loading && (
@@ -305,30 +315,7 @@ const ProductList = () => {
 
       <PageBanner pageName={"Products"} />
       <section className="product-list-area pt-100 pb-100">
-
-        {/* <div className="mb-4 text-center">
-          <select
-            style={{ marginLeft: '1000px' }}
-            className="form-select w-auto d-inline-block"
-            value={category || ""}
-            onChange={(e) => {
-              const selected = e.target.value;
-              router.push({
-                pathname: "/product-details",
-                query: selected ? { category: selected } : {},
-              });
-            }}
-          >
-            <option value="">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.category}>
-                {cat.category}
-              </option>
-            ))}
-          </select>
-        </div> */}
-
-        <div className="category-scrollbar container mb-4 ">
+        <div className="category-scrollbar container mb-4">
           <div className="category-list">
             <div
               className={`category-item ${!category ? "active" : ""}`}
@@ -362,7 +349,6 @@ const ProductList = () => {
               items.map((item) => (
                 <div className="col-xl-3 col-lg-4 col-md-6 mb-4" key={item.id}>
                   <div className="card h-100 shadow-sm border-0 product-card">
-                    {/* Image clickable */}
                     <div className="image-container" style={{ position: 'relative' }}>
                       <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
                         <a>
@@ -375,15 +361,14 @@ const ProductList = () => {
                         </a>
                       </Link>
 
-                      {/* Move Wishlist button outside the <a> */}
                       {userId ? (
                         <button
                           className="btn-wishlist"
                           title="Add to Wishlist"
                           aria-label="Add to Wishlist"
                           onClick={(e) => {
-                            e.preventDefault(); // Prevent default just in case
-                            e.stopPropagation(); // Stop event from reaching Link
+                            e.preventDefault();
+                            e.stopPropagation();
                             handleAddToWishlist(item.id);
                           }}
                           style={{ position: "absolute", top: 10, right: 10 }}
@@ -404,9 +389,7 @@ const ProductList = () => {
                       )}
                     </div>
 
-
                     <div className="card-body">
-                      {/* Title clickable */}
                       <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
                         <a style={{ textDecoration: "none", color: "inherit" }}>
                           <h5 className="card-title mb-1">{item.name}</h5>
@@ -414,7 +397,7 @@ const ProductList = () => {
                       </Link>
 
                       <p className="text-muted small mb-2">{item.category}</p>
-                      {/* <p className="card-text text-danger fw-bold">₹{item.sizes}</p> */}
+                      
                       <Sizes
                         sizes={item.sizes || []}
                         onSelect={(selected) => {
@@ -425,7 +408,7 @@ const ProductList = () => {
                                   ...p,
                                   sizes: (p.sizes || []).map(s => ({
                                     ...s,
-                                    isActive: s.id === selected.id, // single active
+                                    isActive: s.id === selected.id,
                                   })),
                                 }
                                 : p
@@ -434,9 +417,7 @@ const ProductList = () => {
                         }}
                       />
 
-                      {/* Optional static rating */}
                       <p className="mb-2 flex items-center gap-2">
-                        {/* Stars */}
                         {[...Array(5)].map((_, index) => (
                           <span
                             key={index}
@@ -445,13 +426,9 @@ const ProductList = () => {
                             ★
                           </span>
                         ))}
-
-                        {/* Reviews Count */}
                         <span className="text-muted">({item.reviewsCount || "0"})</span>
                       </p>
 
-
-                      {/* Quantity & Add to Cart */}
                       <div className="d-flex align-items-center gap-2 quantity-cart-section">
                         <input
                           type="number"
@@ -465,35 +442,23 @@ const ProductList = () => {
                               [item.id]: isNaN(parsed) || parsed < 0 ? 0 : parsed,
                             }));
                           }}
-                          // className="form-control form-control-sm"
                           style={{ width: "auto", height: "20px", marginRight: "10px" }}
                         />
 
                         {userId ? (
-                          // <button
-                          //   className="btn btn-primary btn-sm btn-add-to-cart"
-                          //   onClick={(e) => handleAddToCart(item, quantities[item.id] || 1)}
-                          // >
-                          //   Add to Cart
-                          // </button>
-
                           <button
                             className="btn btn-primary btn-sm btn-add-to-cart"
-                            onClick={(e) => handleAddToCart(item, quantities[item.id] || 1)}
+                            onClick={(e) => handleAddToCart(item, quantities[item.id] || 1, e)}
                           >
                             Add to Cart
                           </button>
-
                         ) : (
                           <Link legacyBehavior href="/Login">
-                            <button
-                              className="btn btn-primary btn-sm btn-add-to-cart"
-                            >
+                            <button className="btn btn-primary btn-sm btn-add-to-cart">
                               Add to Cart
                             </button>
                           </Link>
                         )}
-
                       </div>
                     </div>
                   </div>
