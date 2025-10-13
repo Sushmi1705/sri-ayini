@@ -8,9 +8,9 @@ import Header from "./Header";
 import SideBar from "./SideBar";
 const Layout = ({ header, footer, children }) => {
   useEffect(() => {
-    stickyNav();
-    animation();
-    niceSelect();
+    // stickyNav();
+    // animation();
+    // niceSelect();
   }, []);
   useEffect(() => {
     if (window.location.pathname === "/index3") {

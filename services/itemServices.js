@@ -3,6 +3,7 @@ const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/items`;
 
 
 export const fetchItems = async () => {
+  console.log("hiiii");
     try {
       console.log('url-----', API_URL);
       const response = await fetch(API_URL);

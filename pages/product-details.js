@@ -85,6 +85,7 @@ const ProductList = () => {
     const fetchData = async () => {
       try {
         const data = await fetchItems();
+        console.log('88-----', data);
         if (!isMounted) return;
 
         const filtered = category
@@ -102,7 +103,7 @@ const ProductList = () => {
 
           return { ...p, sizes: fixed };
         });
-
+        console.log('105--------', normalized);
         setProducts(normalized);
       } catch (err) {
         if (isMounted) {
