@@ -14,7 +14,7 @@ const CartButton = () => {
   };
 
   useEffect(() => {
-    const userId = localStorage.getItem('uid');
+    const userId = sessionStorage.getItem('uid');
     setUserId(userId);
     fetchCartCount(userId);
 

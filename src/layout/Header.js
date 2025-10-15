@@ -141,14 +141,38 @@ const DefaultHeader = () => {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    setUserId(localStorage.getItem('uid'));
+    let isMounted = true;
+
+    // 1️⃣ Check sessionStorage first
+    const sessionUid = sessionStorage.getItem('uid');
+    if (sessionUid && isMounted) {
+      console.log('Session UID:', sessionUid);
+      setUserId(sessionUid);
+    }
+
+    // 2️⃣ Listen to Firebase auth (Google/Facebook login)
     const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-      setUser(firebaseUser);
+      if (!isMounted) return;
+
+      if (firebaseUser) {
+        console.log('Firebase user:', firebaseUser);
+        setUser(firebaseUser);
+        setUserId(firebaseUser.uid); // overwrite if Firebase login
+      } else if (!sessionUid) {
+        // only clear if no OTP session either
+        setUser(null);
+        setUserId(null);
+      }
+
       setAuthChecked(true); // mark auth check complete
-      console.log('139-------', firebaseUser);
     });
-    return () => unsubscribe();
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
+
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -162,19 +186,19 @@ const DefaultHeader = () => {
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
-    const handleLogout = async () => {
-      try {
-        await signOut(auth);
-        alert('Logged out!');
-        window.location.href = '/';
-        // Optionally, redirect to login page or reset state
-        // e.g., window.location.href = '/login';
-      } catch (error) {
-        console.error('Logout failed:', error);
-        alert('Failed to logout');
-      }
-    };
-    console.log('174-----', userId);
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      alert('Logged out!');
+      window.location.href = '/';
+      // Optionally, redirect to login page or reset state
+      // e.g., window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout failed:', error);
+      alert('Failed to logout');
+    }
+  };
+  console.log('174-----', userId);
   // const navigate = useNavigate();
   return (
     <header className="main-header">
@@ -293,7 +317,7 @@ const DefaultHeader = () => {
               </Link > */}
 
               {authChecked ? (
-                user ? (
+                userId ? (
                   <Link legacyBehavior href="/profile">
                     <a>
                       <i className="far fa-user-circle" />
@@ -319,9 +343,9 @@ const DefaultHeader = () => {
                 </Link>
               ) : (
                 // <Link legacyBehavior href="/Login">
-                  <a className="theme-btn"  onClick={handleLogout}>
-                    Logout <i className="fas fa-angle-double-right" />
-                  </a>
+                <a className="theme-btn" onClick={handleLogout}>
+                  Logout <i className="fas fa-angle-double-right" />
+                </a>
                 // </Link>
               )}
 

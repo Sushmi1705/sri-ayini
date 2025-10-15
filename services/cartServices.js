@@ -3,10 +3,10 @@ const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/cart`;
 
 
 export const getGuestId = () => {
-    let guestId = localStorage.getItem("guestId");
+    let guestId = sessionStorage.getItem("guestId");
     if (!guestId) {
         guestId = `guest_${crypto.randomUUID()}`;
-        localStorage.setItem("guestId", guestId);
+        sessionStorage.setItem("guestId", guestId);
     }
     return guestId;
 };

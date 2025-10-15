@@ -67,9 +67,9 @@ const Checkout = () => {
     setVat(vatVal);
     setTotalPrice(total);
 
-    const userId = localStorage.getItem('uid');
+    const userId = sessionStorage.getItem('uid');
     setUserId(userId);
-    const storedGuestId = localStorage.getItem("guestId");
+    const storedGuestId = sessionStorage.getItem("guestId");
     setGuestId(storedGuestId);
 
     if (!userId) {
@@ -78,15 +78,15 @@ const Checkout = () => {
     }
     setLoading(true); // Start loading
 
-    let localStorageData = JSON.parse(localStorage.getItem("munfirm"));
-    console.log(localStorageData);
-    if (localStorageData) {
-      setTotalPrice(localStorageData.totalPrice);
-      // setShipping(localStorageData.shipping);
-      setVat(localStorageData.vat);
+    let sessionStorageData = JSON.parse(sessionStorage.getItem("munfirm"));
+    console.log(sessionStorageData);
+    if (sessionStorageData) {
+      setTotalPrice(sessionStorageData.totalPrice);
+      // setShipping(sessionStorageData.shipping);
+      setVat(sessionStorageData.vat);
     }
 
-    const buyNowProduct = JSON.parse(localStorage.getItem("buyNowProduct"));
+    const buyNowProduct = JSON.parse(sessionStorage.getItem("buyNowProduct"));
 
     if (buyNowProduct) {
       // 👇 You can fetch the product details by ID if needed
@@ -98,7 +98,7 @@ const Checkout = () => {
               quantity: buyNowProduct.quantity,
             },
           ]);
-          localStorage.removeItem("buyNowProduct");
+          sessionStorage.removeItem("buyNowProduct");
         })
         .catch((err) => {
           console.error("Buy Now product fetch failed:", err);

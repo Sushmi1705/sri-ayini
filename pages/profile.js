@@ -82,7 +82,8 @@ function AccountPage() {
 
 
   useEffect(() => {
-    const userId = localStorage.getItem('uid');
+    console.log('85---------', sessionStorage.getItem('uid'));
+    const userId = sessionStorage.getItem('uid');
     setUserId(userId);
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
@@ -114,7 +115,7 @@ function AccountPage() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      localStorage.clear(); // ✅ removes all items from localStorage
+      sessionStorage.clear(); // ✅ removes all items from sessionStorage
       alert('Logged out!');
       window.location.href = '/';
       // Optionally, redirect to login page or reset state

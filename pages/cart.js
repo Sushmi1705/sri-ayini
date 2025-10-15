@@ -33,7 +33,7 @@ const CartPage = () => {
   setVat(vatVal);
   setTotalPrice(total);
 
-  localStorage.setItem("munfirm", JSON.stringify({
+  sessionStorage.setItem("munfirm", JSON.stringify({
     subTotal: sub.toFixed(2),
     totalPrice: total,
     shipping: shippingVal,
@@ -53,14 +53,14 @@ const CartPage = () => {
 
   //   console.log("hii");
   //   setShipping(shipping);
-  //   localStorage.setItem(
+  //   sessionStorage.setItem(
   //     "munfirm",
   //     JSON.stringify({ subTotal, totalPrice, shipping, vat, cartData })
   //   );
   // });
 
   useEffect(() => {
-    const userId = localStorage.getItem('uid');
+    const userId = sessionStorage.getItem('uid');
     setUserId(userId);
 
     console.log('45------');

@@ -56,27 +56,42 @@ const ProductList = () => {
   }
 
   // Auth effect with cleanup
-  useEffect(() => {
-    let isMounted = true;
-    
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (!isMounted) return;
-      
-      if (user) {
-        setUser(user);
-        setUserId(user.uid);
-      } else {
-        setUser(null);
-        setUserId(null);
-      }
-      setAuthLoading(false);
-    });
-    
-    return () => {
-      isMounted = false;
-      unsubscribe();
-    };
-  }, []);
+useEffect(() => {
+  let isMounted = true;
+
+  // 1️⃣ Get session UID (for OTP login)
+  const sessionUid = sessionStorage.getItem('uid');
+  if (sessionUid && isMounted) {
+    console.log('Session UID:', sessionUid);
+    setUserId(sessionUid);
+  }
+
+  // 2️⃣ Optional: Firebase auth listener (for Google/Facebook login)
+  const unsubscribe = auth.onAuthStateChanged(user => {
+    if (!isMounted) return;
+
+    if (user) {
+      console.log('Firebase user:', user);
+      setUser(user);
+      setUserId(user.uid); // overwrite if authenticated via Firebase
+    } else {
+      console.log('No Firebase user found');
+      setUser(null);
+      // Don't clear sessionStorage-based UID here unless you want logout
+    }
+
+    setAuthLoading(false);
+  });
+
+  // 3️⃣ Debug: print all sessionStorage key-value pairs
+  console.log('All sessionStorage:', Object.fromEntries(Object.entries(sessionStorage)));
+
+  return () => {
+    isMounted = false;
+    unsubscribe();
+  };
+}, []);
+
 
   // Fetch items with proper cleanup and loading state
   useEffect(() => {
@@ -153,10 +168,10 @@ const ProductList = () => {
 
   // Guest ID setup
   useEffect(() => {
-    let storedGuestId = localStorage.getItem("guestId");
+    let storedGuestId = sessionStorage.getItem("guestId");
     if (!storedGuestId) {
       storedGuestId = `guest_${Date.now()}`;
-      localStorage.setItem("guestId", storedGuestId);
+      sessionStorage.setItem("guestId", storedGuestId);
     }
     setGuestId(storedGuestId);
   }, []);

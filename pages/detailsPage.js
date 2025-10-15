@@ -67,12 +67,12 @@ const DetailsPage = () => {
 
   // Set guestId once
   useEffect(() => {
-    setUserId(localStorage.getItem('uid'));
+    setUserId(sessionStorage.getItem('uid'));
 
-    let storedGuestId = localStorage.getItem("guestId");
+    let storedGuestId = sessionStorage.getItem("guestId");
     if (!storedGuestId) {
       storedGuestId = `guest_${Date.now()}`;
-      localStorage.setItem("guestId", storedGuestId);
+      sessionStorage.setItem("guestId", storedGuestId);
     }
     setGuestId(storedGuestId);
   }, []);
@@ -175,7 +175,7 @@ const DetailsPage = () => {
       size: selectedSize,
       price: price,
     };
-    localStorage.setItem("buyNowProduct", JSON.stringify(buyNowProduct));
+    sessionStorage.setItem("buyNowProduct", JSON.stringify(buyNowProduct));
     router.push("/checkout");
   };
 

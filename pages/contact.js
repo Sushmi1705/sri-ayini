@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 const ContactUs = () => {
 
-  // const guestId = localStorage.getItem("guestId");
+  // const guestId = sessionStorage.getItem("guestId");
   // const guestId = "guest_1743675916926";
   const formRef = useRef(null);
 
@@ -19,7 +19,7 @@ const ContactUs = () => {
   });
 
   useEffect(() => {
-    setUserId(localStorage.getItem('uid'));
+    setUserId(sessionStorage.getItem('uid'));
   });
 
   const handleChange = (event) => {
