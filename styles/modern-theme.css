@@ -2206,12 +2206,10 @@ h1, h2, h3, h4, h5, h6 {
 .slider-single-item .hero-visual-stage {
   width: 100%;
   margin-right: 0 !important;
-  padding: clamp(24px, 3vw, 38px);
-  border-radius: 32px;
-  background:
-    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0) 38%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.85), rgba(239, 247, 233, 0.9));
-  box-shadow: 0 30px 70px rgba(17, 24, 39, 0.08);
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .hero-visual-image {
