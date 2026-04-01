@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import "../styles/globals.css";
 import "../styles/product-details.scss";
+import "../styles/modern-theme.css";
 
 import Head from "next/head";
 import "react-circular-progressbar/dist/styles.css";
@@ -19,7 +20,7 @@ function MyApp({ Component, pageProps }) {
         />
         {/* Google Fonts */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700&family=Oswald:wght@300;400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
         {/* Flaticon */}

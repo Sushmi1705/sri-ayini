@@ -892,240 +892,165 @@ $shadow-heavy: rgba(45, 80, 22, 0.25);
   }
 }
 
-// Product Cards
-.product-card {
-  background: $white;
-  border-radius: 20px;
-  border: none;
-  box-shadow: 0 8px 25px $shadow-light;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  overflow: hidden;
+// Redesigned Product Item matching Mockup
+.product-item {
   position: relative;
+  border-radius: 16px !important;
+  border: 1px solid rgba(0,0,0,0.05) !important;
+  background: #fff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
   height: 100%;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.6s;
-    z-index: 1;
-  }
+  display: flex;
+  flex-direction: column;
 
   &:hover {
-    transform: translateY(-12px) scale(1.02);
-    box-shadow: 0 20px 40px $shadow-medium;
-
-    &::before {
-      left: 100%;
-    }
-
-    .product-image {
-      transform: scale(1.1);
-    }
-
-    .card-body {
-      background: linear-gradient(135deg, $white 0%, $light-green 100%);
-    }
-
-    .btn-add-to-cart {
-      background: linear-gradient(135deg, $secondary-green 0%, $primary-green 100%);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(45, 80, 22, 0.3);
-    }
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(45, 80, 22, 0.1) !important;
   }
 
-  // Product Image Container
-  .image-container {
-    position: relative;
-    overflow: hidden;
-    border-radius: 20px 20px 0 0;
-    background: linear-gradient(135deg, $light-green 0%, $white 100%);
-    padding: 1.5rem;
-    height: 220px;
+  .image {
+    padding: 0;
+    background: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    .image-container {
-      position: relative;
-      /* Ensure relative positioning for absolute child */
-    }
-
-    .btn-wishlist {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(255, 255, 255, 0.8);
-      border: none;
-      border-radius: 50%;
-      padding: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      font-size: 18px;
-      color: #888;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn-wishlist:hover {
-      background: #dc3545;
-      color: white;
-    }
-
-    .btn-wishlist .active {
-      color: #dc3545;
-      /* Filled heart color */
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 30px;
-      background: linear-gradient(to top, rgba(240, 248, 232, 0.8), transparent);
-    }
-  }
-
-  .product-image {
-    width: 100%;
-    height: 160px;
-    object-fit: contain;
-    transition: transform 0.4s ease;
+    height: 240px;
     position: relative;
-    z-index: 2;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-  }
-
-  // Card Body
-  .card-body {
-    padding: 1.5rem;
-    transition: background 0.3s ease;
-    position: relative;
-    z-index: 2;
-
-    .product-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: $dark-gray;
-      margin-bottom: 0.5rem;
-      line-height: 1.3;
-      transition: color 0.3s ease;
-      text-decoration: none;
-
-      &:hover {
-        color: $primary-green;
-        text-decoration: none;
-      }
+    
+    img {
+      max-height: 85%;
+      width: auto;
+      transition: transform 0.6s ease;
+      object-fit: contain;
     }
 
-    .product-category {
-      font-size: 0.85rem;
-      color: $medium-gray;
-      margin-bottom: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 500;
+    &:hover img {
+      transform: scale(1.05);
     }
 
-    .product-price {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: $danger;
-      margin-bottom: 1rem;
-      position: relative;
+    .floating-wishlist {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 5;
 
-      &::before {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 30px;
-        height: 2px;
-        background: linear-gradient(90deg, $danger, $gold);
-        border-radius: 1px;
-      }
-    }
-
-    // Quantity and Cart Section
-    .quantity-cart-section {
-      display: flex;
-      align-items: center;
-      // gap: 0.75rem;
-      margin-top: 1rem;
-    }
-
-    .quantity-input {
-      width: 70px;
-      height: 40px;
-      border: 2px solid $light-green;
-      border-radius: 10px;
-      text-align: center;
-      font-weight: 600;
-      color: $primary-green;
-      background: $white;
-      transition: all 0.3s ease;
-      font-size: 0.9rem;
-
-      &:focus {
-        outline: none;
-        border-color: $primary-green;
-        box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.1);
-        transform: scale(1.05);
-      }
-
-      &:hover {
-        border-color: $secondary-green;
-      }
-    }
-
-    .btn-add-to-cart {
-      flex: 1;
-      background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
-      border: none;
-      border-radius: 12px;
-      color: $white;
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.6rem 1rem;
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      position: relative;
-      overflow: hidden;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        background: rgba(255, 255, 255, 0.2);
+      .action-btn {
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-        transform: translate(-50%, -50%);
-        transition: width 0.3s, height 0.3s;
-      }
+        background: #fff;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        color: #888;
+        transition: all 0.2s;
+        
+        &:hover {
+          color: #e74c3c;
+          transform: scale(1.1);
+        }
 
-      &:hover::before {
-        width: 300px;
-        height: 300px;
-      }
-
-      &:active {
-        transform: translateY(1px);
-      }
-
-      &:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-        transform: none;
+        &.active {
+          color: #e74c3c;
+        }
       }
     }
+  }
+
+  .content {
+    padding: 0 20px 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .product-title, h5 {
+      font-family: 'Outfit', sans-serif !important;
+      font-size: 1.2rem !important;
+      font-weight: 700 !important;
+      color: #2d3436;
+      margin-top: 15px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      
+      a {
+        color: inherit;
+        text-decoration: none;
+        &:hover { color: #2e7d32; }
+      }
+    }
+
+    .main-price {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #6ab04c;
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .variant-select-container {
+      margin: 10px 0;
+    }
+
+    .d-flex.align-items-center {
+      gap: 15px !important;
+      margin: 15px 0 !important;
+
+      .theme-btn {
+        flex: 1.4;
+        background: #0a6e3d;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        height: 52px;
+        transition: all 0.2s;
+        padding: 0;
+        
+        &:hover {
+          background: #085a32;
+          box-shadow: 0 6px 20px rgba(10, 110, 61, 0.2);
+        }
+      }
+    }
+  }
+
+  .ratting {
+    padding: 15px 0 10px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-top: 1.5px solid #f8f9fa;
+    margin-top: auto;
+    
+    i {
+      color: #f1c40f;
+      font-size: 1.1rem;
+    }
+    
+    &::after {
+        content: '(20)';
+        color: #95a5a6;
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-left: 8px;
+    }
+  }
+
+  .category {
+      display: none !important; // Match homepage style
   }
 }
 
@@ -1263,235 +1188,7 @@ $shadow-heavy: rgba(45, 80, 22, 0.25);
   background: linear-gradient(135deg, $secondary-green, $primary-green);
 }
 
-// ISOLATED Shop Highlight SCSS - Sriayini Brand
-// Only affects Shop menu, preserves all existing styles
-
-// Brand Colors & Gradients
-$primary-green: #2d5016;
-$secondary-green: #4a7c59;
-$accent-green: #6b8e23;
-$light-green: #f0f8e8;
-$gold: #d4af37;
-$rose-gold: #e8b4a0;
-$white: #ffffff;
-$dark-gray: #343a40;
-
-// Advanced Gradients
-$gradient-shop-permanent: linear-gradient(135deg, #d4af37 0%, #f4d03f 30%, #d4af37 60%, #e8b4a0 100%);
-$gradient-gold: linear-gradient(135deg, #d4af37 0%, #e8b4a0 100%);
-
-// ISOLATED SHOP HIGHLIGHT - ONLY AFFECTS SHOP MENU
-// Target ONLY the Shop component's specific link
-li:has(a[href="/product-details"]) {
-  position: relative !important;
-  z-index: 10 !important;
-  transform: scale(1.12) !important; // Permanently larger
-
-  // Permanent glowing border - ONLY for Shop
-  &::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: -6px;
-    right: -6px;
-    bottom: -6px;
-    // background: $gradient-gold;
-    border-radius: 18px;
-    opacity: 0.85;
-    animation: shopOnlyGlow 3s ease-in-out infinite;
-    z-index: -1;
-    filter: blur(2px);
-    pointer-events: none;
-  }
-
-  // Permanent sparkle indicator - ONLY for Shop
-  &::after {
-    content: '✨';
-    position: absolute;
-    top: 5px;
-    right: -1px;
-    font-size: 1.1rem;
-    animation: shopOnlySparkle 2.5s ease-in-out infinite;
-    z-index: 15;
-    text-shadow: 0 0 12px rgba(212, 175, 55, 0.9);
-    pointer-events: none;
-  }
-
-  // Target ONLY the Shop link specifically
-  a[href="/product-details"] {
-    background: $gradient-shop-permanent !important;
-    color: $white !important;
-    font-weight: 800 !important;
-    font-size: 1.1rem !important;
-    // padding: 1.3rem 2.2rem !important;
-    border-radius: 15px !important;
-    box-shadow:
-      0 10px 30px rgba(212, 175, 55, 0.5),
-      0 0 20px rgba(212, 175, 55, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
-    position: relative !important;
-    overflow: hidden !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
-    border: 2px solid rgba(255, 255, 255, 0.4) !important;
-    animation: shopOnlyPulse 4s ease-in-out infinite !important;
-    letter-spacing: 1.2px !important;
-    text-transform: uppercase !important;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-
-    // Enhanced hover - ONLY for Shop
-    &:hover {
-      // background: linear-gradient(135deg, #f4d03f 0%, #d4af37 30%, #b8860b 60%, #d4af37 100%) !important;
-      transform: translateY(-3px) scale(1.05) !important;
-      box-shadow:
-        0 15px 40px rgba(212, 175, 55, 0.7),
-        0 0 30px rgba(212, 175, 55, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
-      color: $white !important;
-      text-decoration: none !important;
-
-      &::after {
-        transform: translateY(-50%) scale(1.2) rotate(15deg) !important;
-      }
-    }
-
-    &:active {
-      transform: translateY(-1px) scale(1.02) !important;
-    }
-
-    &:focus {
-      outline: none !important;
-      box-shadow:
-        0 15px 40px rgba(212, 175, 55, 0.7),
-        0 0 30px rgba(212, 175, 55, 0.5),
-        0 0 0 3px rgba(212, 175, 55, 0.3) !important;
-    }
-  }
-}
-
-// Alternative class-based approach for manual control
-.shop-highlight-only {
-  position: relative !important;
-  z-index: 10 !important;
-  transform: scale(1.12) !important;
-
-  &::after {
-    content: '✨';
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    font-size: 1.1rem;
-    animation: shopOnlySparkle 2.5s ease-in-out infinite;
-    z-index: 15;
-    text-shadow: 0 0 12px rgba(212, 175, 55, 0.9);
-    pointer-events: none;
-  }
-
-  a {
-    background: $gradient-shop-permanent !important;
-    color: $white !important;
-    font-weight: 800 !important;
-    font-size: 1.1rem !important;
-    padding: 0.5rem 1rem !important;
-    border-radius: 15px !important;
-    box-shadow:
-      0 10px 30px rgba(212, 175, 55, 0.5),
-      0 0 20px rgba(212, 175, 55, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
-    position: relative !important;
-    overflow: hidden !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
-    border: 2px solid rgba(255, 255, 255, 0.4) !important;
-    animation: shopOnlyPulse 4s ease-in-out infinite !important;
-    letter-spacing: 1.2px !important;
-    text-transform: uppercase !important;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-
-    // &::before {
-    //   content: '';
-    //   position: absolute;
-    //   top: 0;
-    //   left: -100%;
-    //   width: 100%;
-    //   height: 100%;
-    //   background: linear-gradient(90deg, 
-    //     transparent 0%, 
-    //     rgba(255, 255, 255, 0.5) 50%, 
-    //     transparent 100%) !important;
-    //   animation: shopOnlyShimmer 3s ease-in-out infinite;
-    //   z-index: 1;
-    //   pointer-events: none;
-    // }
-
-    // &::after {
-    //   content: '🛍️';
-    //   position: absolute;
-    //   right: 18px;
-    //   top: 50%;
-    //   transform: translateY(-50%);
-    //   font-size: 1.2rem;
-    //   animation: shopOnlyBounce 2s ease-in-out infinite;
-    //   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-    //   z-index: 2;
-    //   pointer-events: none;
-    // }
-
-    &:hover {
-      // background: linear-gradient(135deg, #f4d03f 0%, #d4af37 30%, #b8860b 60%, #d4af37 100%) !important;
-      transform: translateY(-3px) scale(1.05) !important;
-      box-shadow:
-        0 15px 40px rgba(212, 175, 55, 0.7),
-        0 0 30px rgba(212, 175, 55, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
-      color: $white !important;
-      text-decoration: none !important;
-
-      &::after {
-        transform: translateY(-50%) scale(1.2) rotate(15deg) !important;
-      }
-    }
-
-    &:active {
-      transform: translateY(-1px) scale(1.02) !important;
-    }
-
-    &:focus {
-      outline: none !important;
-      box-shadow:
-        0 15px 40px rgba(212, 175, 55, 0.7),
-        0 0 30px rgba(212, 175, 55, 0.5),
-        0 0 0 3px rgba(212, 175, 55, 0.3) !important;
-    }
-  }
-}
-
-// Responsive Design - ONLY affects Shop
-@media (max-width: 1199px) {
-
-  li:has(a[href="/product-details"]),
-  .shop-highlight-only {
-    transform: scale(1.08) !important;
-
-    a,
-    a[href="/product-details"] {
-      padding: 1.1rem 1.8rem !important;
-      font-size: 1rem !important;
-    }
-  }
-}
-
-@media (max-width: 991px) {
-
-  li:has(a[href="/product-details"]),
-  .shop-highlight-only {
-    transform: scale(1.05) !important;
-
-    a,
-    a[href="/product-details"] {
-      padding: 1rem 1.5rem !important;
-      font-size: 0.95rem !important;
-    }
-  }
-}
+// Removed Shop Highlight Styles
 
 // ISOLATED Animations - Only for Shop
 @keyframes shopOnlyGlow {

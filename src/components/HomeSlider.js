@@ -13,42 +13,35 @@ export const HomeSlider1 = () => {
       </button>
 
       <div
-        className={`slider-single-item slide-one ${
+        className={`slider-single-item slide-one hero-slide ${
           active == 1 ? "slick-active" : ""
         }`}
       >
-        <div className="container">
+        <div className="container hero-slide-container">
           <div className="row align-items-center">
-            <div className="col-lg-6">
-              <div className="slider-content">
-                {/* <div className="sub-title mb-20">Welcome to Sri Ayini</div> */}
-                <h2 className="sub-title">Welcome to Sri Ayini</h2>
-                <h3>The Taste of Tradition</h3>
-                <h6>Pure & Authentic Homemade Spices</h6>
-                <h6>Crafted with Love, Inspired by Tradition</h6>
+            <div className="col-lg-5">
+              <div className="slider-content hero-copy">
+                <h2 className="sub-title">Traditional & Pure</h2>
+                <h3>The Heart of Authentic Spices</h3>
+                <h6>Handcrafted blends that bring generations of flavor to your kitchen.</h6>
                 <div className="slider-btns mt-30">
                   <Link legacyBehavior href="/product-details">
                     <a className="theme-btn style-two">
                       Shop Now <i className="fas fa-angle-double-right" />
                     </a>
                   </Link>
-                  {/* <Link legacyBehavior href="/about">
-                    <a className="theme-btn style-two">
-                      Learn More <i className="fas fa-angle-double-right" />
-                    </a>
-                  </Link> */}
                 </div>
               </div>
             </div>
-            <div className="col-lg-6">
-              <div className="slider-images">
+            <div className="col-lg-7">
+              <div className="slider-images hero-visual-stage">
                 <img
-                  className="image"
+                  className="image hero-visual-image"
                   src="assets/images/slider/banner.png"
                   alt="Slider"
                 />
                 <img
-                  className="offer"
+                  className="offer hero-offer-badge"
                   src="assets/images/shapes/organic.png"
                   alt="Organic"
                 />
@@ -56,106 +49,86 @@ export const HomeSlider1 = () => {
             </div>
           </div>
         </div>
-        <div className="slide-shapes">
+        <div className="slide-shapes hero-shapes">
           <img
-            className="pumpkin-shape"
-            src="assets/images/slider/pumpkin.png"
-            alt="Pumpkin"
-          />
-          <img
-            className="two-leaf"
+            className="two-leaf hero-shape hero-shape-two-leaf"
             src="assets/images/slider/two-lear.png"
             alt="Leaf"
           />
           <img
-            className="half-leaf"
+            className="half-leaf hero-shape hero-shape-half-leaf"
             src="assets/images/slider/half-leaf.png"
             alt="Leaf"
           />
           <img
-            className="leaf-one"
+            className="leaf-one hero-shape hero-shape-leaf-one"
             src="assets/images/slider/leaf-1.png"
             alt="Leaf"
           />
           <img
-            className="leaf-two"
+            className="leaf-two hero-shape hero-shape-leaf-two"
             src="assets/images/slider/leaf-2.png"
             alt="Leaf"
           />
         </div>
       </div>
+      
       <div
-        className={`slider-single-item slide-two ${
+        className={`slider-single-item slide-two hero-slide hero-slide-alt ${
           active == 2 ? "slick-active" : ""
         }`}
       >
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-lg-6">
-              <div className="slider-images">
-                <img
-                  className="image"
-                  src="assets/images/slider/banner2.png"
-                  alt="Slider"
-                />
-                <img
-                  className="offer"
-                  src="assets/images/shapes/organic.png"
-                  alt="Organic"
-                />
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <div className="slider-content">
-                {/* <div className="sub-title mb-20">Welcome to Sri Ayini</div> */}
-                <h2 className="sub-title">Welcome to Sri Ayini</h2>
-                <h3>The Taste of Tradition</h3>
-                <h6>Pure & Authentic Homemade Spices</h6>
-                <h6>Crafted with Love, Inspired by Tradition</h6>
+        <div className="container hero-slide-container">
+          <div className="row align-items-center flex-row-reverse">
+            <div className="col-lg-5">
+              <div className="slider-content hero-copy">
+                <h2 className="sub-title">100% Organic</h2>
+                <h3>Grown with Love and Harvested with Care</h3>
+                <h6>Experience the purity of nature in every flavorful bite.</h6>
                 <div className="slider-btns mt-30">
                   <Link legacyBehavior href="/product-details">
                     <a className="theme-btn style-two">
                       Shop Now <i className="fas fa-angle-double-right" />
                     </a>
                   </Link>
-                  {/* <Link legacyBehavior href="/about">
-                    <a className="theme-btn style-two">
-                      Learn More <i className="fas fa-angle-double-right" />
-                    </a>
-                  </Link> */}
                 </div>
+              </div>
+            </div>
+            <div className="col-lg-7">
+              <div className="slider-images hero-visual-stage">
+                <img
+                  className="image hero-visual-image"
+                  src="assets/images/slider/banner2.png"
+                  alt="Slider"
+                />
               </div>
             </div>
           </div>
         </div>
-        <div className="slide-shapes">
+        <div className="slide-shapes hero-shapes">
           <img
-            className="pumpkin-shape"
-            src="assets/images/slider/pumpkin.png"
-            alt="Pumpkin"
-          />
-          <img
-            className="two-leaf"
+            className="two-leaf hero-shape hero-shape-two-leaf"
             src="assets/images/slider/two-lear.png"
             alt="Leaf"
           />
           <img
-            className="half-leaf"
+            className="half-leaf hero-shape hero-shape-half-leaf"
             src="assets/images/slider/half-leaf.png"
             alt="Leaf"
           />
           <img
-            className="leaf-one"
+            className="leaf-one hero-shape hero-shape-leaf-one"
             src="assets/images/slider/leaf-1.png"
             alt="Leaf"
           />
           <img
-            className="leaf-two"
+            className="leaf-two hero-shape hero-shape-leaf-two"
             src="assets/images/slider/leaf-2.png"
             alt="Leaf"
           />
         </div>
       </div>
+
       <button
         className="slider-next slick-arrow"
         onClick={() => setActive(active == 2 ? 1 : 2)}
@@ -372,4 +345,3 @@ export const HomeSlider1 = () => {
 //   );
 // };
 export default HomeSlider1;
-

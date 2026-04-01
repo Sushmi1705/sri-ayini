@@ -1,41 +1,47 @@
 // components/CartButton.js
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getCartItemCount, getGuestId } from "../../services/cartServices";
+import { getCartItemCount, getCartOwnerId } from "../../services/cartServices";
 
 const CartButton = () => {
   const [cartCount, setCartCount] = useState(0);
   const [userId, setUserId] = useState(null);
 
-  const fetchCartCount = async (userId) => {
-    const guestId = userId;
-    const count = await getCartItemCount(guestId); // ✅ await here
-    setCartCount(count);
+  const updateCount = async () => {
+    const currentId = getCartOwnerId();
+
+    if (currentId) {
+      const count = await getCartItemCount(currentId);
+      setCartCount(count || 0);
+    } else {
+      setCartCount(0);
+    }
   };
 
   useEffect(() => {
-    const userId = sessionStorage.getItem('uid');
-    setUserId(userId);
-    fetchCartCount(userId);
+    updateCount();
 
     const handleCartUpdated = () => {
-      fetchCartCount(userId);
+      updateCount();
     };
 
     window.addEventListener("cartUpdated", handleCartUpdated);
+    // Listen for storage changes (login/logout)
+    window.addEventListener("storage", handleCartUpdated);
 
     return () => {
       window.removeEventListener("cartUpdated", handleCartUpdated);
+      window.removeEventListener("storage", handleCartUpdated);
     };
   }, []);
   
 
   return (
     <Link legacyBehavior href="/cart">
-      <button className="cart">
-        <i className="far fa-shopping-basket" />
-        <span>{cartCount}</span>
-      </button>
+      <a className="cart cart-trigger" aria-label={`Cart with ${cartCount} items`}>
+        <i className="fas fa-shopping-basket" />
+        {cartCount > 0 && <span>{cartCount}</span>}
+      </a>
     </Link>
   );
 };

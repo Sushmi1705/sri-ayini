@@ -7,6 +7,8 @@ import { addToCart } from "../services/cartServices";
 import { useRouter } from "next/router";
 import { addToWishlist, getWishlist, removeFromWishlist } from '../services/wishlistService';
 import { auth } from '../firebase';
+import VariantDropdown from "../src/components/VariantDropdown";
+import QuantitySelector from "../src/components/QuantitySelector";
 
 const ProductList = () => {
   const router = useRouter();
@@ -25,35 +27,9 @@ const ProductList = () => {
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
-
-  function Sizes({ sizes = [], onSelect }) {
-    const hasOne = sizes.filter(s => s.isActive).length === 1;
-    const safe = hasOne
-      ? sizes
-      : sizes.map((s, i) => ({ ...s, isActive: i === 0 }));
-
-    return (
-      <div className="variants d-flex flex-wrap gap-2">
-        {safe.map((s) => {
-          const price = Number(s.price || 0).toLocaleString('en-IN');
-          return (
-            <button
-              key={s.id}
-              type="button"
-              className={`variant ${s.isActive ? 'active' : ''}`}
-              onClick={() => onSelect?.(s)}
-              title={`₹${price} — ${s.sizeLabel}${s.quantity ? ` (Qty: ${s.quantity})` : ''}`}
-            >
-              <span className="variant-price">₹{price}</span>
-              <span className="variant-dot">•</span>
-              <span className="variant-size">{s.sizeLabel}</span>
-              {s.quantity ? <span className="variant-qty">Qty {s.quantity}</span> : null}
-            </button>
-          );
-        })}
-      </div>
-    );
-  }
+  const [sortBy, setSortBy] = useState("featured");
+  const [showInStockOnly, setShowInStockOnly] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Auth effect with cleanup
 useEffect(() => {
@@ -218,11 +194,6 @@ useEffect(() => {
   const handleAddToCart = async (item, qtyToAdd, e) => {
     if (e) e.preventDefault();
 
-    if (!userId) {
-      await router.push("/login");
-      return;
-    }
-
     const size = getActiveSize(item);
     if (!size) {
       alert("Please select a size.");
@@ -267,10 +238,46 @@ useEffect(() => {
 
       const updated = await getWishlist(userId);
       setWishlistItems(updated);
+      window.dispatchEvent(new Event("wishlistUpdated"));
     } catch (err) {
       console.error('Wishlist operation failed', err);
     }
   };
+
+  const displayedItems = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    let nextItems = [...items];
+
+    if (normalizedSearch) {
+      nextItems = nextItems.filter((item) =>
+        item.name?.toLowerCase().includes(normalizedSearch) ||
+        item.category?.toLowerCase().includes(normalizedSearch)
+      );
+    }
+
+    if (showInStockOnly) {
+      nextItems = nextItems.filter((item) => Boolean(getActiveSize(item)));
+    }
+
+    switch (sortBy) {
+      case "price-low":
+        nextItems.sort((a, b) => Number(getActiveSize(a)?.price || 0) - Number(getActiveSize(b)?.price || 0));
+        break;
+      case "price-high":
+        nextItems.sort((a, b) => Number(getActiveSize(b)?.price || 0) - Number(getActiveSize(a)?.price || 0));
+        break;
+      case "rating":
+        nextItems.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
+        break;
+      case "reviews":
+        nextItems.sort((a, b) => Number(b.reviewsCount || b.totalReviews || 0) - Number(a.reviewsCount || a.totalReviews || 0));
+        break;
+      default:
+        break;
+    }
+
+    return nextItems;
+  }, [getActiveSize, items, searchTerm, showInStockOnly, sortBy]);
 
   function StarRating({ value = 0, onChange, size = 22, readOnly = false }) {
     const [hover, setHover] = React.useState(0);
@@ -331,11 +338,18 @@ useEffect(() => {
 
       <PageBanner pageName={"Products"} />
       <section className="product-list-area pt-100 pb-100">
+        <div className="container mb-40 text-center">
+           <div className="header-centered">
+             <span className="sub-title mb-10" style={{ color: 'var(--primary-green)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '13px', display: 'block' }}>The Ayini Collection</span>
+             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: '800', fontSize: '36px', margin: '10px 0' }}>Shop by Category</h2>
+             <div className="title-divider" style={{ width: '60px', height: '3px', background: 'var(--primary-green)', margin: '15px auto' }}></div>
+           </div>
+        </div>
         <div className="category-scrollbar container mb-4">
           <div className="category-list">
             <div
               className={`category-item ${!category ? "active" : ""}`}
-              onClick={() => router.push("/product-details")}
+              onClick={() => router.push("/product-details", undefined, { scroll: false })}
             >
               <img src="/assets/images/category/masala powder.jpeg" alt="All" />
               <span>All</span>
@@ -349,7 +363,7 @@ useEffect(() => {
                   router.push({
                     pathname: "/product-details",
                     query: { category: cat.category },
-                  })
+                  }, undefined, { scroll: false })
                 }
               >
                 <img src={cat.image || "/assets/images/categories/default.png"} alt={cat.category} />
@@ -360,129 +374,158 @@ useEffect(() => {
         </div>
 
         <div className="container">
+          <div className="row align-items-center mb-4">
+            <div className="col-lg-4 mb-3 mb-lg-0">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search products in this collection"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="col-lg-5 mb-3 mb-lg-0">
+              <div className="d-flex align-items-center gap-3 flex-wrap">
+                <select
+                  className="form-control"
+                  style={{ maxWidth: "220px" }}
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="featured">Featured</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="rating">Highest Rated</option>
+                  <option value="reviews">Most Reviewed</option>
+                </select>
+                <label className="mb-0 d-flex align-items-center" style={{ gap: "8px" }}>
+                  <input
+                    type="checkbox"
+                    checked={showInStockOnly}
+                    onChange={(e) => setShowInStockOnly(e.target.checked)}
+                  />
+                  In-stock only
+                </label>
+              </div>
+            </div>
+            <div className="col-lg-3 text-lg-right">
+              <span className="text-muted small">{displayedItems.length} products</span>
+            </div>
+          </div>
           <div className="row">
-            {items.length > 0 ? (
-              items.map((item) => (
+            {displayedItems.length > 0 ? (
+              displayedItems.map((item) => (
                 <div className="col-xl-3 col-lg-4 col-md-6 mb-4" key={item.id}>
-                  <div className="card h-100 shadow-sm border-0 product-card">
-                    <div className="image-container" style={{ position: 'relative' }}>
+                  <div className="product-item wow fadeInUp delay-0-2s">
+                    <div className="image">
                       <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
                         <a>
                           <img
                             src={item.image || "assets/images/products/masala.jpg"}
-                            className="card-img-top p-3 card-img-top product-image"
                             alt={item.name}
-                            style={{ height: "200px", objectFit: "contain" }}
                           />
                         </a>
                       </Link>
 
-                      {userId ? (
+                      <div className="floating-wishlist">
                         <button
-                          className="btn-wishlist"
+                          className={`action-btn ${isInWishlist(item.id) ? 'active' : ''}`}
                           title="Add to Wishlist"
-                          aria-label="Add to Wishlist"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            handleAddToWishlist(item.id);
+                            if (userId) {
+                              handleAddToWishlist(item.id);
+                            } else {
+                              router.push('/Login');
+                            }
                           }}
-                          style={{ position: "absolute", top: 10, right: 10 }}
                         >
-                          <i className={`fas fa-heart ${isInWishlist(item.id) ? 'active' : ''}`} />
+                          <i className={isInWishlist(item.id) ? "fas fa-heart" : "far fa-heart"} />
                         </button>
-                      ) : (
-                        <Link legacyBehavior href="/Login">
-                          <button
-                            className="btn-wishlist"
-                            title="Add to Wishlist"
-                            aria-label="Add to Wishlist"
-                            style={{ position: "absolute", top: 10, right: 10 }}
-                          >
-                            <i className={`fas fa-heart ${isInWishlist(item.id) ? 'active' : ''}`} />
-                          </button>
-                        </Link>
-                      )}
+                      </div>
                     </div>
 
-                    <div className="card-body">
-                      <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
-                        <a style={{ textDecoration: "none", color: "inherit" }}>
-                          <h5 className="card-title mb-1">{item.name}</h5>
-                        </a>
-                      </Link>
+                    <div className="content">
+                      <h5>
+                        <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
+                          <a>{item.name}</a>
+                        </Link>
+                      </h5>
 
-                      <p className="text-muted small mb-2">{item.category}</p>
-                      
-                      <Sizes
-                        sizes={item.sizes || []}
-                        onSelect={(selected) => {
-                          setProducts(prev =>
-                            prev.map(p =>
-                              p.id === item.id
-                                ? {
-                                  ...p,
-                                  sizes: (p.sizes || []).map(s => ({
-                                    ...s,
-                                    isActive: s.id === selected.id,
-                                  })),
-                                }
-                                : p
-                            )
-                          );
-                        }}
-                      />
+                      <div className="main-price">
+                        ₹{getActiveSize(item)?.price || 0}
+                      </div>
 
-                      <p className="mb-2 flex items-center gap-2">
-                        {[...Array(5)].map((_, index) => (
-                          <span
-                            key={index}
-                            className={index < item.rating ? "text-warning" : "text-muted"}
-                          >
-                            ★
-                          </span>
-                        ))}
-                        <span className="text-muted">({item.reviewsCount || "0"})</span>
-                      </p>
+                      <div className="variant-select-container">
+                        <VariantDropdown
+                          sizes={item.sizes || []}
+                          selectedSizeIndex={
+                            (() => {
+                              const sArray = item.sizes || [];
+                              const hasOne = sArray.filter(s => s.isActive).length === 1;
+                              const safe = hasOne ? sArray : sArray.map((s, i) => ({ ...s, isActive: i === 0 }));
+                              const idx = safe.findIndex(s => s.isActive);
+                              return Math.max(0, idx);
+                            })()
+                          }
+                          onSelect={(idx) => {
+                            setProducts(prev =>
+                              prev.map(p =>
+                                p.id === item.id
+                                  ? {
+                                    ...p,
+                                    sizes: (p.sizes || []).map((s, i) => ({
+                                      ...s,
+                                      isActive: i === idx,
+                                    })),
+                                  }
+                                  : p
+                              )
+                            );
+                          }}
+                        />
+                      </div>
 
-                      <div className="d-flex align-items-center gap-2 quantity-cart-section">
-                        <input
-                          type="number"
-                          min="1"
-                          max="20"
+                      <div className="d-flex align-items-center w-100">
+                        <QuantitySelector
                           value={quantities[item.id] !== undefined ? quantities[item.id] : 1}
-                          onChange={(e) => {
-                            const parsed = parseInt(e.target.value);
+                          onChange={(val) => {
                             setQuantities((prev) => ({
                               ...prev,
-                              [item.id]: isNaN(parsed) || parsed < 0 ? 0 : parsed,
+                              [item.id]: val,
                             }));
                           }}
-                          style={{ width: "auto", height: "20px", marginRight: "10px" }}
                         />
-
-                        {userId ? (
-                          <button
-                            className="btn btn-primary btn-sm btn-add-to-cart"
-                            onClick={(e) => handleAddToCart(item, quantities[item.id] || 1, e)}
-                          >
-                            Add to Cart
-                          </button>
-                        ) : (
-                          <Link legacyBehavior href="/Login">
-                            <button className="btn btn-primary btn-sm btn-add-to-cart">
-                              Add to Cart
-                            </button>
-                          </Link>
-                        )}
+                        <button
+                          className="theme-btn"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleAddToCart(item, quantities[item.id] || 1, e);
+                          }}
+                        >
+                          <i className="fas fa-shopping-basket me-2"></i>
+                          Add
+                        </button>
                       </div>
+                    </div>
+
+                    <div className="ratting">
+                      {[...Array(5)].map((_, index) => (
+                        <i
+                          key={index}
+                          className={`fas fa-star ${index < Math.round(Number(item.rating || 0)) ? "text-warning" : "text-muted"}`}
+                        />
+                      ))}
+                      <span className="ml-2 small text-muted">({Number(item.reviewsCount || item.totalReviews || 0)})</span>
                     </div>
                   </div>
                 </div>
               ))
             ) : (
               <div className="col-12">
-                <p>Loading...</p>
+                <p>{items.length === 0 ? "Loading..." : "No products matched your filters."}</p>
               </div>
             )}
           </div>

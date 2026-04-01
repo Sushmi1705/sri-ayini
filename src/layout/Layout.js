@@ -6,6 +6,7 @@ import { animation, stickyNav } from "../utils";
 import Footer from "./Footer";
 import Header from "./Header";
 import SideBar from "./SideBar";
+import MobileBottomNav from "./MobileBottomNav";
 const Layout = ({ header, footer, children }) => {
   useEffect(() => {
     // stickyNav();
@@ -27,8 +28,9 @@ const Layout = ({ header, footer, children }) => {
       <div className="page-wrapper">
         <Header header={header} />
         <SideBar />
-        {children}
+        <main className="site-main-content">{children}</main>
         <Footer footer={footer} />
+        <MobileBottomNav />
       </div>
     </Fragment>
   );

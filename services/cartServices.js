@@ -11,48 +11,64 @@ export const getGuestId = () => {
     return guestId;
 };
 
-export const fetchCartItems = async (guestId) => {
-    console.log('guestId-----', guestId);
-    const response = await fetch(`${API_URL}/${guestId}`);
-    const data = await response.json();
-    console.log('data-------', data);
-    return data.items;
+export const getSessionUserId = () => {
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem("uid");
 };
 
-// services/cartServices.js
-// services/cartServices.js
-export const updateCartItems = async (userId, { productId, sizeId, cartQty}) => {
+export const getCartOwnerId = () => {
+    return getSessionUserId() || getGuestId();
+};
+
+export const fetchCartItems = async (guestId) => {
+    const response = await fetch(`${API_URL}/${guestId}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch cart: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.items || [];
+};
+
+export const updateCartItems = async (userId, { productId, sizeId, cartQty }) => {
   const res = await fetch(`${API_URL}/update`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      userId,
-      productId,
-      sizeId,
-      cartQty
-    }),
+    body: JSON.stringify({ userId, productId, sizeId, cartQty }),
   });
+  if (!res.ok) {
+    throw new Error(`Failed to update cart: ${res.status}`);
+  }
+  return res.json();
 };
 
 export const addToCart = async (guestId, payload) => {
-
     // Use a local variable instead of reassigning guestId
-    const finalGuestId = guestId || getGuestId();
+    const finalGuestId = guestId || getCartOwnerId();
 
-    await fetch(`${API_URL}/add`, {
+    const res = await fetch(`${API_URL}/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ finalGuestId, ...payload }),
     });
+    
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to add to cart');
+    }
+    return res.json();
 };
 
-export const removeFromCart = async (itemId) => {
-    const guestId = getGuestId();
-    await fetch(`${API_URL}/${guestId}/${itemId}`, { method: "DELETE" });
+export const removeFromCart = async (userId, itemId) => {
+    const guestId = userId || getCartOwnerId();
+    const res = await fetch(`${API_URL}/${guestId}/${itemId}`, { method: "DELETE" });
+    if (!res.ok) {
+        throw new Error(`Failed to remove item: ${res.status}`);
+    }
+    return res.json();
 };
 
 export const clearCart = async () => {
-    const guestId = getGuestId();
+    const guestId = getCartOwnerId();
     await fetch(`${API_URL}/clear/${guestId}`, { method: "DELETE" });
 };
 
@@ -72,5 +88,16 @@ export const getCartItemCount = async (guestId) => {
     return data.count;
 };
 
-
-
+export const mergeCart = async (guestId, uid) => {
+    if (!guestId || !uid || guestId === uid) return;
+    try {
+        const res = await fetch(`${API_URL}/merge`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ guestId, uid }),
+        });
+        return res.json();
+    } catch (error) {
+        console.error("mergeCart error:", error);
+    }
+};

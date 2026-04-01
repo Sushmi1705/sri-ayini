@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ClientLogoSlider from "../src/components/ClientLogoSlider";
 import PageBanner from "../src/components/PageBanner";
 import Layout from "../src/layout/Layout";
-import { fetchCartItems, updateCartItems } from "../services/cartServices";
+import { fetchCartItems, updateCartItems, removeFromCart, getCartOwnerId, getSessionUserId } from "../services/cartServices";
 import { getTax } from "../services/checkoutServices";
 
 const CartPage = () => {
+  const router = useRouter();
   const [cartData, setCartData] = useState([]);
 
   // total price
@@ -60,35 +62,34 @@ const CartPage = () => {
   // });
 
   useEffect(() => {
-    const userId = sessionStorage.getItem('uid');
-    setUserId(userId);
+    const activeId = getCartOwnerId();
+    setUserId(activeId);
 
-    console.log('45------');
-
-    if (!userId) {
-      setLoading(false); // No guest ID, stop loading
+    if (!activeId) {
+      setLoading(false);
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true);
 
     getTax()
       .then((items) => {
-        console.log('57---------', items);
-        setTax(items.value)
+        setTax(items.value);
       })
       .catch((error) => {
-        console.error("Error", error);
+        console.error("Error fetching tax:", error);
       });
-    fetchCartItems(userId)
+
+    fetchCartItems(activeId)
       .then((items) => {
-        setCartData(items);
+        setCartData(items || []);
       })
       .catch((error) => {
         console.error("Error fetching cart:", error);
+        setCartData([]);
       })
       .finally(() => {
-        setLoading(false); // Stop loading after fetch
+        setLoading(false);
       });
 
   }, []);
@@ -211,36 +212,68 @@ const CartPage = () => {
       return next;
     });
   };
-  console.log("cartData----", tax);
+
+  const handleCheckout = (e) => {
+    e.preventDefault();
+    const activeUserId = getSessionUserId();
+    if (!activeUserId) {
+      router.push("/Login");
+    } else {
+      router.push("/checkout");
+    }
+  };
   return (
     <Layout>
       <PageBanner pageName={"Cart Page"} />
-      <div className="cart-area py-130 rpy-100">
+      <div className="cart-area modern-cart-page py-130 rpy-100">
         {loading ? (
-          <div style={{ textAlign: "center" }}>
-            <p>Loading cart...</p>
+          <div className="page-state-shell">
+            <div className="page-state-card">
+              <div className="page-state-icon">
+                <i className="fas fa-shopping-basket" />
+              </div>
+              <h4 className="page-state-title">Preparing your cart</h4>
+              <p className="page-state-copy">
+                We&apos;re fetching your saved items and calculating the latest totals.
+              </p>
+            </div>
           </div>
         ) : cartData.length === 0 ?
           (
-            <div className="redirectPage" style={{ textAlign: "center" }}>
-              <Link legacyBehavior href="/product-details">
-                <a className="theme-btn">
-                  Go to product page <i className="fas fa-angle-double-right" />
-                </a>
-              </Link>
+            <div className="page-state-shell">
+              <div className="page-state-card">
+                <div className="page-state-icon">
+                  <i className="fas fa-leaf" />
+                </div>
+                <h4 className="page-state-title">Your cart is waiting for its first blend</h4>
+                <p className="page-state-copy">
+                  Browse the collection and add your favorite spices to get started.
+                </p>
+                <Link legacyBehavior href="/product-details">
+                  <a className="theme-btn">
+                    Explore products <i className="fas fa-angle-double-right" />
+                  </a>
+                </Link>
+              </div>
             </div>
           ) :
           (
-            <div className="container cartList">
-              <div className="cart-item-wrap mb-35 wow fadeInUp delay-0-2s">
+            <div className="container cartList cart-page-shell">
+              <div className="cart-item-wrap cart-card-surface mb-35 wow fadeInUp delay-0-2s">
                 {cartData.map((cart, i) => (
                   <div className="cart-single-item" key={i}>
                     <button
                       type="button"
                       className="close"
-                      onClick={() =>
-                        setCartData(cartData.filter((c) => c.id !== cart.id))
-                      }
+                      onClick={async () => {
+                        try {
+                          await removeFromCart(userId, cart.id);
+                          setCartData(cartData.filter((c) => c.id !== cart.id));
+                        } catch (error) {
+                          console.error("Failed to remove item:", error);
+                          alert("Failed to remove item. Please try again.");
+                        }
+                      }}
                     >
                       <span aria-hidden="true">×</span>
                     </button>
@@ -248,7 +281,7 @@ const CartPage = () => {
                       <img src={cart.image} alt="Product Image" />
                     </div>
                     <h5 className="product-name">{cart.name}</h5>
-                    <span className="product-price">{cart.unitPrice}</span>
+                    <span className="product-price">{Number(cart.unitPrice || 0).toFixed(2)}</span>
                     <div className="quantity-input">
                       <button
                         className="quantity-down"
@@ -262,6 +295,7 @@ const CartPage = () => {
                         defaultValue={cart.cartQty}
                         value={cart.cartQty}
                         name="quantity"
+                        readOnly
                       />
                       <button
                         className="quantity-up"
@@ -271,7 +305,7 @@ const CartPage = () => {
                       </button>
                     </div>
                     <span className="product-total-price">
-                      {cart.cartQty * cart.unitPrice}
+                      {(Number(cart.cartQty || 0) * Number(cart.unitPrice || 0)).toFixed(2)}
                     </span>
                   </div>
                 ))}
@@ -308,7 +342,7 @@ const CartPage = () => {
                       update cart <i className="fas fa-angle-double-right" />
                     </a>
                   </Link> */}
-                    <button className="theme-btn" onClick={updateAllQuantities}>
+                    <button className="theme-btn cart-update-btn" onClick={updateAllQuantities}>
                       update cart <i className="fas fa-angle-double-right" />
                     </button>
                   </div>
@@ -317,7 +351,7 @@ const CartPage = () => {
               <div className="payment-cart-total pt-25 wow fadeInUp delay-0-2s">
                 <div className="row justify-content-end">
                   <div className="col-lg-5">
-                    <div className="shoping-cart-total mt-45">
+                    <div className="shoping-cart-total cart-summary-card mt-45">
                       <h4 className="form-title m-25">Cart Totals</h4>
                       <table>
                         <tbody>
@@ -341,17 +375,19 @@ const CartPage = () => {
                             </td>
                             <td>
                               <strong className="total-price">
-                                {Number(totalPrice)}
+                                {Number(totalPrice).toFixed(2)}
                               </strong>
                             </td>
                           </tr>
                         </tbody>
                       </table>
-                      <Link legacyBehavior href="/checkout">
-                        <a className="theme-btn style-two mt-25 w-100">
-                          Proceed to checkout
-                        </a>
-                      </Link>
+                      <a 
+                        href="#"
+                        onClick={handleCheckout}
+                        className="theme-btn style-two mt-25 w-100 text-center"
+                      >
+                        Proceed to checkout
+                      </a>
                     </div>
                   </div>
                 </div>

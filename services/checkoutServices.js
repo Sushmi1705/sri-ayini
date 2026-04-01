@@ -6,7 +6,7 @@ export const createRazorpayOrder = async (amount) => {
     const response = await fetch(`${API_URL}/payment/create-payment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount }),
+        body: JSON.stringify({ amount: Number(amount) || 0 }),
     });
     return response.json();
 };
@@ -26,7 +26,7 @@ export const savePaymentDetails = async (paymentData, totalPrice, shipping, vat,
         body: JSON.stringify({paymentData: fullData }),
     });
     return response.json();
-  };
+};
 
 export const checkout = async (guestId, orderData) => {
 

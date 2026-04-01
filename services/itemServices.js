@@ -3,9 +3,7 @@ const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/items`;
 
 
 export const fetchItems = async () => {
-  console.log("hiiii");
     try {
-      console.log('url-----', API_URL);
       const response = await fetch(API_URL);
       if (!response.ok) {
         throw new Error("Failed to fetch items");
@@ -78,7 +76,10 @@ export async function getProductReviewsPaged(productId, { limit = 10, cursor = n
         },
         body: JSON.stringify(reviewData),
       });
-      if (!response.ok) throw new Error('Failed to add review');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to add review');
+      }
       return await response.json();
     } catch (error) {
       console.error('Error adding review:', error);
@@ -110,4 +111,14 @@ export async function getProductReviewsPaged(productId, { limit = 10, cursor = n
     }
   };
 
-
+export const checkCanReview = async (productId, userId) => {
+  try {
+    const response = await fetch(`${API_URL}/can-review/${productId}?userId=${userId}`);
+    if (!response.ok) throw new Error('Failed to check review status');
+    const data = await response.json();
+    return data.canReview;
+  } catch (error) {
+    console.error('Error checking review status:', error);
+    return false;
+  }
+};

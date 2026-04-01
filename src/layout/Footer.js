@@ -36,219 +36,109 @@ const ScrollTopBtn = () => {
   };
   return (
     <button
-      style={{ display: "inline-block" }}
-      className="scroll-top scroll-to-target"
-      data-target="html"
+      className="scroll-top-modern"
       onClick={() => scrollTop()}
+      title="Back to Top"
     >
-      <span className="fas fa-angle-double-up" />
+      <span className="fas fa-chevron-up" />
     </button>
   );
 };
 
 const DefaultFooter = () => (
-  <footer className="main-footer bg-green text-white">
-    <div className="map-container" style={{ marginTop: '20px' }}>
+  <footer className="main-footer-modern">
+    <div className="footer-map-container">
       <iframe
         title="Google Map"
         src="https://www.google.com/maps?q=No.44,+3rd+street,+vetrinagar,+avadi,+dr-600054&output=embed"
-        width="100%"
-        height="200"
-        style={{ border: 0, borderRadius: "8px" }}
+        className="footer-map-modern"
         allowFullScreen=""
         loading="lazy"
       ></iframe>
-
+      <div className="footer-map-overlay">
+        <div className="map-label">Visit Our Store</div>
+      </div>
     </div>
-    <div className="container">
-      {/* <div className="footer-top-newsletter py-80 mb-75"> */}
 
-      {/* <div className="section-title">
-          <h2>Newsletter Subscribe</h2>
-        </div> */}
-      {/* <form onSubmit={(e) => e.preventDefault()} action="#">
-          <input type="email" placeholder="Email Address" required="" />
-          <button className="theme-btn">
-            subscribe now <i className="fas fa-angle-double-right" />
-          </button>
-        </form> */}
-      {/* </div> */}
-      <div className="row justify-content-center">
-        <div className="col-lg-4 col-md-6 order-md-2">
-          <div className="footer-widget about-widget text-center">
-            <div className="footer-logo mb-30">
-              <Link legacyBehavior href="/">
-                <a>
-                  <img src="assets/images/logos/logo.png" alt="Logo" />
-                </a>
-              </Link>
-            </div>
-            <p>
+    <div className="container pt-80">
+      <div className="row">
+        {/* Column 1: Discover */}
+        <div className="col-lg-4 col-md-6 mb-40">
+           <h4 className="footer-widget-title">Discover</h4>
+           <div className="footer-links-container">
+             <Link legacyBehavior href="/about">
+               <a className="footer-link-modern"><i className="fas fa-chevron-right" /> Our Story</a>
+             </Link>
+             <Link legacyBehavior href="/blog-grid">
+               <a className="footer-link-modern"><i className="fas fa-chevron-right" /> Latest News</a>
+             </Link>
+             <Link legacyBehavior href="/contact">
+               <a className="footer-link-modern"><i className="fas fa-chevron-right" /> Contact Us</a>
+             </Link>
+             <Link legacyBehavior href="/faqs">
+               <a className="footer-link-modern"><i className="fas fa-chevron-right" /> Privacy Policy</a>
+             </Link>
+           </div>
+        </div>
+
+        {/* Column 2: Brand Soul */}
+        <div className="col-lg-4 mb-40 order-first order-lg-0">
+          <div className="brand-soul-container">
+            <Link legacyBehavior href="/">
+              <a>
+                <img src="/assets/images/logos/logo-white.png" alt="Logo" className="footer-logo-modern" />
+              </a>
+            </Link>
+            <p className="brand-statement">
               Handcrafted with love, our spice blends bring generations of flavor to your kitchen. Taste the purity. Feel the tradition. Live the Ayini way.
             </p>
-            <div className="social-style-two pt-10">
-              <Link legacyBehavior href="/contact">
-                <a>
-                  <i className="fab fa-facebook-f" />
-                </a>
-              </Link>
-              <Link legacyBehavior href="/contact">
-                <a>
-                  <i className="fab fa-twitter" />
-                </a>
-              </Link>
-              <Link legacyBehavior href="/contact">
-                <a>
-                  <i className="fab fa-linkedin-in" />
-                </a>
-              </Link>
-              <Link legacyBehavior href="/contact">
-                <a>
-                  <i className="fab fa-youtube" />
-                </a>
-              </Link>
+            <div className="social-pill-container">
+              <a href="#" className="social-pill" title="Facebook"><i className="fab fa-facebook-f" /></a>
+              <a href="#" className="social-pill" title="Twitter"><i className="fab fa-twitter" /></a>
+              <a href="#" className="social-pill" title="Instagram"><i className="fab fa-instagram" /></a>
+              <a href="#" className="social-pill" title="YouTube"><i className="fab fa-youtube" /></a>
             </div>
           </div>
         </div>
-        <div className="col-lg-4 col-md-6 order-md-1">
-          <div className="footer-widget menu-widget two-column">
-            <h4 className="footer-title">Quick Links</h4>
-            <ul>
-              <li>
-                <Link legacyBehavior href="/about">
-                  <a>About Us</a>
-                </Link>
-              </li>
-              {/* <li>
-                <Link legacyBehavior href="/contact">
-                  Documentation
-                </Link>
-              </li> */}
-              {/* <li>
-                <Link legacyBehavior href="/services">
-                  <a>Services</a>
-                </Link>
-              </li> */}
-              {/* <li>
-                <Link legacyBehavior href="/services">
-                  Elements
-                </Link>
-              </li> */}
-              {/* <li>
-                <Link legacyBehavior href="/portfolio-grid">
-                  <a>Our Projects</a>
-                </Link>
-              </li> */}
-              {/* <li>
-                <Link legacyBehavior href="/shop-grid">
-                  <a>Best Products</a>
-                </Link>
-              </li> */}
-              {/* <li>
-                <Link legacyBehavior href="/farmers">
-                  <a>Meet Farmers</a>
-                </Link>
-              </li> */}
-              {/* <li>
-                <Link legacyBehavior href="/service-details">
-                  <a>Technology</a>
-                </Link>
-              </li> */}
-              <li>
-                <Link legacyBehavior href="/blog-grid">
-                  <a>Latest News</a>
-                </Link>
-              </li>
-              <li>
-                <Link legacyBehavior href="/contact">
-                  Contact Us
-                </Link>
-              </li>
-              {/* <li>
-                <Link legacyBehavior href="/service-details">
-                  <a>Vegetables</a>
-                </Link>
-              </li> */}
-              <li>
-                <Link legacyBehavior href="/contact">
-                  Setting &amp; Privacy
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="col-lg-4 col-md-6 order-md-3">
-          <div className="footer-widget contact-widget">
-            <h4 className="footer-title">Contact Us</h4>
-            <p>
-              The taste you remember, the purity you trust - only at Sri Ayini.
-            </p>
-            <ul>
-              <li>
-                <i className="fal fa-map-marker-alt" />
-                Sri ayini foods, No.44, 3rd street vetrinagar, Avadi - 600054
-              </li>
-              <li>
-                <i className="far fa-phone" />
-                <a href="calto:+012(345)67899">+91 9363489242</a>
-              </li>
-              <li>
-                <i className="far fa-envelope" />
-                <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
-              </li>
-            </ul>
-          </div>
+
+        {/* Column 3: Connect */}
+        <div className="col-lg-4 col-md-6 mb-40">
+          <h4 className="footer-widget-title">Connect</h4>
+          <ul className="contact-info-modern">
+            <li className="contact-item-modern">
+              <div className="icon-box"><i className="fal fa-map-marker-alt" /></div>
+              <div className="contact-text-modern">
+                Sri ayini foods, No.44, 3rd street<br />
+                vetrinagar, Avadi - 600054
+              </div>
+            </li>
+            <li className="contact-item-modern">
+              <div className="icon-box"><i className="far fa-phone" /></div>
+              <div className="contact-text-modern">
+                <a href="tel:+919363489242">+91 9363489242</a>
+              </div>
+            </li>
+            <li className="contact-item-modern">
+              <div className="icon-box"><i className="far fa-envelope" /></div>
+              <div className="contact-text-modern">
+                <a href="mailto:sriayini@gmail.com">sriayini@gmail.com</a>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
-      <div className="copyright-area pt-25 pb-10">
-        <p><strong>Fssai no : </strong> 22425474000281</p>
-        {/* <ul className="footer-menu">
-          <li>
-            <Link legacyBehavior href="/contact">
-              Setting &amp; Privacy
-            </Link>
-          </li>
-          <li>
-            <Link legacyBehavior href="/faqs">
-              <a>Faqs</a>
-            </Link>
-          </li>
-          <li>
-            <Link legacyBehavior href="/contact">
-              Payments
-            </Link>
-          </li>
-        </ul> */}
-        {/* Scroll Top Button */}
-        <ScrollTopBtn />
+
+      <div className="footer-bottom-modern">
+        <div className="footer-bottom-grid">
+           <div className="copyright-text">
+             © {new Date().getFullYear()} Sri Ayini. Crafted with Heritage.
+           </div>
+           <div className="fssai-badge-modern">
+             FSSAI LICENSE: <span>22425474000281</span>
+           </div>
+           <ScrollTopBtn />
+        </div>
       </div>
-    </div>
-    <div className="footer-shapes">
-      <img
-        className="footer-bg"
-        src="assets/images/background/footer-bg-shape.png"
-        alt="Shape"
-      />
-      <img
-        className="shape-one"
-        src="assets/images/shapes/footer1.png"
-        alt="Shape"
-      />
-      <img
-        className="shape-two"
-        src="assets/images/shapes/footer2.png"
-        alt="Shape"
-      />
-      <img
-        className="shape-three"
-        src="assets/images/shapes/footer3.png"
-        alt="Shape"
-      />
-      <img
-        className="shape-four"
-        src="assets/images/shapes/footer4.png"
-        alt="Shape"
-      />
     </div>
   </footer>
 );

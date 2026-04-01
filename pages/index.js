@@ -1,15 +1,21 @@
 import dynamic from "next/dynamic";
+import VariantDropdown from "../src/components/VariantDropdown";
+import QuantitySelector from "../src/components/QuantitySelector";
 import Link from "next/link";
 import { Nav, Tab } from "react-bootstrap";
 import Slider from "react-slick";
 import ClientLogoSlider from "../src/components/ClientLogoSlider";
 import { HomeSlider1 } from "../src/components/HomeSlider";
 import CustomerReviews from "../src/components/slider/CustomerReviews";
+import OrganicTestimonials from "../src/components/OrganicTestimonials";
 import PhotoGallery from "../src/components/slider/PhotoGallery";
 import Layout from "../src/layout/Layout";
-import { productActive } from "../src/sliderProps";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { fetchItems, fetchCategory } from "../services/itemServices";
+import { addToCart } from "../services/cartServices";
+import { addToWishlist, getWishlist, removeFromWishlist } from '../services/wishlistService';
+import { auth } from '../firebase';
+import { useRouter } from "next/router";
 
 const MunfimCountdown = dynamic(
   () => import("../src/components/MunfimCountdown"),
@@ -17,33 +23,101 @@ const MunfimCountdown = dynamic(
     ssr: false,
   }
 );
+
+const SkeletonCard = ({ isFeatured }) => (
+  <div className={isFeatured ? "col-xl-4 col-lg-6 col-md-6 mb-30" : "col-xl-3 col-lg-4 col-md-4 col-sm-6 mb-30"}>
+    <div className="product-skeleton-card skeleton">
+      <div className="skeleton-img skeleton" />
+      <div className="skeleton-title skeleton" />
+      <div className="skeleton-price skeleton" />
+    </div>
+  </div>
+);
 const Index = () => {
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [selectedSizes, setSelectedSizes] = useState({});
+  const [quantities, setQuantities] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    fetchItems()
-      .then(data => {
-        // console.log('28-----', data);
-        setProducts(data);
+    Promise.all([fetchItems(), fetchCategory()])
+      .then(([items, cats]) => {
+        setProducts(items);
+        setCategories(cats);
+        setIsInitialLoading(false);
       })
-      .catch((error) => console.error("Error fetching items:", error));
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setIsInitialLoading(false);
+      });
   }, []);
-
 
   useEffect(() => {
-    fetchCategory()
-      .then(data => {
-        setCategories(data);
-      })
-      .catch((error) => console.error("Error fetching items:", error));
+    const sessionUid = sessionStorage.getItem('uid');
+    if (sessionUid) setUserId(sessionUid);
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) setUserId(user.uid);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const getFirstSize = (p) => {
-    const sizes = Array.isArray(p?.sizes) ? p.sizes : [];
-    return sizes.length ? sizes[0] : null;
+  useEffect(() => {
+    if (!userId) return;
+    getWishlist(userId).then(setWishlistItems).catch(console.error);
+  }, [userId]);
+
+  const isInWishlist = (productId) => wishlistItems.some(it => it.id === productId);
+
+  const handleAddToCart = async (product, currentSize, qty, e) => {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+    setLoading(true);
+    try {
+      await addToCart(userId, {
+        productId: product.id,
+        name: product.name,
+        image: product.image,
+        category: product.category,
+        sizeId: currentSize.id || "default_size",
+        sizeLabel: currentSize.sizeLabel || "Standard",
+        unitPrice: Number(currentSize.price || product.price || 0),
+        cartQty: Number(qty) || 1,
+      });
+      alert("Added to cart!");
+      window.dispatchEvent(new Event("cartUpdated"));
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      alert(err.message || "Failed to add to cart");
+    } finally { setLoading(false); }
   };
+
+  const handleAddToWishlist = async (product, e) => {
+    if (e) e.preventDefault();
+    if (!userId) { router.push("/Login"); return; }
+    try {
+      if (isInWishlist(product.id)) {
+        await removeFromWishlist(userId, product.id);
+        alert("Removed from wishlist");
+      } else {
+        await addToWishlist(userId, product.id);
+        alert("Added to wishlist");
+      }
+      getWishlist(userId).then(setWishlistItems);
+      window.dispatchEvent(new Event("wishlistUpdated"));
+    } catch (err) { console.error(err); }
+  };
+
+  // Group products by category
+  const productsByCategory = categories.reduce((acc, cat) => {
+    acc[cat.category] = products.filter(p => p.category === cat.category);
+    return acc;
+  }, {});
   // console.log('42--------',products);
   return (
     <Layout header={1}>
@@ -65,57 +139,134 @@ const Index = () => {
         />
       </section>
       {/* Slider Section End */}
-      {/* Category Section Start */}
-      <section className="product-section pt-100 rpt-70 rpb-100">
-        <div className="container-fluid">
-          <div className="section-title text-center mb-60">
-            {/* <span className="sub-title mb-20">
-              Our Signature Product Collection
-            </span> */}
-            <h2>Best Sellers</h2>
-          </div>
+      {/* Category Sections Start */}
+      {categories.map((cat, idx) => (
+        productsByCategory[cat.category]?.length > 0 && (
+          <section className={`product-section pt-50 pb-50 ${idx % 2 === 0 ? "bg-lighter" : ""}`} key={cat.id || idx}>
+            <div className="container">
+              {(() => {
+                const cName = cat.categoryName || cat.category;
+                const isFeatured = cName.toLowerCase().includes('masala') || cName.toLowerCase().includes('podi') || cName.toLowerCase().includes('flour') || idx === 0;
+                const displayProducts = productsByCategory[cat.category].slice(0, isFeatured ? 3 : 4);
 
-          <Slider {...productActive} className="product-active">
-            {products.slice(0, 5).map((product, index) => (
-              <div className="product-item wow fadeInUp delay-0-3s" key={product.id || index}>
-                <Link href="/product-details">
-                  <div className="image">
-                    <img
-                      src={product.image || "assets/images/products/default.jpg"}
-                      alt={product.name}
-                    />
+                return (
+                  <div className={isFeatured ? "row featured-category-row" : ""}>
+                    {/* The Promo Banner Block (Only shows if Featured) */}
+                    {isFeatured && (
+                      <div className="col-xl-3 col-lg-4 col-md-12 mb-30 d-flex" style={{ alignSelf: 'stretch' }}>
+                        <div className={`category-promo-card w-100 promo-color-${idx % 3}`}>
+                          <div className="promo-bg-image"></div>
+                          <div className="promo-content text-center">
+                            <h3>{cName}</h3>
+                            <div className="divider"></div>
+                            <p className="mt-10 mb-20">Handcrafted, rich & pure. Discover the vibrant taste of our curated collections.</p>
+                            <Link href={{ pathname: '/product-details', query: { category: cat.category } }} className="theme-btn style-white w-100">
+                              Explore <i className="fas fa-arrow-right" />
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Left side standard header (Only shows if NOT featured) */}
+                    {!isFeatured && (
+                      <div className="category-title-section w-100">
+                        <h2>{cName}</h2>
+                        <Link href={{ pathname: '/product-details', query: { category: cat.category } }} className="view-all-link">
+                          View All <i className="fas fa-angle-double-right" />
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Products Grid Wrapper */}
+                    <div className={isFeatured ? "col-xl-9 col-lg-8 col-md-12" : "w-100"}>
+                      <div className="row h-100">
+                        {isInitialLoading ? (
+                          Array(isFeatured ? 3 : 4).fill(0).map((_, i) => <SkeletonCard key={i} isFeatured={isFeatured} />)
+                        ) : (
+                          displayProducts.map((product, pIdx) => (
+                            <div className={isFeatured ? "col-xl-4 col-lg-6 col-md-6 mb-30" : "col-xl-3 col-lg-4 col-md-4 col-sm-6 mb-30"} key={product.id || pIdx}>
+                              <div className="product-item h-100 d-flex flex-column">
+                                {(() => {
+                                  const sizes = Array.isArray(product.sizes) ? product.sizes : [];
+                                  const selectedSizeIndex = selectedSizes[product.id] || 0;
+                                  const currentSize = sizes[selectedSizeIndex] || product;
+                                  const priceNow = Number(currentSize.price || 0);
+                                  const original = Number(currentSize.originalPrice || product.originalPrice || 0);
+                                  const hasDiscount = original > priceNow;
+                                  const discountPercent = hasDiscount ? Math.round(((original - priceNow) / original) * 100) : 0;
+
+                                  return (
+                                    <Fragment>
+                                      {hasDiscount && <div className="badge-discount">{discountPercent}% OFF</div>}
+                                      <div className="floating-wishlist">
+                                        <button 
+                                          className={`action-btn ${isInWishlist(product.id) ? "active" : ""}`} 
+                                          onClick={(e) => handleAddToWishlist(product, e)}
+                                          title="Add to Wishlist"
+                                        >
+                                          <i className="fas fa-heart" />
+                                        </button>
+                                      </div>
+                                      <Link href={`/detailsPage?id=${product.id}`}>
+                                        <div className="image">
+                                          <img src={product.image || "assets/images/products/default.jpg"} alt={product.name} />
+                                        </div>
+                                      </Link>
+                                      <div className="content">
+                                        <Link href={`/detailsPage?id=${product.id}`}>
+                                          <h3 className="product-name">{product.name}</h3>
+                                        </Link>
+                                        <div className="price">
+                                          {hasDiscount && <del>₹{Number(original).toLocaleString('en-IN')}</del>}
+                                          <span>₹{Number(priceNow).toLocaleString('en-IN')}</span>
+                                        </div>
+                                        {sizes.length > 0 && (
+                                          <VariantDropdown 
+                                            sizes={sizes}
+                                            selectedSizeIndex={selectedSizeIndex}
+                                            onSelect={(idx) => setSelectedSizes({ ...selectedSizes, [product.id]: idx })}
+                                          />
+                                        )}
+                                        <div className="d-flex align-items-center mb-10 w-100" style={{ gap: '10px' }}>
+                                          <QuantitySelector
+                                            value={quantities[product.id] !== undefined ? quantities[product.id] : 1}
+                                            onChange={(val) => setQuantities((prev) => ({ ...prev, [product.id]: val }))}
+                                          />
+                                          <button className="card-add-btn" style={{ flex: 1, padding: "10px" }} onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            handleAddToCart(product, currentSize, quantities[product.id] || 1, e);
+                                          }}>
+                                            <i className="fas fa-shopping-basket" /> Add
+                                          </button>
+                                        </div>
+                                        <div className="product-rating mt-5 text-center w-100" style={{ borderTop: '1px solid #f1f1f1', paddingTop: '6px' }}>
+                                          {[...Array(5)].map((_, index) => (
+                                            <i key={index} className={`fas fa-star ${index < Math.round(Number(product.rating || 0)) ? 'text-warning' : 'text-muted'}`} style={{ fontSize: '12px', margin: '0 1px' }} />
+                                          ))}
+                                          <span className="ml-1" style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>
+                                            ({Number(product.reviewsCount || product.totalReviews || 0)})
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </Fragment>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="content">
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-category">{product.category || "Uncategorized"}</p>
-                    {(() => {
-                      const first = getFirstSize(product);
-                      const priceNow = first ? Number(first.price || 0) : Number(product.price || 0);
-                      const sizeLabel = first?.sizeLabel || first?.weight || product.weight || "100g";
-                      const original = (first && first.originalPrice != null) ? first.originalPrice : product.originalPrice;
-
-                      return (
-                        <span className="price">
-                          {original != null ? <del>₹{Number(original).toLocaleString('en-IN')}</del> : null}
-                          <span>{Number(priceNow).toLocaleString('en-IN')}</span> ({sizeLabel})
-                        </span>
-                      );
-                    })()}
-                  </div>
-                </Link>
-                {/* <button
-                  className="btn btn-primary btn-sm btn-add-to-cart"
-                  onClick={() => handleAddToCart(product)}
-                  type="button"
-                >
-                  Add to Cart
-                </button> */}
-              </div>
-            ))}
-          </Slider>
-
-        </div>
-      </section>
+                );
+              })()}
+            </div>
+          </section>
+        )
+      ))}
+      {/* Category Sections End */}
 
       {/* New Category Grid Section */}
       <section className="category-section pb-100">
@@ -517,34 +668,7 @@ const Index = () => {
       </section> */}
       {/* Gallery Area End */}
       {/* Feedback Section Start */}
-      {/* <section className="feedback-section pt-50 rpt-20">
-        <div className="container">
-          <div className="row large-gap">
-            <div className="col-lg-6">
-              <CustomerReviews />
-            </div>
-            <div className="col-lg-6">
-              <div className="feedback-images wow fadeInRight delay-0-2s">
-                <img
-                  className="first-image"
-                  src="assets/images/reviews/feedback-right.jpg"
-                  alt="Feedback"
-                />
-                <img
-                  className="last-image"
-                  src="assets/images/reviews/feedback-right.png"
-                  alt="Feedback"
-                />
-                <img
-                  className="bg-image"
-                  src="assets/images/shapes/feedback-bg.png"
-                  alt="Feedback"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
+      <OrganicTestimonials />
       {/* Feedback Section End */}
       {/* News Section Start */}
       <section className="news-section pt-130 rpt-100 pb-70 rpb-40">

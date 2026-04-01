@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { Fragment, useState, useEffect } from "react";
 import { sidebarToggle } from "../utils";
-import { Blog, Contact, Home, PagesDasktop, Shop } from "./Menus";
+import { Blog, Contact, Home, PagesDasktop, Shop, MegaMenu } from "./Menus";
 import MobileMenu from "./MobileMenu";
 import CartButton from "./CartButton"; // Add this import at the top
 import { auth } from '../../firebase';
 import { searchItems } from '../../services/itemServices';
-import { signOut } from 'firebase/auth';
+import { getWishlist } from '../../services/wishlistService';
 
 // import { useNavigate } from 'react-router-dom';
 // const navigate = useNavigate();
@@ -31,7 +31,7 @@ const SearchBtn = () => {
 
   return (
     <Fragment>
-      {/* <button className="far fa-search" onClick={() => setToggle(!toggle)} /> */}
+      {/* <button className="fas fa-search" onClick={() => setToggle(!toggle)} /> */}
       <form
         onSubmit={(e) => e.preventDefault()}
         action="#"
@@ -43,68 +43,41 @@ const SearchBtn = () => {
           className="searchbox"
           required=""
         />
-        <button type="submit" className="searchbutton far fa-search" />
+        <button type="submit" className="searchbutton fas fa-search" />
       </form>
     </Fragment>
   );
 };
-const DaskTopMenu = () => (
+const DaskTopMenu = ({ categories = [] }) => (
   <ul className="navigation clearfix d-none d-lg-flex">
-    {/* <li className="dropdown">
-      <a href="#">Home</a>
-      <ul>
-        <Home />
-      </ul>
-      <div className="dropdown-btn">
-        <span className="fas fa-chevron-down" />
-      </div>  
-    </li> */}
     <Home />
-    {/* <li className="dropdown">
-      <a href="#">pages</a>
-      <ul>
-        <PagesDasktop />
-      </ul>
-      <div className="dropdown-btn">
-        <span className="fas fa-chevron-down" />
-      </div>
-    </li> */}
+    <MegaMenu categories={categories} />
     <PagesDasktop />
     <Blog />
-    <Shop />
-    {/* <li className="dropdown">
-      <a href="#">blog</a>
-      <ul>
-        <Blog />
-      </ul>
-      <div className="dropdown-btn">
-        <span className="fas fa-chevron-down" />
-      </div>
-    </li> */}
-    {/* <li className="dropdown">
-      <a href="#">shop</a>
-      <ul>
-        <Shop />
-      </ul>
-      <div className="dropdown-btn">
-        <span className="fas fa-chevron-down" />
-      </div>
-    </li> */}
     <Contact />
   </ul>
 );
 
-const Nav = () => {
+const Nav = ({ categories = [] }) => {
   const [nav, setNav] = useState(false);
+
+  useEffect(() => {
+    if (nav) {
+      document.querySelector("body").classList.add("side-content-visible");
+    } else {
+      document.querySelector("body").classList.remove("side-content-visible");
+    }
+  }, [nav]);
+
   return (
     <nav className="main-menu navbar-expand-lg mobile-nav">
       <div className="navbar-header">
         <div className="mobile-logo my-15">
           <Link legacyBehavior href="/">
             <a>
-              <img src="assets/images/logos/logo.png" alt="Logo" title="Logo" />
+              <img src="/assets/images/logos/logo.png" alt="Logo" title="Logo" />
               <img
-                src="assets/images/logos/logo-white.png"
+                src="/assets/images/logos/logo-white.png"
                 alt="Logo"
                 title="Logo"
               />
@@ -125,8 +98,10 @@ const Nav = () => {
         </button>
       </div>
       <div className={`navbar-collapse collapse clearfix ${nav ? "show" : ""}`}>
-        <DaskTopMenu />
-        <MobileMenu />
+        <DaskTopMenu categories={categories} />
+        <div className="d-lg-none">
+          <MobileMenu />
+        </div>
       </div>
     </nav>
   );
@@ -134,11 +109,17 @@ const Nav = () => {
 
 const DefaultHeader = () => {
 
-  const [user, setUser] = useState(null);
-  const [authChecked, setAuthChecked] = useState(false); // new
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [wishlistCount, setWishlistCount] = useState(0);
+
+  useEffect(() => {
+    import('../../services/itemServices').then(({ fetchCategory }) => {
+      fetchCategory().then(setCategories).catch(console.error);
+    });
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -146,7 +127,6 @@ const DefaultHeader = () => {
     // 1️⃣ Check sessionStorage first
     const sessionUid = sessionStorage.getItem('uid');
     if (sessionUid && isMounted) {
-      console.log('Session UID:', sessionUid);
       setUserId(sessionUid);
     }
 
@@ -155,22 +135,27 @@ const DefaultHeader = () => {
       if (!isMounted) return;
 
       if (firebaseUser) {
-        console.log('Firebase user:', firebaseUser);
-        setUser(firebaseUser);
         setUserId(firebaseUser.uid); // overwrite if Firebase login
       } else if (!sessionUid) {
         // only clear if no OTP session either
-        setUser(null);
         setUserId(null);
       }
-
-      setAuthChecked(true); // mark auth check complete
     });
 
     return () => {
       isMounted = false;
       unsubscribe();
     };
+  }, []);
+
+  // 3️⃣ Scroll effect for glassmorphism
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
 
@@ -186,177 +171,106 @@ const DefaultHeader = () => {
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      alert('Logged out!');
-      window.location.href = '/';
-      // Optionally, redirect to login page or reset state
-      // e.g., window.location.href = '/login';
-    } catch (error) {
-      console.error('Logout failed:', error);
-      alert('Failed to logout');
-    }
-  };
-  console.log('174-----', userId);
-  // const navigate = useNavigate();
+  useEffect(() => {
+    const refreshWishlistCount = async () => {
+      const activeUid = sessionStorage.getItem("uid");
+      setUserId(activeUid);
+      if (!activeUid) {
+        setWishlistCount(0);
+        return;
+      }
+      try {
+        const items = await getWishlist(activeUid);
+        setWishlistCount(items.length);
+      } catch (error) {
+        console.error("Wishlist count error:", error);
+      }
+    };
+
+    refreshWishlistCount();
+    window.addEventListener("storage", refreshWishlistCount);
+    window.addEventListener("wishlistUpdated", refreshWishlistCount);
+
+    return () => {
+      window.removeEventListener("storage", refreshWishlistCount);
+      window.removeEventListener("wishlistUpdated", refreshWishlistCount);
+    };
+  }, []);
+
   return (
-    <header className="main-header">
-      <div className="header-top-wrap bg-light-green text-white py-10">
-        <div className="container-fluid">
-          <div className="header-top">
-            <div className="row">
-              <div className="col-xl-7 col-lg-6">
-                <div className="top-left">
-                  <ul>
-                    <li>
-                      <i className="far fa-envelope" /> <b>Email Us :</b>{" "}
-                      <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
-                    </li>
-                    <li>
-                      <i className="far fa-clock" /> <b>Fssai No :</b> 22425474000281
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="col-xl-5 col-lg-6">
-                <div className="top-right text-lg-right">
-                  <ul>
-                    <li>
-                      <i className="far fa-phone" /> <b>Call :</b>{" "}
-                      <a href="callto:+012(345)67899">+91 9363489242
-                      </a>
-                    </li>
-                    <li>
-                      <div className="social-style-one">
-                        <a href="#">
-                          <i className="fab fa-facebook-f" />
-                        </a>
-                        <a href="#">
-                          <i className="fab fa-twitter" />
-                        </a>
-                        <a href="#">
-                          <i className="fab fa-youtube" />
-                        </a>
-                        <a href="#">
-                          <i className="fab fa-instagram" />
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <header className={`main-header modern-layout ${isScrolled ? "is-scrolled" : ""}`}>
       {/*Header-Upper*/}
       <div className="header-upper">
         <div className="container-fluid clearfix">
-          <div className="header-inner d-flex align-items-center">
+          <div className="header-inner d-flex align-items-center justify-content-between">
             <div className="logo-outer">
-              <div className="logo">
-                <Link legacyBehavior href="/">
-                  <a>
-                    <img
-                      src="assets/images/logos/logo.png"
-                      alt="Logo"
-                      title="Logo"
-                    />
-                  </a>
-                </Link>
-              </div>
+              <Link legacyBehavior href="/">
+                <a className="logo-text">Sri Ayini</a>
+              </Link>
             </div>
+            
             <div className="nav-outer clearfix">
               {/* Main Menu */}
-              <Nav />
+              <Nav categories={categories} />
               {/* Main Menu End*/}
             </div>
-            {/* Menu Button */}
-            <div className="menu-icons">
-              {/* Nav Search */}
-              <div className="nav-search py-15">
-                <div className="header-search">
-                  <input
-                    type="text"
-                    placeholder="Search items..."
-                    value={searchQuery}
-                    className="header-search-input"
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ padding: "8px", width: "250px" }}
-                  />
 
-                  {results.length > 0 && (
-                    <ul className="header-search-dropdown">
-                      {results.map((item) => (
-                        <li className="dropdown-item" key={item.id}>
-                          <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
-                            <a className="dropdown-link">
-                              <img src={item.image} alt={item.name} className="item-img" />
-                              <div className="item-info">
-                                <div className="item-name">{item.name}</div>
-                                <div className="item-price">₹{item.price}</div>
-                              </div>
-                            </a>
-                          </Link>
-                        </li>
-
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <SearchBtn />
+            <div className="menu-icons d-flex align-items-center">
+              {/* Modern Search Bar */}
+              <div className="modern-search-container">
+                <i className="fas fa-search" />
+                <input
+                  type="text"
+                  placeholder="Search blends..."
+                  value={searchQuery}
+                  className="modern-search-input"
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                
+                {results.length > 0 && (
+                  <ul className="header-search-dropdown">
+                    {results.map((item) => (
+                      <li className="dropdown-item" key={item.id}>
+                        <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
+                          <a className="dropdown-link">
+                            <img src={item.image} alt={item.name} className="item-img" />
+                            <div className="item-info">
+                              <div className="item-name">{item.name}</div>
+                              <div className="item-price">₹{item.price}</div>
+                            </div>
+                          </a>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              <CartButton />
-              {/* 
-              <button className="user">
-                <i className="far fa-user-circle" onClick={() => navigate('/login')} />
-              </button> */}
-              {/* <Link legacyBehavior href="/Login">
-                  <i className="far fa-user-circle" />
-              </Link > */}
 
-              {authChecked ? (
-                userId ? (
+              <div className="header-action-icons">
+                {userId ? (
                   <Link legacyBehavior href="/profile">
-                    <a>
-                      <i className="far fa-user-circle" />
-                    </a>
+                    <a className="header-icon-link" aria-label="Profile"><i className="fas fa-user" /></a>
                   </Link>
                 ) : (
                   <Link legacyBehavior href="/Login">
-                    <a>
-                      <i className="far fa-user-circle" />
-                    </a>
+                    <a className="header-icon-link" aria-label="Login"><i className="fas fa-user" /></a>
                   </Link>
-                )
-              ) : (
-                // Optionally render nothing or a placeholder while checking
-                <i className="far fa-user-circle" style={{ opacity: 0.5 }} />
-              )}
-
-              {!userId ? (
-                <Link legacyBehavior href="/Login">
-                  <a className="theme-btn">
-                    Login <i className="fas fa-angle-double-right" />
+                )}
+                
+                <Link legacyBehavior href="/wishlist">
+                  <a className="header-icon-link has-badge" aria-label="Wishlist">
+                    <i className="fas fa-heart" />
+                    {wishlistCount > 0 && <span className="badge-count">{wishlistCount}</span>}
                   </a>
                 </Link>
-              ) : (
-                // <Link legacyBehavior href="/Login">
-                <a className="theme-btn" onClick={handleLogout}>
-                  Logout <i className="fas fa-angle-double-right" />
-                </a>
-                // </Link>
-              )}
 
-              {/* menu sidbar */}
-              <div className="menu-sidebar" onClick={() => sidebarToggle()}>
-                <button>
-                  <i className="far fa-ellipsis-h" />
-                  <i className="far fa-ellipsis-h" />
-                  <i className="far fa-ellipsis-h" />
-                </button>
+                <CartButton />
               </div>
+
+              <Link legacyBehavior href={userId ? "/profile" : "/Login"}>
+                <a className="join-btn">{userId ? "Account" : "Join"}</a>
+              </Link>
+
             </div>
           </div>
         </div>
@@ -368,25 +282,149 @@ const DefaultHeader = () => {
 const Header1 = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [wishlistCount, setWishlistCount] = useState(0);
+
+  useEffect(() => {
+    import('../../services/itemServices').then(({ fetchCategory }) => {
+      fetchCategory().then(setCategories).catch(console.error);
+    });
+    setUserId(sessionStorage.getItem('uid'));
+  }, []);
+
+  useEffect(() => {
+    const refreshWishlistCount = async () => {
+      const activeUid = sessionStorage.getItem("uid");
+      setUserId(activeUid);
+      if (!activeUid) {
+        setWishlistCount(0);
+        return;
+      }
+      try {
+        const items = await getWishlist(activeUid);
+        setWishlistCount(items.length);
+      } catch (error) {
+        console.error("Wishlist count error:", error);
+      }
+    };
+
+    refreshWishlistCount();
+    window.addEventListener("storage", refreshWishlistCount);
+    window.addEventListener("wishlistUpdated", refreshWishlistCount);
+
+    return () => {
+      window.removeEventListener("storage", refreshWishlistCount);
+      window.removeEventListener("wishlistUpdated", refreshWishlistCount);
+    };
+  }, []);
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (searchQuery.trim()) {
-        searchItems(searchQuery).then(setResults);
+        import('../../services/itemServices').then(({ searchItems }) => {
+          searchItems(searchQuery).then(setResults);
+        });
       } else {
         setResults([]);
       }
-    }, 300); // debounce
-
+    }, 300);
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
-  // const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="main-header menu-absolute">
-      <div className="header-top-wrap bg-light-green text-white py-10">
-        <div className="container-fluid">
-          <div className="header-top">
+    <header className={`main-header modern-layout ${isScrolled ? "is-scrolled" : ""}`}>
+      {/*Header-Upper*/}
+      <div className="header-upper">
+        <div className="container-fluid clearfix">
+          <div className="header-inner d-flex align-items-center justify-content-between">
+            <div className="logo-outer">
+              <Link legacyBehavior href="/">
+                <a className="logo-text">Sri Ayini</a>
+              </Link>
+            </div>
+            
+            <div className="nav-outer clearfix">
+              <Nav categories={categories} />
+            </div>
+
+            <div className="menu-icons d-flex align-items-center">
+              <div className="modern-search-container">
+                <i className="fas fa-search" />
+                <input
+                  type="text"
+                  placeholder="Search blends..."
+                  value={searchQuery}
+                  className="modern-search-input"
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                
+                {results.length > 0 && (
+                  <ul className="header-search-dropdown">
+                    {results.map((item) => (
+                      <li className="dropdown-item" key={item.id}>
+                        <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
+                          <a className="dropdown-link">
+                            <img src={item.image} alt={item.name} className="item-img" />
+                            <div className="item-info">
+                              <div className="item-name">{item.name}</div>
+                              <div className="item-price">₹{item.price}</div>
+                            </div>
+                          </a>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="header-action-icons">
+                <Link legacyBehavior href={userId ? "/profile" : "/Login"}>
+                  <a className="header-icon-link" aria-label={userId ? "Profile" : "Login"}><i className="fas fa-user" /></a>
+                </Link>
+                
+                <Link legacyBehavior href="/wishlist">
+                  <a className="header-icon-link has-badge" aria-label="Wishlist">
+                    <i className="fas fa-heart" />
+                    {wishlistCount > 0 && <span className="badge-count">{wishlistCount}</span>}
+                  </a>
+                </Link>
+
+                <CartButton />
+              </div>
+
+              <Link legacyBehavior href={userId ? "/profile" : "/Login"}>
+                <a className="join-btn">{userId ? "Account" : "Join"}</a>
+              </Link>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+const Header2 = () => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    import('../../services/itemServices').then(({ fetchCategory }) => {
+      fetchCategory().then(setCategories).catch(console.error);
+    });
+  }, []);
+
+  return (
+    <header className="main-header header-two">
+      <div className="header-top-wrap">
+        <div className="container">
+          <div className="header-top text-white py-10" style={{ background: 'var(--secondary-accent)' }}>
             <div className="row">
               <div className="col-xl-7 col-lg-6">
                 <div className="top-left">
@@ -394,9 +432,6 @@ const Header1 = () => {
                     <li>
                       <i className="far fa-envelope" /> <b>Email Us :</b>{" "}
                       <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
-                    </li>
-                    <li>
-                      <i className="far fa-clock" /> <b>Fssai No :</b> 22425474000281
                     </li>
                   </ul>
                 </div>
@@ -434,7 +469,7 @@ const Header1 = () => {
       </div>
       {/*Header-Upper*/}
       <div className="header-upper">
-        <div className="container-fluid clearfix">
+        <div className="container rel clearfix">
           <div className="header-inner d-flex align-items-center">
             <div className="logo-outer">
               <div className="logo">
@@ -445,65 +480,42 @@ const Header1 = () => {
                       alt="Logo"
                       title="Logo"
                     />
+                    <img
+                      src="assets/images/logos/logo-white.png"
+                      alt="Logo"
+                      title="Logo"
+                    />
                   </a>
                 </Link>
               </div>
             </div>
             <div className="nav-outer clearfix">
               {/* Main Menu */}
-              <Nav />
+              <Nav categories={categories} />
               {/* Main Menu End*/}
             </div>
             {/* Menu Button */}
             <div className="menu-icons">
               {/* Nav Search */}
               <div className="nav-search py-15">
-                <div className="header-search">
+                <button className="fas fa-search" />
+                <form
+                  onSubmit={(e) => e.preventDefault()}
+                  action="#"
+                  className="hide"
+                >
                   <input
                     type="text"
-                    placeholder="Search items..."
-                    value={searchQuery}
-                    className="header-search-input"
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ padding: "8px", width: "300px" }}
+                    placeholder="Search"
+                    className="searchbox"
+                    required=""
                   />
-
-                  {results.length > 0 && (
-                    <ul className="header-search-dropdown">
-                      {results.map((item) => (
-                        <li className="dropdown-item" key={item.id}>
-                          <Link href={`/detailsPage?id=${item.id}`} legacyBehavior>
-                            <a className="dropdown-link">
-                              <img src={item.image} alt={item.name} className="item-img" />
-                              <div className="item-info">
-                                <div className="item-name">{item.name}</div>
-                                <div className="item-price">₹{item.price}</div>
-                              </div>
-                            </a>
-                          </Link>
-                        </li>
-
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <SearchBtn />
+                  <button type="submit" className="searchbutton fas fa-search" />
+                </form>
               </div>
-              {/* <button className="cart">
-              <i className="far fa-shopping-basket" />
-              <span>5</span>
-            </button> */}
-              {/* <button className="user">
-                <i className="far fa-user-circle" onClick={() => navigate('/login')} />
-              </button> */}
-              <Link legacyBehavior href="/Login">
-                <i className="far fa-user-circle" />
-              </Link >
-              <Link legacyBehavior href="/Login">
-                <a className="theme-btn">
-                  Login <i className="fas fa-angle-double-right" />
-                </a>
-              </Link>
+              <button className="cart">
+                <i className="fas fa-shopping-basket" />
+              </button>
               {/* menu sidbar */}
               <div className="menu-sidebar" onClick={() => sidebarToggle()}>
                 <button>
@@ -518,121 +530,17 @@ const Header1 = () => {
       </div>
       {/*End Header Upper*/}
     </header>
-  )
+  );
 };
-const Header2 = () => (
-  <header className="main-header header-two">
-    <div className="header-top-wrap">
-      <div className="container">
-        <div className="header-top bg-light-green text-white py-10">
-          <div className="row">
-            <div className="col-xl-7 col-lg-6">
-              <div className="top-left">
-                <ul>
-                  <li>
-                    <i className="far fa-envelope" /> <b>Email Us :</b>{" "}
-                    <a href="mailto:support@gmail.com">sriayini@gmail.com</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="col-xl-5 col-lg-6">
-              <div className="top-right text-lg-right">
-                <ul>
-                  <li>
-                    <i className="far fa-phone" /> <b>Call :</b>{" "}
-                    <a href="callto:+012(345)67899">+91 9363489242
-                    </a>
-                  </li>
-                  <li>
-                    <div className="social-style-one">
-                      <a href="#">
-                        <i className="fab fa-facebook-f" />
-                      </a>
-                      <a href="#">
-                        <i className="fab fa-twitter" />
-                      </a>
-                      <a href="#">
-                        <i className="fab fa-youtube" />
-                      </a>
-                      <a href="#">
-                        <i className="fab fa-instagram" />
-                      </a>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {/*Header-Upper*/}
-    <div className="header-upper">
-      <div className="container rel clearfix">
-        <div className="header-inner d-flex align-items-center">
-          <div className="logo-outer">
-            <div className="logo">
-              <Link legacyBehavior href="/">
-                <a>
-                  <img
-                    src="assets/images/logos/logo.png"
-                    alt="Logo"
-                    title="Logo"
-                  />
-                  <img
-                    src="assets/images/logos/logo-white.png"
-                    alt="Logo"
-                    title="Logo"
-                  />
-                </a>
-              </Link>
-            </div>
-          </div>
-          <div className="nav-outer clearfix">
-            {/* Main Menu */}
-            <Nav />
-            {/* Main Menu End*/}
-          </div>
-          {/* Menu Button */}
-          <div className="menu-icons">
-            {/* Nav Search */}
-            <div className="nav-search py-15">
-              <button className="far fa-search" />
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                action="#"
-                className="hide"
-              >
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="searchbox"
-                  required=""
-                />
-                <button type="submit" className="searchbutton far fa-search" />
-              </form>
-            </div>
-            <button className="cart">
-              <i className="far fa-shopping-basket" />
-            </button>
-            {/* menu sidbar */}
-            <div className="menu-sidebar" onClick={() => sidebarToggle()}>
-              <button>
-                <i className="far fa-ellipsis-h" />
-                <i className="far fa-ellipsis-h" />
-                <i className="far fa-ellipsis-h" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {/*End Header Upper*/}
-  </header>
-);
 const Header3 = () => {
-  // const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    import('../../services/itemServices').then(({ fetchCategory }) => {
+      fetchCategory().then(setCategories).catch(console.error);
+    });
+  }, []);
+
   return (
     <header className="main-header header-three menu-absolute">
       <div className="header-top-wrap bgc-primary py-10">
@@ -696,20 +604,22 @@ const Header3 = () => {
                   className="searchbox"
                   required=""
                 />
-                <button type="submit" className="searchbutton far fa-search" />
+                <button type="submit" className="searchbutton fas fa-search" />
               </form>
               <button className="cart">
-                <i className="far fa-shopping-basket" />
+                <i className="fas fa-shopping-basket" />
                 <span>5</span>
               </button>
               {/* <button className="user">
                 <i className="far fa-user-circle" onClick={() => navigate('/login')} />
               </button> */}
               <Link legacyBehavior href="/Login">
-                <i className="far fa-user-circle" />
-              </Link >
+                <a className="header-icon-link" aria-label="Login">
+                  <i className="fas fa-user-circle" />
+                </a>
+              </Link>
               <button className="heart">
-                <i className="far fa-heart" />
+                <i className="fas fa-heart" />
               </button>
             </div>
           </div>
@@ -721,7 +631,7 @@ const Header3 = () => {
           <div className="header-inner d-flex align-items-center">
             <div className="nav-outer clearfix">
               {/* Main Menu */}
-              <Nav />
+              <Nav categories={categories} />
               {/* Main Menu End*/}
             </div>
             {/* menu sidbar */}
@@ -737,5 +647,5 @@ const Header3 = () => {
       </div>
       {/*End Header Upper*/}
     </header>
-  )
+  );
 };

@@ -16,6 +16,8 @@ import {
   sendEmailOtp,
   verifyEmailOtp
 } from '../services/loginServices';
+import { mergeCart, getGuestId } from '../services/cartServices';
+
 
 const allMethods = ['phone', 'email'];
 const methodLabels = { phone: 'Phone', email: 'Email' };
@@ -131,13 +133,20 @@ export default function LoginUI() {
 
         sessionStorage.setItem('uid', result.uid || contact);
 
+        // Merge guest cart into user cart
+        const guestId = sessionStorage.getItem('guestId');
+        const uid = result.uid || contact;
+        if (guestId) {
+          await mergeCart(guestId, uid);
+        }
+
         alert('Login successful!');
         setStep('inputContact');
         setContact('');
         setOtp('');
         setSuccessMsg('');
         setTimeout(() => {
-          window.location.href = '/profile';
+          window.location.href = '/cart';
         }, 300); // small delay
       } else {
         setError(result.message || 'Invalid OTP');
@@ -176,7 +185,15 @@ export default function LoginUI() {
         });
 
         sessionStorage.setItem('uid', user.uid);
-        window.location.href = '/profile';
+
+        // Merge guest cart into user cart
+        const socialGuestId = sessionStorage.getItem('guestId');
+        if (socialGuestId) {
+          await mergeCart(socialGuestId, user.uid);
+        }
+
+        window.location.href = '/cart';
+
       } catch (popupErr) {
         console.warn('Popup failed:', popupErr?.message || popupErr);
 
